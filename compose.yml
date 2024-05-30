@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  web:
+    depends_on: 
+      - api
+    build: ./client
+    ports:
+      - 3000:3000
+    environment:
+
+    develop:
+      watch:
+        - path: ./client/package.json
+          action: rebuild
+        - path: ./client/package-lock.json
+          action: rebuild
+        - path: ./client
+          target: /app
+          action: sync
+
+  api: 
+    depends_on: 
+      - db
+
+    build: ./backend
+    
+    ports: 
+      - 3001:3001
+
+    environment: 
+    
+    develop:
+      watch:
+        - path: ./server/package.json
+          action: rebuild
+        - path: ./server/package-lock.json
+          action: rebuild
+        
+        - path: ./server
+          target: /app
+          action: sync
+
+  db:
+    image: postgres:latest
+
+    ports:
+      - 27017:27017
+    volumes:
+
+volumes:
