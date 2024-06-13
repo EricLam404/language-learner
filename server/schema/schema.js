@@ -1,6 +1,60 @@
 const { users } = require("../sampleData");
 
-const { buildSchema } = require("graphql");
+const {
+    buildSchema,
+    GraphQLSchema,
+    GraphQLObjectType,
+    GraphQLString,
+} = require("graphql");
+
+// const schema = buildSchema(`
+//   type Query {
+//     hello(name: String!): String
+//     user: User
+//   }
+
+//   type User {
+//     id: Int
+//     name: String
+//   }
+// `);
+
+const User = new GraphQLObjectType({
+    name: "User",
+    fields: {
+        id: { type: GraphQLString },
+        name: {
+            type: GraphQLString,
+            resolve: (user) => {
+                return user.name;
+            },
+        },
+    },
+});
+
+const schema = new GraphQLSchema({
+    query: new GraphQLObjectType({
+        name: "Query",
+        fields: {
+            hello: {
+                type: GraphQLString,
+                resolve: () => {
+                    return "Hello, world!";
+                },
+            },
+            user: {
+                type: User,
+                resolve: () => {
+                    return {
+                        id: 1,
+                        name: "Sam",
+                    };
+                },
+            },
+        },
+    }),
+});
+
 // const {
 //     graphQLObjectType,
 //     GraphQLSchema,
@@ -34,11 +88,5 @@ const { buildSchema } = require("graphql");
 // module.exports = new GraphQLSchema({
 //     query: RootQuery,
 // });
-
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
 
 module.exports = schema;
