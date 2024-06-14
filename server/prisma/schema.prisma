@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int          @id @default(autoincrement())
+  email        String       @unique
+  password     String
+  name         String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  vocabularies Vocabulary[]
+  stories      Story[]
+  worksheets   Worksheet[]
+  Progress     Progress[]
+}
+
+model Vocabulary {
+  id        Int      @id @default(autoincrement())
+  word      String
+  meaning   String
+  example   String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Story     Story?   @relation(fields: [storyId], references: [id])
+  storyId   Int?
+}
+
+model Story {
+  id           Int          @id @default(autoincrement())
+  content      String
+  userId       Int
+  user         User         @relation(fields: [userId], references: [id])
+  vocabularies Vocabulary[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Worksheet {
+  id        Int      @id @default(autoincrement())
+  content   String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Progress {
+  id          Int          @id @default(autoincrement())
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id])
+  completedAt DateTime
+  type        ProgressType
+}
+
+enum ProgressType {
+  VOCABULARY
+  STORY
+  WORKSHEET
+}
