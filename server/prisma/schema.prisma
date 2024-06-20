@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,23 +14,44 @@ model User {
   name         String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+  languages    UserLanguage[]
   vocabularies Vocabulary[]
   stories      Story[]
   worksheets   Worksheet[]
   Progress     Progress[]
 }
 
+model UserLanguage {
+  userId     Int
+  languageId Int
+  user       User      @relation(fields: [userId], references: [id])
+  language   Language  @relation(fields: [languageId], references: [id])
+  @@id([userId, languageId])
+}
+
+model Language {
+  id           Int          @id @default(autoincrement())
+  name         String
+  vocabularies Vocabulary[]
+  stories      Story[]
+  worksheets   Worksheet[]
+  Progress     Progress[]
+  users        UserLanguage[]
+}
+
 model Vocabulary {
-  id        Int      @id @default(autoincrement())
-  word      String
-  meaning   String
-  example   String?
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Story     Story?   @relation(fields: [storyId], references: [id])
-  storyId   Int?
+  id         Int      @id @default(autoincrement())
+  word       String
+  meaning    String
+  example    String?
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  languageId Int
+  language   Language @relation(fields: [languageId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  Story      Story?   @relation(fields: [storyId], references: [id])
+  storyId    Int?
 }
 
 model Story {
@@ -44,24 +59,30 @@ model Story {
   content      String
   userId       Int
   user         User         @relation(fields: [userId], references: [id])
+  languageId   Int
+  language     Language     @relation(fields: [languageId], references: [id])
   vocabularies Vocabulary[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 }
 
 model Worksheet {
-  id        Int      @id @default(autoincrement())
-  content   String
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  content    String
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  languageId Int
+  language   Language @relation(fields: [languageId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Progress {
   id          Int          @id @default(autoincrement())
   userId      Int
   user        User         @relation(fields: [userId], references: [id])
+  languageId  Int
+  language    Language     @relation(fields: [languageId], references: [id])
   completedAt DateTime
   type        ProgressType
 }
