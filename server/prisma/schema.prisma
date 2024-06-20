@@ -8,12 +8,12 @@ datasource db {
 }
 
 model User {
-  id           Int          @id @default(autoincrement())
-  email        String       @unique
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
   password     String
-  name         String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  username     String         @unique
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
   languages    UserLanguage[]
   vocabularies Vocabulary[]
   stories      Story[]
@@ -24,13 +24,14 @@ model User {
 model UserLanguage {
   userId     Int
   languageId Int
-  user       User      @relation(fields: [userId], references: [id])
-  language   Language  @relation(fields: [languageId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  language   Language @relation(fields: [languageId], references: [id])
+
   @@id([userId, languageId])
 }
 
 model Language {
-  id           Int          @id @default(autoincrement())
+  id           Int            @id @default(autoincrement())
   name         String
   vocabularies Vocabulary[]
   stories      Story[]
