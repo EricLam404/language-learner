@@ -21,17 +21,17 @@ model User {
 }
 
 model UserLanguage {
-  userId     Int
-  languageId Int
-  user       User     @relation(fields: [userId], references: [id])
-  language   Language @relation(fields: [languageId], references: [id])
+  userId       Int
+  languageName String
+  user         User     @relation(fields: [userId], references: [id])
+  language     Language @relation(fields: [languageName], references: [name])
 
-  @@id([userId, languageId])
+  @@id([userId, languageName])
 }
 
 model Language {
   id           Int            @id @default(autoincrement())
-  name         String
+  name         String         @unique
   vocabularies Vocabulary[]
   stories      Story[]
   worksheets   Worksheet[]
@@ -40,18 +40,18 @@ model Language {
 }
 
 model Vocabulary {
-  id         Int      @id @default(autoincrement())
-  word       String
-  meaning    String
-  example    String?
-  userId     Int
-  user       User     @relation(fields: [userId], references: [id])
-  languageId Int
-  language   Language @relation(fields: [languageId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  Story      Story?   @relation(fields: [storyId], references: [id])
-  storyId    Int?
+  id           Int      @id @default(autoincrement())
+  word         String
+  meaning      String
+  example      String?
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+  languageName String
+  language     Language @relation(fields: [languageName], references: [name])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  Story        Story?   @relation(fields: [storyId], references: [id])
+  storyId      Int?
 }
 
 model Story {
@@ -59,32 +59,32 @@ model Story {
   content      String
   userId       Int
   user         User         @relation(fields: [userId], references: [id])
-  languageId   Int
-  language     Language     @relation(fields: [languageId], references: [id])
+  languageName String
+  language     Language     @relation(fields: [languageName], references: [name])
   vocabularies Vocabulary[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 }
 
 model Worksheet {
-  id         Int      @id @default(autoincrement())
-  content    String
-  userId     Int
-  user       User     @relation(fields: [userId], references: [id])
-  languageId Int
-  language   Language @relation(fields: [languageId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  content      String
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+  languageName String
+  language     Language @relation(fields: [languageName], references: [name])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Progress {
-  id          Int          @id @default(autoincrement())
-  userId      Int
-  user        User         @relation(fields: [userId], references: [id])
-  languageId  Int
-  language    Language     @relation(fields: [languageId], references: [id])
-  completedAt DateTime
-  type        ProgressType
+  id           Int          @id @default(autoincrement())
+  userId       Int
+  user         User         @relation(fields: [userId], references: [id])
+  languageName String
+  language     Language     @relation(fields: [languageName], references: [name])
+  completedAt  DateTime
+  type         ProgressType
 }
 
 enum ProgressType {
