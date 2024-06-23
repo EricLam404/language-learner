@@ -15,7 +15,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -25,9 +25,11 @@ const FormSchema = z.object({
     username: z.string().min(4, {
         message: "Username must be at least 2 characters.",
     }),
-    languages: z.array(z.string()).refine((value) => value.some((item) => item), {
-        message: "You have to select at least one item.",
-    }),
+    languages: z
+        .array(z.string())
+        .refine((value) => value.some((item) => item), {
+            message: "You have to select at least one item.",
+        }),
 });
 
 type Languages = {
@@ -50,17 +52,14 @@ export default function CreateProfile() {
                 }
             }
             `;
-            const req = await fetch(
-                API_URL,
-                {
-                    method: "POST",
-                    headers: {
-                        apiKey: API_KEY,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ query }),
-                }
-            );
+            const req = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    apiKey: API_KEY,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ query }),
+            });
             const res = await req.json();
             const edges = res.data.languageCollection.edges;
             setLanguages(
@@ -79,21 +78,14 @@ export default function CreateProfile() {
         resolver: zodResolver(FormSchema),
         defaultValues: {
             username: "",
-            languages: []
+            languages: [],
         },
     });
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
         console.log(data);
-        toast({
-          title: "You submitted the following values:",
-          description: (
-            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-              <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-            </pre>
-          ),
-        })
-      }
+        toast.success("Your profile has been created!");
+    }
 
     return (
         <div className="flex flex-col items-center justify-center h-screen bg-background">
@@ -102,7 +94,9 @@ export default function CreateProfile() {
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-8"
                 >
-                    <div className="font-bold text-2xl">Create your Profile</div>
+                    <div className="font-bold text-2xl">
+                        Create your Profile
+                    </div>
                     <FormField
                         control={form.control}
                         name="username"
@@ -110,7 +104,10 @@ export default function CreateProfile() {
                             <FormItem>
                                 <FormLabel>Username</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Enter a unique username" {...field} />
+                                    <Input
+                                        placeholder="Enter a unique username"
+                                        {...field}
+                                    />
                                 </FormControl>
                                 <FormDescription>
                                     This is your public display name.
@@ -129,8 +126,8 @@ export default function CreateProfile() {
                                         Choose your languages
                                     </FormLabel>
                                     <FormDescription>
-                                        Select your
-                                        the languages you want to learn!
+                                        Select your the languages you want to
+                                        learn!
                                     </FormDescription>
                                 </div>
                                 {languages &&
@@ -278,4 +275,3 @@ export default function CreateProfile() {
 //         return res.data.languageCollection.edges;
 //     }
 // }
-
