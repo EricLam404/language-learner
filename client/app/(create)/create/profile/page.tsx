@@ -19,7 +19,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 import React from "react";
-import { API_URL, API_KEY } from "@app/_components/API_URLS";
+import { API_URL, API_KEY } from "@app/(userFacing)/_components/API_URLS";
 
 const FormSchema = z.object({
     username: z.string().min(4, {
