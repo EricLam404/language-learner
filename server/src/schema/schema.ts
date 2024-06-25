@@ -89,6 +89,13 @@
 //     query: RootQuery,
 // });
 
+import { createClient } from "@supabase/supabase-js";
+import dotenv from "dotenv";
+import parseCookies from "../utils/parseCookie";
+dotenv.config();
+const supabaseUrl = process.env.SUPABASE_URL as string;
+const supabaseKey = process.env.SUPABASE_KEY as string;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const typeDefs = `#graphql
   # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
@@ -120,7 +127,15 @@ const books = [
 
 const resolvers = {
     Query: {
-        books: () => books,
+        books: async (parent: any, args: any, contextValue: any) => {
+          const token = contextValue.cookie['sb-127-auth-token']
+          console.log(JSON.parse(token));
+            const {
+                data: { user },
+            } = await supabase.auth.getUser(JSON.parse(token).access_token);
+            console.log(user);
+            return books;
+        },
     },
 };
 
