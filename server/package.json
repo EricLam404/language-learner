@@ -1,15 +1,11 @@
 {
     "dependencies": {
         "@apollo/server": "^4.10.4",
-        "@graphql-tools/merge": "^9.0.4",
         "bcryptjs": "^2.4.3",
         "cors": "^2.8.5",
         "express": "^4.19.2",
         "express-session": "^1.18.0",
-        "graphql": "^16.9.0",
-        "passport": "^0.7.0",
-        "passport-local": "^1.0.0",
-        "ruru": "^2.0.0-beta.11"
+        "graphql": "^16.9.0"
     },
     "devDependencies": {
         "@prisma/client": "^5.15.1",
