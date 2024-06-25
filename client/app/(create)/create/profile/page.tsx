@@ -82,9 +82,84 @@ export default function CreateProfile() {
         },
     });
 
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-        console.log(data);
-        toast.success("Your profile has been created!");
+    async function onSubmit(data: z.infer<typeof FormSchema>) {
+        const query = `
+                query CheckUsername($username: String!) {
+                    userCollection(filter: { username: { eq: $username } }) {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
+                }
+            `;
+
+        const variables = { username: data.username };
+
+        try {
+            const req = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    apiKey: API_KEY,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ query, variables }),
+            });
+
+            const res = await req.json();
+            const userExists = res.data.userCollection.edges.length > 0;
+
+            if (userExists) {
+                toast.error(
+                    "Username already exists. Please choose a different username."
+                );
+            } else {
+                const mutation = `
+                        mutation CreateUser($username: String!, $languages: [String!]!) {
+                            insertUser(username: $username, languages: $languages) {
+                                user {
+                                    id
+                                    username
+                                    languages
+                                }
+                            }
+                        }
+                    `;
+
+                const createVariables = {
+                    username: data.username,
+                    languages: data.languages,
+                };
+
+                const createUserReq = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        apiKey: API_KEY,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        query: mutation,
+                        variables: createVariables,
+                    }),
+                });
+
+                const createUserRes = await createUserReq.json();
+                console.log(createUserRes)
+                if (createUserRes.data.insertUser) {
+                    toast.success("Your profile has been created!");
+                } else {
+                    toast.error(
+                        "An error occurred while creating your profile. Please try again."
+                    );
+                }
+            }
+        } catch (error) {
+            console.error("Error creating profile:", error);
+            toast.error(
+                "An error occurred while creating your profile. Please try again."
+            );
+        }
     }
 
     return (
@@ -187,91 +262,3 @@ export default function CreateProfile() {
         </div>
     );
 }
-
-// export default async function Page() {
-//     const languages = await fetchLanguages();
-//     function createProfile(e: React.FormEvent<HTMLFormElement>) {
-//         // Create profile
-//         e.preventDefault();
-//         console.log(e)
-
-//     }
-//     return (
-//         <div className="flex flex-col items-center justify-center h-screen bg-background">
-//             <form className="w-full max-w-md p-6 bg-card rounded-lg shadow-lg" onSubmit={createProfile}>
-//                 <h1 className="text-2xl font-bold mb-6 text-center">
-//                     Create Your Profile
-//                 </h1>
-//                 <div className="mb-6">
-//                     <Label
-//                         htmlFor="username"
-//                         className="block mb-2 font-medium"
-//                         aria-required="true"
-//                     >
-//                         Username<span className="text-red-500">*</span>
-//                     </Label>
-//                     <Input
-//                         id="username"
-//                         type="text"
-//                         placeholder="Enter your username"
-//                         className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-//                     />
-//                 </div>
-//                 <div>
-//                     <Label className="block mb-2 font-medium">
-//                         Select your languages
-//                         <span className="text-red-500">*</span>
-//                     </Label>
-//                     <div className="grid grid-cols-3 gap-4">
-//                         {languages.map((lang: { node: { name: string } }) => (
-//                             <div key={lang.node.name} className="flex gap-2">
-//                                 <input
-//                                     type="checkbox"
-//                                     id={lang.node.name}
-//                                     name={lang.node.name}
-//                                     value={lang.node.name}
-//                                 />
-//                                 <label htmlFor={lang.node.name}>
-//                                     {lang.node.name}
-//                                 </label>
-//                             </div>
-//                         ))}
-//                     </div>
-//                 </div>
-//                 <div className="mt-6 flex justify-end">
-//                     <Button className="bg-primary text-primary-foreground hover:bg-primary/90" type="submit">
-//                         Create Profile
-//                     </Button>
-//                 </div>
-//             </form>
-//         </div>
-//     );
-
-//     async function fetchLanguages() {
-//         const query = `
-//         {
-//             languageCollection {
-//             edges {
-//                 node {
-//                 name
-//                 }
-//             }
-//             }
-//         }
-//         `;
-
-//         const req = await fetch(
-//             process.env.SUPABASE_GRAPHQL_ENDPOINT as string,
-//             {
-//                 method: "POST",
-//                 headers: {
-//                     apiKey: process.env.API_KEY as string,
-//                     "Content-Type": "application/json",
-//                 },
-//                 body: JSON.stringify({ query }),
-//             }
-//         );
-//         const res = await req.json();
-//         return res.data.languageCollection.edges;
-//     }
-// }
