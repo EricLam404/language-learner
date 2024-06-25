@@ -17,8 +17,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import React from "react";
+import { useLazyQuery, gql } from "@apollo/client";
 import { API_URL, API_KEY } from "@app/(userFacing)/_components/API_URLS";
 
 const FormSchema = z.object({
@@ -37,8 +38,19 @@ type Languages = {
     label: string;
 }[];
 
+const query = gql`
+    query GetBooks {
+        books {
+            title
+            author
+        }
+    }
+`;
+
 export default function CreateProfile() {
     const [languages, setLanguages] = useState<Languages | null>(null);
+    const [getBooks, { loading, error, data }] = useLazyQuery(query);
+
     useEffect(() => {
         const fetchLanguages = async () => {
             const query = `
@@ -71,8 +83,14 @@ export default function CreateProfile() {
                 })
             );
         };
+
         fetchLanguages();
+        getBooks();
     }, []);
+
+    useEffect(() => {
+        console.log(data);
+    }, [data]);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -145,7 +163,7 @@ export default function CreateProfile() {
                 });
 
                 const createUserRes = await createUserReq.json();
-                console.log(createUserRes)
+                console.log(createUserRes);
                 if (createUserRes.data.insertUser) {
                     toast.success("Your profile has been created!");
                 } else {
