@@ -33,59 +33,63 @@ const FormSchema = z.object({
         }),
 });
 
-type Languages = {
+type Language = {
     id: string;
     label: string;
-}[];
+};
 
 const query = gql`
-    query GetBooks {
-        books {
-            title
-            author
-        }
-    }
-`;
-
-export default function CreateProfile() {
-    const [languages, setLanguages] = useState<Languages | null>(null);
-    const [getBooks, { loading, error, data }] = useLazyQuery(query);
-
-    useEffect(() => {
-        const fetchLanguages = async () => {
-            const query = `
-            {
-                languageCollection {
+    query GetLanguages {
+        languageCollection {
                 edges {
                     node {
                     name
                     }
                 }
                 }
-            }
-            `;
-            const req = await fetch(API_URL, {
-                method: "POST",
-                headers: {
-                    apiKey: API_KEY,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ query }),
-            });
-            const res = await req.json();
-            const edges = res.data.languageCollection.edges;
-            setLanguages(
-                edges.map((item: { node: { name: string } }) => {
-                    return {
-                        id: item.node.name.toLocaleLowerCase(),
-                        label: item.node.name,
-                    };
-                })
-            );
-        };
+    }
+`;
 
-        fetchLanguages();
-        getBooks();
+export default function CreateProfile() {
+    // const [languages, setLanguages] = useState<Languages | null>(null);
+    const [getLanguages, { loading, error, data}] = useLazyQuery(query);
+
+    useEffect(() => {
+        // const fetchLanguages = async () => {
+        //     const query = `
+        //     {
+        //         languageCollection {
+        //         edges {
+        //             node {
+        //             name
+        //             }
+        //         }
+        //         }
+        //     }
+        //     `;
+        //     const req = await fetch(API_URL, {
+        //         method: "POST",
+        //         headers: {
+        //             apiKey: API_KEY,
+        //             "Content-Type": "application/json",
+        //         },
+        //         body: JSON.stringify({ query }),
+        //     });
+        //     const res = await req.json();
+        //     const edges = res.data.languageCollection.edges;
+        //     setLanguages(
+        //         edges.map((item: { node: { name: string } }) => {
+        //             return {
+        //                 id: item.node.name.toLocaleLowerCase(),
+        //                 label: item.node.name,
+        //             };
+        //         })
+        //     );
+        // };
+
+        // fetchLanguages();
+        // getBooks();
+        getLanguages();
     }, []);
 
     useEffect(() => {
@@ -223,8 +227,8 @@ export default function CreateProfile() {
                                         learn!
                                     </FormDescription>
                                 </div>
-                                {languages &&
-                                    languages.map((item) => (
+                                {data &&
+                                    data.map((item: Language) => (
                                         <FormField
                                             key={item.id}
                                             control={form.control}
