@@ -1,0 +1,9 @@
+type Language {
+  id: Int!
+  name: String!
+  vocabularies: [Vocabulary!]!
+  stories: [Story!]!
+  worksheets: [Worksheet!]!
+  progress: [Progress!]!
+  users: [UserLanguage!]!
+}

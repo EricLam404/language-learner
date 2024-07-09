@@ -1,0 +1,12 @@
+type User {
+  id: Int!
+  email: String!
+  username: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  languages: [UserLanguage!]!
+  vocabularies: [Vocabulary!]!
+  stories: [Story!]!
+  worksheets: [Worksheet!]!
+  progress: [Progress!]!
+}

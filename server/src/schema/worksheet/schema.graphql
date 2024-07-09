@@ -1,0 +1,10 @@
+type Worksheet {
+  id: Int!
+  content: String!
+  userId: Int!
+  user: User!
+  languageName: String!
+  language: Language!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}

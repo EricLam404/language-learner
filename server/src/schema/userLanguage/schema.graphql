@@ -1,0 +1,9 @@
+type UserLanguage {
+  userId: Int!
+  languageName: String!
+  user: User!
+  language: Language!
+
+  # Composite primary key
+  userLanguageId: UserLanguageId!
+}

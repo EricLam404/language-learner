@@ -127,15 +127,24 @@ const books = [
 
 const resolvers = {
     Query: {
-        books: async (parent: any, args: any, contextValue: any) => {
-          const token = contextValue.cookie['sb-127-auth-token']
-          console.log(JSON.parse(token));
-            const {
-                data: { user },
-            } = await supabase.auth.getUser(JSON.parse(token).access_token);
-            console.log(user);
-            return books;
-        },
+        // books: async (parent: any, args: any, contextValue: any) => {
+        //   const token = contextValue.cookie['sb-127-auth-token']
+        //   console.log(JSON.parse(token));
+        //     const {
+        //         data: { user },
+        //     } = await supabase.auth.getUser(JSON.parse(token).access_token);
+        //     console.log(user);
+        //     return books;
+        // },
+        languages: async () => {
+            const { data: languages, error } = await supabase
+                .from("Language")
+                .select("*");
+            if (error) {
+                throw error;
+            }
+            return languages;
+        }
     },
 };
 

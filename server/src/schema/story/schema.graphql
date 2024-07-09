@@ -1,0 +1,11 @@
+type Story {
+  id: Int!
+  content: String!
+  userId: Int!
+  user: User!
+  languageName: String!
+  language: Language!
+  vocabularies: [Vocabulary!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}

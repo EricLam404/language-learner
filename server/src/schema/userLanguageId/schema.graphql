@@ -1,0 +1,5 @@
+# Custom composite key type for UserLanguage
+type UserLanguageId {
+  userId: Int!
+  languageName: String!
+}
