@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import { useLazyQuery, gql } from "@apollo/client";
 import { API_URL, API_KEY } from "@app/(userFacing)/_components/API_URLS";
@@ -38,7 +38,7 @@ type Language = {
     label: string;
 };
 
-const query = gql`
+const GetLanguageQuery = gql`
     query GetLanguages {
         languageCollection {
                 edges {
@@ -46,55 +46,17 @@ const query = gql`
                     name
                     }
                 }
-                }
+            }
     }
 `;
 
 export default function CreateProfile() {
     // const [languages, setLanguages] = useState<Languages | null>(null);
-    const [getLanguages, { loading, error, data}] = useLazyQuery(query);
+    const [getLanguages, { loading, error, data}] = useLazyQuery(GetLanguageQuery);
 
     useEffect(() => {
-        // const fetchLanguages = async () => {
-        //     const query = `
-        //     {
-        //         languageCollection {
-        //         edges {
-        //             node {
-        //             name
-        //             }
-        //         }
-        //         }
-        //     }
-        //     `;
-        //     const req = await fetch(API_URL, {
-        //         method: "POST",
-        //         headers: {
-        //             apiKey: API_KEY,
-        //             "Content-Type": "application/json",
-        //         },
-        //         body: JSON.stringify({ query }),
-        //     });
-        //     const res = await req.json();
-        //     const edges = res.data.languageCollection.edges;
-        //     setLanguages(
-        //         edges.map((item: { node: { name: string } }) => {
-        //             return {
-        //                 id: item.node.name.toLocaleLowerCase(),
-        //                 label: item.node.name,
-        //             };
-        //         })
-        //     );
-        // };
-
-        // fetchLanguages();
-        // getBooks();
         getLanguages();
     }, []);
-
-    useEffect(() => {
-        console.log(data);
-    }, [data]);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),

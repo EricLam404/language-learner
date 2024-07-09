@@ -9,6 +9,8 @@
         "graphql": "^16.9.0"
     },
     "devDependencies": {
+        "@eddeee888/gcg-typescript-resolver-files": "^0.10.2",
+        "@graphql-codegen/cli": "^5.0.2",
         "@prisma/client": "^5.15.1",
         "@snaplet/copycat": "^5.0.0",
         "@snaplet/seed": "^0.97.20",

@@ -6,7 +6,8 @@ import express from "express";
 import dotenv from "dotenv";
 import http from "http";
 import cors from "cors";
-import { resolvers, typeDefs } from "./schema/schema.ts";
+import { typeDefs } from './schema/typeDefs.generated'
+import { resolvers } from './schema/resolvers.generated'
 import parseCookies from "./utils/parseCookie.ts";
 
 dotenv.config();

@@ -1,0 +1,90 @@
+scalar DateTime
+
+type Language {
+  id: Int!
+  name: String!
+  progress: [Progress!]!
+  stories: [Story!]!
+  users: [UserLanguage!]!
+  vocabularies: [Vocabulary!]!
+  worksheets: [Worksheet!]!
+}
+
+type Progress {
+  completedAt: DateTime!
+  id: Int!
+  language: Language!
+  languageName: String!
+  type: ProgressType!
+  user: User!
+  userId: Int!
+}
+
+enum ProgressType {
+  STORY
+  VOCABULARY
+  WORKSHEET
+}
+
+type Story {
+  content: String!
+  createdAt: DateTime!
+  id: Int!
+  language: Language!
+  languageName: String!
+  updatedAt: DateTime!
+  user: User!
+  userId: Int!
+  vocabularies: [Vocabulary!]!
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  id: Int!
+  languages: [UserLanguage!]!
+  progress: [Progress!]!
+  stories: [Story!]!
+  updatedAt: DateTime!
+  username: String!
+  vocabularies: [Vocabulary!]!
+  worksheets: [Worksheet!]!
+}
+
+type UserLanguage {
+  language: Language!
+  languageName: String!
+  user: User!
+  userId: Int!
+  userLanguageId: UserLanguageId!
+}
+
+type UserLanguageId {
+  languageName: String!
+  userId: Int!
+}
+
+type Vocabulary {
+  createdAt: DateTime!
+  example: String
+  id: Int!
+  language: Language!
+  languageName: String!
+  meaning: String!
+  story: Story
+  updatedAt: DateTime!
+  user: User!
+  userId: Int!
+  word: String!
+}
+
+type Worksheet {
+  content: String!
+  createdAt: DateTime!
+  id: Int!
+  language: Language!
+  languageName: String!
+  updatedAt: DateTime!
+  user: User!
+  userId: Int!
+}
