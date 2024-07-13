@@ -1,5 +1,9 @@
 # Custom composite key type for UserLanguage
 type UserLanguageId {
-  userId: Int!
+  userId: ID!
   languageName: String!
+}
+
+extend type Query {
+  userLanguageId(userId: ID!, languageName: String!): UserLanguageId
 }

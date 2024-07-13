@@ -1,5 +1,5 @@
 type Vocabulary {
-  id: Int!
+  id: ID!
   word: String!
   meaning: String!
   example: String
@@ -10,4 +10,11 @@ type Vocabulary {
   createdAt: DateTime!
   updatedAt: DateTime!
   story: Story
+}
+
+scalar DateTime
+
+extend type Query {
+  vocabularies: [Vocabulary!]!
+  vocabulary(id: ID!): Vocabulary
 }

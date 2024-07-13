@@ -6,50 +6,102 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
+  ID: { input: string; output: string | number; }
   String: { input: string; output: string; }
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  DateTime: { input: any; output: any; }
+  DateTime: { input: Date | string; output: Date | string; }
 };
 
 export type Language = {
   __typename?: 'Language';
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  progress: Array<Progress>;
   stories: Array<Story>;
   users: Array<UserLanguage>;
   vocabularies: Array<Vocabulary>;
   worksheets: Array<Worksheet>;
 };
 
-export type Progress = {
-  __typename?: 'Progress';
-  completedAt: Scalars['DateTime']['output'];
-  id: Scalars['Int']['output'];
-  language: Language;
-  languageName: Scalars['String']['output'];
-  type: ProgressType;
-  user: User;
-  userId: Scalars['Int']['output'];
+export type Mutation = {
+  __typename?: 'Mutation';
 };
 
-export type ProgressType =
-  | 'STORY'
-  | 'VOCABULARY'
-  | 'WORKSHEET';
+export type Query = {
+  __typename?: 'Query';
+  language?: Maybe<Language>;
+  languageByName?: Maybe<Language>;
+  languages: Array<Language>;
+  stories: Array<Story>;
+  story?: Maybe<Story>;
+  user?: Maybe<User>;
+  userLanguage?: Maybe<UserLanguage>;
+  userLanguageId?: Maybe<UserLanguageId>;
+  userLanguages: Array<UserLanguage>;
+  users: Array<User>;
+  vocabularies: Array<Vocabulary>;
+  vocabulary?: Maybe<Vocabulary>;
+  worksheet?: Maybe<Worksheet>;
+  worksheets: Array<Worksheet>;
+};
+
+
+export type QuerylanguageArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QuerylanguageByNameArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type QuerystoryArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryuserArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryuserLanguageArgs = {
+  languageName: Scalars['String']['input'];
+  userId: Scalars['ID']['input'];
+};
+
+
+export type QueryuserLanguageIdArgs = {
+  languageName: Scalars['String']['input'];
+  userId: Scalars['ID']['input'];
+};
+
+
+export type QueryuserLanguagesArgs = {
+  userId: Scalars['ID']['input'];
+};
+
+
+export type QueryvocabularyArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryworksheetArgs = {
+  id: Scalars['Int']['input'];
+};
 
 export type Story = {
   __typename?: 'Story';
+  completedAt?: Maybe<Scalars['DateTime']['output']>;
   content: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   language: Language;
   languageName: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
@@ -62,9 +114,8 @@ export type User = {
   __typename?: 'User';
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   languages: Array<UserLanguage>;
-  progress: Array<Progress>;
   stories: Array<Story>;
   updatedAt: Scalars['DateTime']['output'];
   username: Scalars['String']['output'];
@@ -77,21 +128,21 @@ export type UserLanguage = {
   language: Language;
   languageName: Scalars['String']['output'];
   user: User;
-  userId: Scalars['Int']['output'];
+  userId: Scalars['ID']['output'];
   userLanguageId: UserLanguageId;
 };
 
 export type UserLanguageId = {
   __typename?: 'UserLanguageId';
   languageName: Scalars['String']['output'];
-  userId: Scalars['Int']['output'];
+  userId: Scalars['ID']['output'];
 };
 
 export type Vocabulary = {
   __typename?: 'Vocabulary';
   createdAt: Scalars['DateTime']['output'];
   example?: Maybe<Scalars['String']['output']>;
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   language: Language;
   languageName: Scalars['String']['output'];
   meaning: Scalars['String']['output'];
@@ -104,6 +155,7 @@ export type Vocabulary = {
 
 export type Worksheet = {
   __typename?: 'Worksheet';
+  completedAt?: Maybe<Scalars['DateTime']['output']>;
   content: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['Int']['output'];
@@ -186,33 +238,36 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
-  Language: ResolverTypeWrapper<Omit<Language, 'progress' | 'stories' | 'users' | 'vocabularies' | 'worksheets'> & { progress: Array<ResolversTypes['Progress']>, stories: Array<ResolversTypes['Story']>, users: Array<ResolversTypes['UserLanguage']>, vocabularies: Array<ResolversTypes['Vocabulary']>, worksheets: Array<ResolversTypes['Worksheet']> }>;
-  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Language: ResolverTypeWrapper<Language>;
+  ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
-  Progress: ResolverTypeWrapper<Omit<Progress, 'language' | 'type' | 'user'> & { language: ResolversTypes['Language'], type: ResolversTypes['ProgressType'], user: ResolversTypes['User'] }>;
-  ProgressType: ResolverTypeWrapper<'VOCABULARY' | 'STORY' | 'WORKSHEET'>;
-  Story: ResolverTypeWrapper<Omit<Story, 'language' | 'user' | 'vocabularies'> & { language: ResolversTypes['Language'], user: ResolversTypes['User'], vocabularies: Array<ResolversTypes['Vocabulary']> }>;
-  User: ResolverTypeWrapper<Omit<User, 'languages' | 'progress' | 'stories' | 'vocabularies' | 'worksheets'> & { languages: Array<ResolversTypes['UserLanguage']>, progress: Array<ResolversTypes['Progress']>, stories: Array<ResolversTypes['Story']>, vocabularies: Array<ResolversTypes['Vocabulary']>, worksheets: Array<ResolversTypes['Worksheet']> }>;
-  UserLanguage: ResolverTypeWrapper<Omit<UserLanguage, 'language' | 'user'> & { language: ResolversTypes['Language'], user: ResolversTypes['User'] }>;
+  Mutation: ResolverTypeWrapper<{}>;
+  Query: ResolverTypeWrapper<{}>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Story: ResolverTypeWrapper<Story>;
+  User: ResolverTypeWrapper<User>;
+  UserLanguage: ResolverTypeWrapper<UserLanguage>;
   UserLanguageId: ResolverTypeWrapper<UserLanguageId>;
-  Vocabulary: ResolverTypeWrapper<Omit<Vocabulary, 'language' | 'story' | 'user'> & { language: ResolversTypes['Language'], story?: Maybe<ResolversTypes['Story']>, user: ResolversTypes['User'] }>;
-  Worksheet: ResolverTypeWrapper<Omit<Worksheet, 'language' | 'user'> & { language: ResolversTypes['Language'], user: ResolversTypes['User'] }>;
+  Vocabulary: ResolverTypeWrapper<Vocabulary>;
+  Worksheet: ResolverTypeWrapper<Worksheet>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   DateTime: Scalars['DateTime']['output'];
-  Language: Omit<Language, 'progress' | 'stories' | 'users' | 'vocabularies' | 'worksheets'> & { progress: Array<ResolversParentTypes['Progress']>, stories: Array<ResolversParentTypes['Story']>, users: Array<ResolversParentTypes['UserLanguage']>, vocabularies: Array<ResolversParentTypes['Vocabulary']>, worksheets: Array<ResolversParentTypes['Worksheet']> };
-  Int: Scalars['Int']['output'];
+  Language: Language;
+  ID: Scalars['ID']['output'];
   String: Scalars['String']['output'];
-  Progress: Omit<Progress, 'language' | 'user'> & { language: ResolversParentTypes['Language'], user: ResolversParentTypes['User'] };
-  Story: Omit<Story, 'language' | 'user' | 'vocabularies'> & { language: ResolversParentTypes['Language'], user: ResolversParentTypes['User'], vocabularies: Array<ResolversParentTypes['Vocabulary']> };
-  User: Omit<User, 'languages' | 'progress' | 'stories' | 'vocabularies' | 'worksheets'> & { languages: Array<ResolversParentTypes['UserLanguage']>, progress: Array<ResolversParentTypes['Progress']>, stories: Array<ResolversParentTypes['Story']>, vocabularies: Array<ResolversParentTypes['Vocabulary']>, worksheets: Array<ResolversParentTypes['Worksheet']> };
-  UserLanguage: Omit<UserLanguage, 'language' | 'user'> & { language: ResolversParentTypes['Language'], user: ResolversParentTypes['User'] };
+  Mutation: {};
+  Query: {};
+  Int: Scalars['Int']['output'];
+  Story: Story;
+  User: User;
+  UserLanguage: UserLanguage;
   UserLanguageId: UserLanguageId;
-  Vocabulary: Omit<Vocabulary, 'language' | 'story' | 'user'> & { language: ResolversParentTypes['Language'], story?: Maybe<ResolversParentTypes['Story']>, user: ResolversParentTypes['User'] };
-  Worksheet: Omit<Worksheet, 'language' | 'user'> & { language: ResolversParentTypes['Language'], user: ResolversParentTypes['User'] };
+  Vocabulary: Vocabulary;
+  Worksheet: Worksheet;
   Boolean: Scalars['Boolean']['output'];
 };
 
@@ -221,9 +276,8 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type LanguageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Language'] = ResolversParentTypes['Language']> = {
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  progress?: Resolver<Array<ResolversTypes['Progress']>, ParentType, ContextType>;
   stories?: Resolver<Array<ResolversTypes['Story']>, ParentType, ContextType>;
   users?: Resolver<Array<ResolversTypes['UserLanguage']>, ParentType, ContextType>;
   vocabularies?: Resolver<Array<ResolversTypes['Vocabulary']>, ParentType, ContextType>;
@@ -231,23 +285,30 @@ export type LanguageResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ProgressResolvers<ContextType = any, ParentType extends ResolversParentTypes['Progress'] = ResolversParentTypes['Progress']> = {
-  completedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  language?: Resolver<ResolversTypes['Language'], ParentType, ContextType>;
-  languageName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['ProgressType'], ParentType, ContextType>;
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  userId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {};
+
+export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  language?: Resolver<Maybe<ResolversTypes['Language']>, ParentType, ContextType, RequireFields<QuerylanguageArgs, 'id'>>;
+  languageByName?: Resolver<Maybe<ResolversTypes['Language']>, ParentType, ContextType, RequireFields<QuerylanguageByNameArgs, 'name'>>;
+  languages?: Resolver<Array<ResolversTypes['Language']>, ParentType, ContextType>;
+  stories?: Resolver<Array<ResolversTypes['Story']>, ParentType, ContextType>;
+  story?: Resolver<Maybe<ResolversTypes['Story']>, ParentType, ContextType, RequireFields<QuerystoryArgs, 'id'>>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryuserArgs, 'id'>>;
+  userLanguage?: Resolver<Maybe<ResolversTypes['UserLanguage']>, ParentType, ContextType, RequireFields<QueryuserLanguageArgs, 'languageName' | 'userId'>>;
+  userLanguageId?: Resolver<Maybe<ResolversTypes['UserLanguageId']>, ParentType, ContextType, RequireFields<QueryuserLanguageIdArgs, 'languageName' | 'userId'>>;
+  userLanguages?: Resolver<Array<ResolversTypes['UserLanguage']>, ParentType, ContextType, RequireFields<QueryuserLanguagesArgs, 'userId'>>;
+  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  vocabularies?: Resolver<Array<ResolversTypes['Vocabulary']>, ParentType, ContextType>;
+  vocabulary?: Resolver<Maybe<ResolversTypes['Vocabulary']>, ParentType, ContextType, RequireFields<QueryvocabularyArgs, 'id'>>;
+  worksheet?: Resolver<Maybe<ResolversTypes['Worksheet']>, ParentType, ContextType, RequireFields<QueryworksheetArgs, 'id'>>;
+  worksheets?: Resolver<Array<ResolversTypes['Worksheet']>, ParentType, ContextType>;
 };
 
-export type ProgressTypeResolvers = EnumResolverSignature<{ STORY?: any, VOCABULARY?: any, WORKSHEET?: any }, ResolversTypes['ProgressType']>;
-
 export type StoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Story'] = ResolversParentTypes['Story']> = {
+  completedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   language?: Resolver<ResolversTypes['Language'], ParentType, ContextType>;
   languageName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -260,9 +321,8 @@ export type StoryResolvers<ContextType = any, ParentType extends ResolversParent
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   languages?: Resolver<Array<ResolversTypes['UserLanguage']>, ParentType, ContextType>;
-  progress?: Resolver<Array<ResolversTypes['Progress']>, ParentType, ContextType>;
   stories?: Resolver<Array<ResolversTypes['Story']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -275,21 +335,21 @@ export type UserLanguageResolvers<ContextType = any, ParentType extends Resolver
   language?: Resolver<ResolversTypes['Language'], ParentType, ContextType>;
   languageName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  userId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   userLanguageId?: Resolver<ResolversTypes['UserLanguageId'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UserLanguageIdResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLanguageId'] = ResolversParentTypes['UserLanguageId']> = {
   languageName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  userId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type VocabularyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Vocabulary'] = ResolversParentTypes['Vocabulary']> = {
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   example?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   language?: Resolver<ResolversTypes['Language'], ParentType, ContextType>;
   languageName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   meaning?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -302,6 +362,7 @@ export type VocabularyResolvers<ContextType = any, ParentType extends ResolversP
 };
 
 export type WorksheetResolvers<ContextType = any, ParentType extends ResolversParentTypes['Worksheet'] = ResolversParentTypes['Worksheet']> = {
+  completedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -316,8 +377,8 @@ export type WorksheetResolvers<ContextType = any, ParentType extends ResolversPa
 export type Resolvers<ContextType = any> = {
   DateTime?: GraphQLScalarType;
   Language?: LanguageResolvers<ContextType>;
-  Progress?: ProgressResolvers<ContextType>;
-  ProgressType?: ProgressTypeResolvers;
+  Mutation?: MutationResolvers<ContextType>;
+  Query?: QueryResolvers<ContextType>;
   Story?: StoryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserLanguage?: UserLanguageResolvers<ContextType>;

@@ -1,5 +1,5 @@
 type User {
-  id: Int!
+  id: ID!
   email: String!
   username: String!
   createdAt: DateTime!
@@ -8,5 +8,11 @@ type User {
   vocabularies: [Vocabulary!]!
   stories: [Story!]!
   worksheets: [Worksheet!]!
-  progress: [Progress!]!
+}
+
+scalar DateTime
+
+extend type Query {
+  users: [User!]!
+  user(id: ID!): User
 }

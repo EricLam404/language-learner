@@ -7,4 +7,10 @@ type Worksheet {
   language: Language!
   createdAt: DateTime!
   updatedAt: DateTime!
+  completedAt: DateTime
+}
+
+extend type Query {
+  worksheets: [Worksheet!]!
+  worksheet(id: Int!): Worksheet
 }
