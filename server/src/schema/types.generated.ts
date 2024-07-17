@@ -21,10 +21,9 @@ export type Language = {
   __typename?: 'Language';
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  stories: Array<Story>;
-  users: Array<UserLanguage>;
-  vocabularies: Array<Vocabulary>;
-  worksheets: Array<Worksheet>;
+  stories?: Maybe<Array<Maybe<Story>>>;
+  vocabularies?: Maybe<Array<Maybe<Vocabulary>>>;
+  worksheets?: Maybe<Array<Maybe<Worksheet>>>;
 };
 
 export type Mutation = {
@@ -278,10 +277,9 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type LanguageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Language'] = ResolversParentTypes['Language']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  stories?: Resolver<Array<ResolversTypes['Story']>, ParentType, ContextType>;
-  users?: Resolver<Array<ResolversTypes['UserLanguage']>, ParentType, ContextType>;
-  vocabularies?: Resolver<Array<ResolversTypes['Vocabulary']>, ParentType, ContextType>;
-  worksheets?: Resolver<Array<ResolversTypes['Worksheet']>, ParentType, ContextType>;
+  stories?: Resolver<Maybe<Array<Maybe<ResolversTypes['Story']>>>, ParentType, ContextType>;
+  vocabularies?: Resolver<Maybe<Array<Maybe<ResolversTypes['Vocabulary']>>>, ParentType, ContextType>;
+  worksheets?: Resolver<Maybe<Array<Maybe<ResolversTypes['Worksheet']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

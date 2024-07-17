@@ -1,10 +1,9 @@
 type Language {
   id: ID!
   name: String!
-  vocabularies: [Vocabulary!]!
-  stories: [Story!]!
-  worksheets: [Worksheet!]!
-  users: [UserLanguage!]!
+  vocabularies: [Vocabulary]
+  stories: [Story]
+  worksheets: [Worksheet]
 }
 
 extend type Query {
