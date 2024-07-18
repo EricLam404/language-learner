@@ -4,15 +4,15 @@ type User {
   username: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  languages: [UserLanguage!]!
-  vocabularies: [Vocabulary!]!
-  stories: [Story!]!
-  worksheets: [Worksheet!]!
+  languages: [UserLanguage!]
+  vocabularies: [Vocabulary!]
+  stories: [Story!]
+  worksheets: [Worksheet!]
 }
 
 scalar DateTime
 
 extend type Query {
-  users: [User!]!
+  users: [User!]
   user(id: ID!): User
 }

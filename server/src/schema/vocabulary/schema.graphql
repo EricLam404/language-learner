@@ -3,13 +3,12 @@ type Vocabulary {
   word: String!
   meaning: String!
   example: String
-  userId: Int!
-  user: User!
   languageName: String!
-  language: Language!
   createdAt: DateTime!
   updatedAt: DateTime!
-  story: Story
+
+  storyId: ID
+  userId: ID!
 }
 
 scalar DateTime

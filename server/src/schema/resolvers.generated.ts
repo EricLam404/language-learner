@@ -7,7 +7,6 @@ import    { stories as Query_stories } from './story/resolvers/Query/stories';
 import    { story as Query_story } from './story/resolvers/Query/story';
 import    { user as Query_user } from './user/resolvers/Query/user';
 import    { userLanguage as Query_userLanguage } from './userLanguage/resolvers/Query/userLanguage';
-import    { userLanguageId as Query_userLanguageId } from './userLanguageId/resolvers/Query/userLanguageId';
 import    { userLanguages as Query_userLanguages } from './userLanguage/resolvers/Query/userLanguages';
 import    { users as Query_users } from './user/resolvers/Query/users';
 import    { vocabularies as Query_vocabularies } from './vocabulary/resolvers/Query/vocabularies';
@@ -18,19 +17,17 @@ import    { Language } from './language/resolvers/Language';
 import    { Story } from './story/resolvers/Story';
 import    { User } from './user/resolvers/User';
 import    { UserLanguage } from './userLanguage/resolvers/UserLanguage';
-import    { UserLanguageId } from './userLanguageId/resolvers/UserLanguageId';
 import    { Vocabulary } from './vocabulary/resolvers/Vocabulary';
 import    { Worksheet } from './worksheet/resolvers/Worksheet';
 import    { DateTimeResolver } from 'graphql-scalars';
     export const resolvers: Resolvers = {
-      Query: { language: Query_language,languageByName: Query_languageByName,languages: Query_languages,stories: Query_stories,story: Query_story,user: Query_user,userLanguage: Query_userLanguage,userLanguageId: Query_userLanguageId,userLanguages: Query_userLanguages,users: Query_users,vocabularies: Query_vocabularies,vocabulary: Query_vocabulary,worksheet: Query_worksheet,worksheets: Query_worksheets },
+      Query: { language: Query_language,languageByName: Query_languageByName,languages: Query_languages,stories: Query_stories,story: Query_story,user: Query_user,userLanguage: Query_userLanguage,userLanguages: Query_userLanguages,users: Query_users,vocabularies: Query_vocabularies,vocabulary: Query_vocabulary,worksheet: Query_worksheet,worksheets: Query_worksheets },
       
       
       Language: Language,
 Story: Story,
 User: User,
 UserLanguage: UserLanguage,
-UserLanguageId: UserLanguageId,
 Vocabulary: Vocabulary,
 Worksheet: Worksheet,
 DateTime: DateTimeResolver

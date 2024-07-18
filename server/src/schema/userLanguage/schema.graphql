@@ -1,11 +1,6 @@
 type UserLanguage {
   userId: ID!
   languageName: String!
-  user: User!
-  language: Language!
-
-  # Composite primary key
-  userLanguageId: UserLanguageId!
 }
 
 extend type Query {

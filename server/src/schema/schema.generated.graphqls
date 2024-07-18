@@ -18,9 +18,8 @@ type Query {
   story(id: ID!): Story
   user(id: ID!): User
   userLanguage(languageName: String!, userId: ID!): UserLanguage
-  userLanguageId(languageName: String!, userId: ID!): UserLanguageId
   userLanguages(userId: ID!): [UserLanguage!]!
-  users: [User!]!
+  users: [User!]
   vocabularies: [Vocabulary!]!
   vocabulary(id: ID!): Vocabulary
   worksheet(id: Int!): Worksheet
@@ -32,35 +31,24 @@ type Story {
   content: String!
   createdAt: DateTime!
   id: ID!
-  language: Language!
   languageName: String!
   updatedAt: DateTime!
-  user: User!
   userId: Int!
-  vocabularies: [Vocabulary!]!
 }
 
 type User {
   createdAt: DateTime!
   email: String!
   id: ID!
-  languages: [UserLanguage!]!
-  stories: [Story!]!
+  languages: [UserLanguage!]
+  stories: [Story!]
   updatedAt: DateTime!
   username: String!
-  vocabularies: [Vocabulary!]!
-  worksheets: [Worksheet!]!
+  vocabularies: [Vocabulary!]
+  worksheets: [Worksheet!]
 }
 
 type UserLanguage {
-  language: Language!
-  languageName: String!
-  user: User!
-  userId: ID!
-  userLanguageId: UserLanguageId!
-}
-
-type UserLanguageId {
   languageName: String!
   userId: ID!
 }
@@ -69,13 +57,11 @@ type Vocabulary {
   createdAt: DateTime!
   example: String
   id: ID!
-  language: Language!
   languageName: String!
   meaning: String!
-  story: Story
+  storyId: ID
   updatedAt: DateTime!
-  user: User!
-  userId: Int!
+  userId: ID!
   word: String!
 }
 
@@ -84,9 +70,7 @@ type Worksheet {
   content: String!
   createdAt: DateTime!
   id: Int!
-  language: Language!
   languageName: String!
   updatedAt: DateTime!
-  user: User!
   userId: Int!
 }

@@ -6,7 +6,7 @@ export const language: NonNullable<QueryResolvers['language']> = async (
     _ctx
 ) => {
     /* Implement Query.language resolver logic here */
-    const { data, error } = await supabase.from("Language").select("*").eq("id", _arg.id).single();
+    const { data, error } = await supabase.from("Language").select().eq("id", _arg.id).limit(1).single();
     if (error) {
         throw error;
     }
