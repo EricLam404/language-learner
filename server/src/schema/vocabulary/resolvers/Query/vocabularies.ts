@@ -1,4 +1,4 @@
-import { supabase } from "../../../../utils/db";
+import { supabase } from "../../../../utils/db.ts";
 import type { QueryResolvers } from "./../../../types.generated";
 export const vocabularies: NonNullable<QueryResolvers['vocabularies']> = async (
     _parent,

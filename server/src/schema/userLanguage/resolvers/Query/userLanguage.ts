@@ -1,4 +1,4 @@
-import { supabase } from "../../../../utils/db";
+import { supabase } from "../../../../utils/db.ts";
 import type { QueryResolvers } from "./../../../types.generated";
 export const userLanguage: NonNullable<QueryResolvers['userLanguage']> = async (
     _parent,

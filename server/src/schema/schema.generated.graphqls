@@ -8,8 +8,6 @@ type Language {
   worksheets: [Worksheet]
 }
 
-type Mutation
-
 type Query {
   language(id: ID!): Language
   languageByName(name: String!): Language

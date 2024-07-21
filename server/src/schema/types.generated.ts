@@ -26,10 +26,6 @@ export type Language = {
   worksheets?: Maybe<Array<Maybe<Worksheet>>>;
 };
 
-export type Mutation = {
-  __typename?: 'Mutation';
-};
-
 export type Query = {
   __typename?: 'Query';
   language?: Maybe<Language>;
@@ -217,7 +213,6 @@ export type ResolversTypes = {
   Language: ResolverTypeWrapper<Language>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
-  Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Story: ResolverTypeWrapper<Story>;
@@ -234,7 +229,6 @@ export type ResolversParentTypes = {
   Language: Language;
   ID: Scalars['ID']['output'];
   String: Scalars['String']['output'];
-  Mutation: {};
   Query: {};
   Int: Scalars['Int']['output'];
   Story: Story;
@@ -257,8 +251,6 @@ export type LanguageResolvers<ContextType = any, ParentType extends ResolversPar
   worksheets?: Resolver<Maybe<Array<Maybe<ResolversTypes['Worksheet']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
-
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {};
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   language?: Resolver<Maybe<ResolversTypes['Language']>, ParentType, ContextType, RequireFields<QuerylanguageArgs, 'id'>>;
@@ -333,7 +325,6 @@ export type WorksheetResolvers<ContextType = any, ParentType extends ResolversPa
 export type Resolvers<ContextType = any> = {
   DateTime?: GraphQLScalarType;
   Language?: LanguageResolvers<ContextType>;
-  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Story?: StoryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
