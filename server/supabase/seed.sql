@@ -75,16 +75,3 @@ INSERT INTO "Worksheet" (content, "userId", "languageName", "createdAt", "update
 ('Italian Worksheet 1', 4, 'Italian', NOW(), NOW()),
 ('Portuguese Worksheet 1', 5, 'Portuguese', NOW(), NOW()),
 ('Russian Worksheet 1', 5, 'Russian', NOW(), NOW());
-
--- Insert Progress
-INSERT INTO "Progress" ("userId", "languageName", "completedAt", type) VALUES
-(1, 'English', NOW(), 'VOCABULARY'),
-(1, 'Spanish', NOW(), 'STORY'),
-(2, 'French', NOW(), 'WORKSHEET'),
-(2, 'German', NOW(), 'VOCABULARY'),
-(3, 'Chinese', NOW(), 'STORY'),
-(3, 'Japanese', NOW(), 'WORKSHEET'),
-(4, 'Korean', NOW(), 'VOCABULARY'),
-(4, 'Italian', NOW(), 'STORY'),
-(5, 'Portuguese', NOW(), 'WORKSHEET'),
-(5, 'Russian', NOW(), 'VOCABULARY');
