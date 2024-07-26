@@ -16,3 +16,15 @@ extend type Query {
   users: [User!]
   user(id: ID!): User
 }
+
+type UserResponse {
+  success: Boolean!
+  message: String
+  user: User
+}
+
+extend type Mutation {
+  createUser(email: String!, username: String!): UserResponse
+  updateUser(id: ID!, email: String, username: String): UserResponse
+  deleteUser(id: ID!): UserResponse
+}
