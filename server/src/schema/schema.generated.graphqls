@@ -8,6 +8,12 @@ type Language {
   worksheets: [Worksheet]
 }
 
+type Mutation {
+  createUser(email: String!, username: String!): UserResponse
+  deleteUser(id: ID!): UserResponse
+  updateUser(email: String, id: ID!, username: String): UserResponse
+}
+
 type Query {
   language(id: ID!): Language
   languageByName(name: String!): Language
@@ -49,6 +55,12 @@ type User {
 type UserLanguage {
   languageName: String!
   userId: ID!
+}
+
+type UserResponse {
+  message: String
+  success: Boolean!
+  user: User
 }
 
 type Vocabulary {

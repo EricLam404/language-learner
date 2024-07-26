@@ -1,4 +1,3 @@
-import { supabase } from "../../../../utils/db.ts";
 import type { QueryResolvers } from "./../../../types.generated";
 export const worksheets: NonNullable<QueryResolvers['worksheets']> = async (
     _parent,
@@ -6,7 +5,7 @@ export const worksheets: NonNullable<QueryResolvers['worksheets']> = async (
     _ctx
 ) => {
     /* Implement Query.worksheets resolver logic here */
-    const { data, error } = await supabase.from("Worksheet").select();
+    const { data, error } = await _ctx.supabase.from("Worksheet").select();
     if (error) {
         throw error;
     }

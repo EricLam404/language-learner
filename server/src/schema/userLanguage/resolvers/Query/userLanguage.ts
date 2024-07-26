@@ -1,4 +1,3 @@
-import { supabase } from "../../../../utils/db.ts";
 import type { QueryResolvers } from "./../../../types.generated";
 export const userLanguage: NonNullable<QueryResolvers['userLanguage']> = async (
     _parent,
@@ -6,7 +5,7 @@ export const userLanguage: NonNullable<QueryResolvers['userLanguage']> = async (
     _ctx
 ) => {
     /* Implement Query.userLanguage resolver logic here */
-    const { data, error } = await supabase.from("UserLanguage").select().eq("id", _arg.userId).eq("languageName", _arg.languageName).limit(1).single();
+    const { data, error } = await _ctx.supabase.from("UserLanguage").select().eq("id", _arg.userId).eq("languageName", _arg.languageName).limit(1).single();
     if (error) {
         throw error;
     }

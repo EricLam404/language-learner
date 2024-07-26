@@ -18,6 +18,7 @@ export async function login(formData: FormData) {
     const { error } = await supabase.auth.signInWithPassword(data);
 
     if (error) {
+        console.log(error)
         redirect("/error");
     }
 
@@ -38,6 +39,7 @@ export async function signup(formData: FormData) {
     const { error } = await supabase.auth.signUp(data);
 
     if (error) {
+        console.log(error)
         redirect("/error");
     }
 
@@ -54,7 +56,10 @@ export async function loginWithGoogle() {
             redirectTo: "http://localhost:3000/auth/callback",
         },
     });
-
+    if (error) {
+        console.log(error)
+        redirect("/error");
+    }
     if (data.url) {
         redirect(data.url); // use the redirect API for your server framework
     }

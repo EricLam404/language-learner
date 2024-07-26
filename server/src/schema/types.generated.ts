@@ -26,6 +26,31 @@ export type Language = {
   worksheets?: Maybe<Array<Maybe<Worksheet>>>;
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  createUser?: Maybe<UserResponse>;
+  deleteUser?: Maybe<UserResponse>;
+  updateUser?: Maybe<UserResponse>;
+};
+
+
+export type MutationcreateUserArgs = {
+  email: Scalars['String']['input'];
+  username: Scalars['String']['input'];
+};
+
+
+export type MutationdeleteUserArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationupdateUserArgs = {
+  email?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  username?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   language?: Maybe<Language>;
@@ -112,6 +137,13 @@ export type UserLanguage = {
   __typename?: 'UserLanguage';
   languageName: Scalars['String']['output'];
   userId: Scalars['ID']['output'];
+};
+
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+  user?: Maybe<User>;
 };
 
 export type Vocabulary = {
@@ -213,14 +245,16 @@ export type ResolversTypes = {
   Language: ResolverTypeWrapper<Language>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Story: ResolverTypeWrapper<Story>;
   User: ResolverTypeWrapper<User>;
   UserLanguage: ResolverTypeWrapper<UserLanguage>;
+  UserResponse: ResolverTypeWrapper<UserResponse>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Vocabulary: ResolverTypeWrapper<Vocabulary>;
   Worksheet: ResolverTypeWrapper<Worksheet>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -229,14 +263,16 @@ export type ResolversParentTypes = {
   Language: Language;
   ID: Scalars['ID']['output'];
   String: Scalars['String']['output'];
+  Mutation: {};
   Query: {};
   Int: Scalars['Int']['output'];
   Story: Story;
   User: User;
   UserLanguage: UserLanguage;
+  UserResponse: UserResponse;
+  Boolean: Scalars['Boolean']['output'];
   Vocabulary: Vocabulary;
   Worksheet: Worksheet;
-  Boolean: Scalars['Boolean']['output'];
 };
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
@@ -250,6 +286,12 @@ export type LanguageResolvers<ContextType = any, ParentType extends ResolversPar
   vocabularies?: Resolver<Maybe<Array<Maybe<ResolversTypes['Vocabulary']>>>, ParentType, ContextType>;
   worksheets?: Resolver<Maybe<Array<Maybe<ResolversTypes['Worksheet']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationcreateUserArgs, 'email' | 'username'>>;
+  deleteUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationdeleteUserArgs, 'id'>>;
+  updateUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationupdateUserArgs, 'id'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -298,6 +340,13 @@ export type UserLanguageResolvers<ContextType = any, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserResponse'] = ResolversParentTypes['UserResponse']> = {
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type VocabularyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Vocabulary'] = ResolversParentTypes['Vocabulary']> = {
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   example?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -325,10 +374,12 @@ export type WorksheetResolvers<ContextType = any, ParentType extends ResolversPa
 export type Resolvers<ContextType = any> = {
   DateTime?: GraphQLScalarType;
   Language?: LanguageResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Story?: StoryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserLanguage?: UserLanguageResolvers<ContextType>;
+  UserResponse?: UserResponseResolvers<ContextType>;
   Vocabulary?: VocabularyResolvers<ContextType>;
   Worksheet?: WorksheetResolvers<ContextType>;
 };

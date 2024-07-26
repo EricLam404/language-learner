@@ -1,4 +1,3 @@
-import { supabase } from "../../../../utils/db.ts";
 import type { QueryResolvers } from "./../../../types.generated";
 export const user: NonNullable<QueryResolvers['user']> = async (
     _parent,
@@ -6,7 +5,7 @@ export const user: NonNullable<QueryResolvers['user']> = async (
     _ctx
 ) => {
     /* Implement Query.user resolver logic here */
-    const { data, error } = await supabase.from("User").select().eq("id", _arg.id).limit(1).single();
+    const { data, error } = await _ctx.supabase.from("User").select().eq("id", _arg.id).limit(1).single();
     if (error) {
         throw error;
     }

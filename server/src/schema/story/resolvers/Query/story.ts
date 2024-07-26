@@ -1,4 +1,3 @@
-import { supabase } from "../../../../utils/db.ts";
 import type { QueryResolvers } from "./../../../types.generated";
 export const story: NonNullable<QueryResolvers['story']> = async (
     _parent,
@@ -6,7 +5,7 @@ export const story: NonNullable<QueryResolvers['story']> = async (
     _ctx
 ) => {
     /* Implement Query.story resolver logic here */
-    const { data, error } = await supabase
+    const { data, error } = await _ctx.supabase
         .from("Story")
         .select()
         .eq("id", _arg.id)

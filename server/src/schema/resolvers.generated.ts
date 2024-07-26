@@ -13,10 +13,14 @@ import { vocabularies as Query_vocabularies } from "./vocabulary/resolvers/Query
 import { vocabulary as Query_vocabulary } from "./vocabulary/resolvers/Query/vocabulary.ts";
 import { worksheet as Query_worksheet } from "./worksheet/resolvers/Query/worksheet.ts";
 import { worksheets as Query_worksheets } from "./worksheet/resolvers/Query/worksheets.ts";
+import { createUser as Mutation_createUser } from "./user/resolvers/Mutation/createUser.ts";
+import { deleteUser as Mutation_deleteUser } from "./user/resolvers/Mutation/deleteUser.ts";
+import { updateUser as Mutation_updateUser } from "./user/resolvers/Mutation/updateUser.ts";
 import { Language } from "./language/resolvers/Language.ts";
 import { Story } from "./story/resolvers/Story.ts";
 import { User } from "./user/resolvers/User.ts";
 import { UserLanguage } from "./userLanguage/resolvers/UserLanguage.ts";
+import { UserResponse } from "./user/resolvers/UserResponse.ts";
 import { Vocabulary } from "./vocabulary/resolvers/Vocabulary.ts";
 import { Worksheet } from "./worksheet/resolvers/Worksheet.ts";
 import { DateTimeResolver } from "graphql-scalars";
@@ -36,11 +40,17 @@ export const resolvers: Resolvers = {
         worksheet: Query_worksheet,
         worksheets: Query_worksheets,
     },
+    Mutation: {
+        createUser: Mutation_createUser,
+        deleteUser: Mutation_deleteUser,
+        updateUser: Mutation_updateUser,
+    },
 
     Language: Language,
     Story: Story,
     User: User,
     UserLanguage: UserLanguage,
+    UserResponse: UserResponse,
     Vocabulary: Vocabulary,
     Worksheet: Worksheet,
     DateTime: DateTimeResolver,

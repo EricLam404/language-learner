@@ -6,8 +6,9 @@ import express from "express";
 import dotenv from "dotenv";
 import http from "http";
 import cors from "cors";
-import { typeDefs } from './schema/typeDefs.generated.ts'
-import { resolvers } from './schema/resolvers.generated.ts'
+import { typeDefs } from "./schema/typeDefs.generated.ts";
+import { resolvers } from "./schema/resolvers.generated.ts";
+import { supabase } from "./utils/db.ts";
 import parseCookies from "./utils/parseCookie.ts";
 
 dotenv.config();
@@ -45,7 +46,10 @@ app.use(
     // expressMiddleware accepts the same arguments:
     // an Apollo Server instance and optional configuration options
     expressMiddleware(server, {
-        context: async ({ req }) => ({ cookie: parseCookies(req.headers.cookie ?? '') })
+        context: async ({ req }) => ({
+            cookie: parseCookies(req.headers.cookie ?? ""),
+            supabase,
+        }),
     })
 );
 
