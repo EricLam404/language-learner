@@ -7,3 +7,15 @@ extend type Query {
   userLanguages(userId: ID!): [UserLanguage!]!
   userLanguage(userId: ID!, languageName: String!): UserLanguage
 }
+
+type UserLanguageResponse {
+  success: Boolean!
+  message: String
+  userLanguage: UserLanguage
+}
+
+extend type Mutation {
+  createUserLanguage(userId: ID!, languageName: String!): UserLanguageResponse
+  updateUserLanguage(userId: ID!, languageName: String!): UserLanguageResponse
+  deleteUserLanguage(userId: ID!, languageName: String!): UserLanguageResponse
+}

@@ -10,8 +10,11 @@ type Language {
 
 type Mutation {
   createUser(email: String!, username: String!): UserResponse
+  createUserLanguage(languageName: String!, userId: ID!): UserLanguageResponse
   deleteUser(id: ID!): UserResponse
+  deleteUserLanguage(languageName: String!, userId: ID!): UserLanguageResponse
   updateUser(email: String, id: ID!, username: String): UserResponse
+  updateUserLanguage(languageName: String!, userId: ID!): UserLanguageResponse
 }
 
 type Query {
@@ -55,6 +58,12 @@ type User {
 type UserLanguage {
   languageName: String!
   userId: ID!
+}
+
+type UserLanguageResponse {
+  message: String
+  success: Boolean!
+  userLanguage: UserLanguage
 }
 
 type UserResponse {

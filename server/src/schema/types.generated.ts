@@ -29,8 +29,11 @@ export type Language = {
 export type Mutation = {
   __typename?: 'Mutation';
   createUser?: Maybe<UserResponse>;
+  createUserLanguage?: Maybe<UserLanguageResponse>;
   deleteUser?: Maybe<UserResponse>;
+  deleteUserLanguage?: Maybe<UserLanguageResponse>;
   updateUser?: Maybe<UserResponse>;
+  updateUserLanguage?: Maybe<UserLanguageResponse>;
 };
 
 
@@ -40,8 +43,20 @@ export type MutationcreateUserArgs = {
 };
 
 
+export type MutationcreateUserLanguageArgs = {
+  languageName: Scalars['String']['input'];
+  userId: Scalars['ID']['input'];
+};
+
+
 export type MutationdeleteUserArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationdeleteUserLanguageArgs = {
+  languageName: Scalars['String']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 
@@ -49,6 +64,12 @@ export type MutationupdateUserArgs = {
   email?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   username?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type MutationupdateUserLanguageArgs = {
+  languageName: Scalars['String']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 export type Query = {
@@ -137,6 +158,13 @@ export type UserLanguage = {
   __typename?: 'UserLanguage';
   languageName: Scalars['String']['output'];
   userId: Scalars['ID']['output'];
+};
+
+export type UserLanguageResponse = {
+  __typename?: 'UserLanguageResponse';
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+  userLanguage?: Maybe<UserLanguage>;
 };
 
 export type UserResponse = {
@@ -251,8 +279,9 @@ export type ResolversTypes = {
   Story: ResolverTypeWrapper<Story>;
   User: ResolverTypeWrapper<User>;
   UserLanguage: ResolverTypeWrapper<UserLanguage>;
-  UserResponse: ResolverTypeWrapper<UserResponse>;
+  UserLanguageResponse: ResolverTypeWrapper<UserLanguageResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  UserResponse: ResolverTypeWrapper<UserResponse>;
   Vocabulary: ResolverTypeWrapper<Vocabulary>;
   Worksheet: ResolverTypeWrapper<Worksheet>;
 };
@@ -269,8 +298,9 @@ export type ResolversParentTypes = {
   Story: Story;
   User: User;
   UserLanguage: UserLanguage;
-  UserResponse: UserResponse;
+  UserLanguageResponse: UserLanguageResponse;
   Boolean: Scalars['Boolean']['output'];
+  UserResponse: UserResponse;
   Vocabulary: Vocabulary;
   Worksheet: Worksheet;
 };
@@ -290,8 +320,11 @@ export type LanguageResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationcreateUserArgs, 'email' | 'username'>>;
+  createUserLanguage?: Resolver<Maybe<ResolversTypes['UserLanguageResponse']>, ParentType, ContextType, RequireFields<MutationcreateUserLanguageArgs, 'languageName' | 'userId'>>;
   deleteUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationdeleteUserArgs, 'id'>>;
+  deleteUserLanguage?: Resolver<Maybe<ResolversTypes['UserLanguageResponse']>, ParentType, ContextType, RequireFields<MutationdeleteUserLanguageArgs, 'languageName' | 'userId'>>;
   updateUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationupdateUserArgs, 'id'>>;
+  updateUserLanguage?: Resolver<Maybe<ResolversTypes['UserLanguageResponse']>, ParentType, ContextType, RequireFields<MutationupdateUserLanguageArgs, 'languageName' | 'userId'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -340,6 +373,13 @@ export type UserLanguageResolvers<ContextType = any, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserLanguageResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLanguageResponse'] = ResolversParentTypes['UserLanguageResponse']> = {
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  userLanguage?: Resolver<Maybe<ResolversTypes['UserLanguage']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UserResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserResponse'] = ResolversParentTypes['UserResponse']> = {
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -379,6 +419,7 @@ export type Resolvers<ContextType = any> = {
   Story?: StoryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserLanguage?: UserLanguageResolvers<ContextType>;
+  UserLanguageResponse?: UserLanguageResponseResolvers<ContextType>;
   UserResponse?: UserResponseResolvers<ContextType>;
   Vocabulary?: VocabularyResolvers<ContextType>;
   Worksheet?: WorksheetResolvers<ContextType>;

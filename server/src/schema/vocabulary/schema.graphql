@@ -17,3 +17,15 @@ extend type Query {
   vocabularies: [Vocabulary!]!
   vocabulary(id: ID!): Vocabulary
 }
+
+# type VocabularyResponse {
+#   success: Boolean!
+#   message: String
+#   vocabulary: Vocabulary
+# }
+
+# extend type Mutation {
+#   createVocabulary(word: String!, meaning: String!, example: String, languageName: String!, userId: ID!): VocabularyResponse
+#   updateVocabulary(id: ID!, word: String, meaning: String, example: String, languageName: String, userId: ID): VocabularyResponse
+#   deleteVocabulary(id: ID!): VocabularyResponse
+# }

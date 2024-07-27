@@ -12,3 +12,15 @@ extend type Query {
   worksheets: [Worksheet!]!
   worksheet(id: Int!): Worksheet
 }
+
+# type WorksheetResponse {
+#   success: Boolean!
+#   message: String
+#   worksheet: Worksheet
+# }
+
+# extend type Mutation {
+#   createWorksheet(content: String!, userId: Int!, languageName: String!): WorksheetResponse
+#   updateWorksheet(id: Int!, content: String, userId: Int, languageName: String, completedAt: DateTime): WorksheetResponse
+#   deleteWorksheet(id: Int!): WorksheetResponse
+# }

@@ -11,3 +11,17 @@ extend type Query {
   language(id: ID!): Language
   languageByName(name: String!): Language
 }
+
+# type LanguageResponse {
+#   success: Boolean!
+#   message: String
+#   language: Language
+# }
+
+# extend type Mutation {
+#   addLanguage(name: String!): LanguageResponse
+#   updateLanguage(id: ID!): LanguageResponse
+#   updateLanguageByName(name: String!): LanguageResponse
+#   deleteLanguage(id: ID!): LanguageResponse
+#   deleteLanguageByName(name: String!): LanguageResponse
+# }

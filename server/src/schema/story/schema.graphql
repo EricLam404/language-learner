@@ -14,3 +14,15 @@ extend type Query {
   stories: [Story!]!
   story(id: ID!): Story
 }
+
+# type StoryResponse {
+#   success: Boolean!
+#   message: String
+#   story: Story
+# }
+
+# extend type Mutation {
+#   createStory(content: String!, userId: Int!, languageName: String!): StoryResponse
+#   updateStory(id: ID!, content: String, userId: Int, languageName: String, completedAt: DateTime): StoryResponse
+#   deleteStory(id: ID!): StoryResponse
+# }
