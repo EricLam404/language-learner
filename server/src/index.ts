@@ -47,7 +47,7 @@ app.use(
     // an Apollo Server instance and optional configuration options
     expressMiddleware(server, {
         context: async ({ req }) => ({
-            cookie: parseCookies(req.headers.cookie ?? ""),
+            cookies: parseCookies(req.headers.cookie ?? ""),
             supabase,
         }),
     })
