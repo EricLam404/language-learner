@@ -11,8 +11,8 @@ model User {
   id           Int            @id @default(autoincrement())
   email        String         @unique
   username     String         @unique
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  createdAt    DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime       @updatedAt @db.Timestamptz(3)
   languages    UserLanguage[]
   vocabularies Vocabulary[]
   stories      Story[]
@@ -46,8 +46,8 @@ model Vocabulary {
   user         User     @relation(fields: [userId], references: [id])
   languageName String
   language     Language @relation(fields: [languageName], references: [name])
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
   Story        Story?   @relation(fields: [storyId], references: [id])
   storyId      Int?
 }
@@ -60,19 +60,19 @@ model Story {
   languageName String
   language     Language     @relation(fields: [languageName], references: [name])
   vocabularies Vocabulary[]
-  completedAt  DateTime?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  completedAt  DateTime?    @db.Timestamptz(3)
+  createdAt    DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime     @updatedAt @db.Timestamptz(3)
 }
 
 model Worksheet {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   content      String
   userId       Int
-  user         User     @relation(fields: [userId], references: [id])
+  user         User      @relation(fields: [userId], references: [id])
   languageName String
-  language     Language @relation(fields: [languageName], references: [name])
-  completedAt  DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  language     Language  @relation(fields: [languageName], references: [name])
+  completedAt  DateTime? @db.Timestamptz(3)
+  createdAt    DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime  @updatedAt @db.Timestamptz(3)
 }
