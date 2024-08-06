@@ -8,7 +8,7 @@ import http from "http";
 import cors from "cors";
 import { typeDefs } from "./schema/typeDefs.generated.ts";
 import { resolvers } from "./schema/resolvers.generated.ts";
-import { supabase } from "./utils/db.ts";
+import supabaseClient from "./utils/db.ts";
 import parseCookies from "./utils/parseCookie.ts";
 
 dotenv.config();
@@ -47,10 +47,14 @@ app.use(
     // expressMiddleware accepts the same arguments:
     // an Apollo Server instance and optional configuration options
     expressMiddleware(server, {
-        context: async ({ req }) => ({
-            cookies: req.cookies,
-            supabase,
-        }),
+        context: async ({ req }) => {
+            const token = req.cookies["sb-127-auth-token"].access_token;
+            const supabase = supabaseClient(token);
+            return {
+                cookies: req.cookies,
+                supabase,
+            };
+        },
     })
 );
 
