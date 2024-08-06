@@ -19,6 +19,7 @@ interface MyContext {
 
 // Required logic for integrating with Express
 const app = express();
+app.use(parseCookies());
 // Our httpServer handles incoming requests to our Express app.
 // Below, we tell Apollo Server to "drain" this httpServer,
 // enabling our servers to shut down gracefully.
@@ -47,7 +48,7 @@ app.use(
     // an Apollo Server instance and optional configuration options
     expressMiddleware(server, {
         context: async ({ req }) => ({
-            cookies: parseCookies(req.headers.cookie ?? ""),
+            cookies: req.cookies,
             supabase,
         }),
     })
