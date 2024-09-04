@@ -10,12 +10,10 @@ import { typeDefs } from "./schema/typeDefs.generated.ts";
 import { resolvers } from "./schema/resolvers.generated.ts";
 import supabaseClient from "./utils/db.ts";
 import parseCookies from "./utils/parseCookie.ts";
+import { MyContext } from "./utils/types/context.ts";
 
 dotenv.config();
 const port = process.env.PORT || 4000;
-interface MyContext {
-    token?: string;
-}
 
 // Required logic for integrating with Express
 const app = express();
@@ -47,7 +45,7 @@ app.use(
     // expressMiddleware accepts the same arguments:
     // an Apollo Server instance and optional configuration options
     expressMiddleware(server, {
-        context: async ({ req }) => {
+        context: async ({ req }): Promise<MyContext> => {
             const token = req.cookies["sb-127-auth-token"].access_token;
             const supabase = supabaseClient(token);
             return {

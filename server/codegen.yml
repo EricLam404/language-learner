@@ -1,0 +1,7 @@
+schema: '**/schema.graphql'
+generates:
+  src/schema:
+    preset: '@eddeee888/gcg-typescript-resolver-files'
+    watchPattern: '**/*.mappers.ts'
+    config:
+      contextType: './src/utils/types/context#MyContext'
