@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  user_id      String         @id @unique @db.Uuid
+  userId      String         @id @unique @db.Uuid
   email        String         @unique
   username     String         @unique
   createdAt    DateTime       @default(now()) @db.Timestamptz(3)
@@ -20,12 +20,12 @@ model User {
 }
 
 model UserLanguage {
-  user_id      String   @db.Uuid
+  userId      String   @db.Uuid
   languageName String
-  user         User     @relation(fields: [user_id], references: [user_id])
+  user         User     @relation(fields: [userId], references: [userId])
   language     Language @relation(fields: [languageName], references: [name])
 
-  @@id([user_id, languageName])
+  @@id([userId, languageName])
 }
 
 model Language {
@@ -42,8 +42,8 @@ model Vocabulary {
   word         String
   meaning      String
   example      String?
-  user_id      String   @db.Uuid
-  user         User     @relation(fields: [user_id], references: [user_id])
+  userId      String   @db.Uuid
+  user         User     @relation(fields: [userId], references: [userId])
   languageName String
   language     Language @relation(fields: [languageName], references: [name])
   createdAt    DateTime @default(now()) @db.Timestamptz(3)
@@ -55,8 +55,8 @@ model Vocabulary {
 model Story {
   id           Int          @id @default(autoincrement())
   content      String
-  user_id      String       @db.Uuid
-  user         User         @relation(fields: [user_id], references: [user_id])
+  userId      String       @db.Uuid
+  user         User         @relation(fields: [userId], references: [userId])
   languageName String
   language     Language     @relation(fields: [languageName], references: [name])
   vocabularies Vocabulary[]
@@ -68,8 +68,8 @@ model Story {
 model Worksheet {
   id           Int       @id @default(autoincrement())
   content      String
-  user_id      String    @db.Uuid
-  user         User      @relation(fields: [user_id], references: [user_id])
+  userId      String    @db.Uuid
+  user         User      @relation(fields: [userId], references: [userId])
   languageName String
   language     Language  @relation(fields: [languageName], references: [name])
   completedAt  DateTime? @db.Timestamptz(3)
