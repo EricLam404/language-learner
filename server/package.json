@@ -29,9 +29,12 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "compile": "tsc",
+        "compile": "npm run generate && tsc",
         "start": "npm run compile && node ./dist/index.js",
-        "dev": "nodemon --exec node --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts"
+        "dev": "nodemon --exec node --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts",
+        "generate": "graphql-codegen --config codegen.yml",
+        "postinstall": "npm run compile",
+        "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w \" \"nodemon ./dist/index.js \""
     },
     "author": "",
     "license": "ISC",
