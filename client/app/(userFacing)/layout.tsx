@@ -1,4 +1,4 @@
-import Header from "../(create)/create/profile/_components/Header";
+import Header from "../_components/Header";
 
 export const dynamic = "force-dynamic"
 

@@ -14,7 +14,7 @@ import {
     TableBody,
     TableCell,
 } from "@/components/ui/table";
-import { UploadIcon, PlusIcon, FilePenIcon, TrashIcon } from "@app/(create)/create/profile/_components/icons";
+import { UploadIcon, PlusIcon, FilePenIcon, TrashIcon } from "@app/_components/icons";
 import { data } from "@/public/dummydata/vocabulary";
 
 type vocabularyList = {
