@@ -1,20 +1,20 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "user_id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
     "email" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(3) NOT NULL,
 
-    CONSTRAINT "User_pkey" PRIMARY KEY ("user_id")
+    CONSTRAINT "User_pkey" PRIMARY KEY ("userId")
 );
 
 -- CreateTable
 CREATE TABLE "UserLanguage" (
-    "user_id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
     "languageName" TEXT NOT NULL,
 
-    CONSTRAINT "UserLanguage_pkey" PRIMARY KEY ("user_id","languageName")
+    CONSTRAINT "UserLanguage_pkey" PRIMARY KEY ("userId","languageName")
 );
 
 -- CreateTable
@@ -31,7 +31,7 @@ CREATE TABLE "Vocabulary" (
     "word" TEXT NOT NULL,
     "meaning" TEXT NOT NULL,
     "example" TEXT,
-    "user_id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
     "languageName" TEXT NOT NULL,
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(3) NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE "Vocabulary" (
 CREATE TABLE "Story" (
     "id" SERIAL NOT NULL,
     "content" TEXT NOT NULL,
-    "user_id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
     "languageName" TEXT NOT NULL,
     "completedAt" TIMESTAMPTZ(3),
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -57,7 +57,7 @@ CREATE TABLE "Story" (
 CREATE TABLE "Worksheet" (
     "id" SERIAL NOT NULL,
     "content" TEXT NOT NULL,
-    "user_id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
     "languageName" TEXT NOT NULL,
     "completedAt" TIMESTAMPTZ(3),
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -67,7 +67,7 @@ CREATE TABLE "Worksheet" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_user_id_key" ON "User"("user_id");
+CREATE UNIQUE INDEX "User_userId_key" ON "User"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
@@ -79,13 +79,13 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 CREATE UNIQUE INDEX "Language_name_key" ON "Language"("name");
 
 -- AddForeignKey
-ALTER TABLE "UserLanguage" ADD CONSTRAINT "UserLanguage_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserLanguage" ADD CONSTRAINT "UserLanguage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserLanguage" ADD CONSTRAINT "UserLanguage_languageName_fkey" FOREIGN KEY ("languageName") REFERENCES "Language"("name") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Vocabulary" ADD CONSTRAINT "Vocabulary_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Vocabulary" ADD CONSTRAINT "Vocabulary_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Vocabulary" ADD CONSTRAINT "Vocabulary_languageName_fkey" FOREIGN KEY ("languageName") REFERENCES "Language"("name") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -94,14 +94,13 @@ ALTER TABLE "Vocabulary" ADD CONSTRAINT "Vocabulary_languageName_fkey" FOREIGN K
 ALTER TABLE "Vocabulary" ADD CONSTRAINT "Vocabulary_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Story" ADD CONSTRAINT "Story_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Story" ADD CONSTRAINT "Story_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Story" ADD CONSTRAINT "Story_languageName_fkey" FOREIGN KEY ("languageName") REFERENCES "Language"("name") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Worksheet" ADD CONSTRAINT "Worksheet_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Worksheet" ADD CONSTRAINT "Worksheet_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Worksheet" ADD CONSTRAINT "Worksheet_languageName_fkey" FOREIGN KEY ("languageName") REFERENCES "Language"("name") ON DELETE RESTRICT ON UPDATE CASCADE;
-
