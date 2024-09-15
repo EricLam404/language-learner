@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@components/ui/sonner";
 import { ApolloWrapper } from "./ApolloWrapper";
+import Providers from "@/lib/providers";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -28,10 +29,12 @@ export default function RootLayout({
                     inter.variable
                 )}
             >
-                <ApolloWrapper>
-                    {children}
-                    <Toaster richColors />
-                </ApolloWrapper>
+                <Providers>
+                    <ApolloWrapper>
+                        {children}
+                        <Toaster richColors />
+                    </ApolloWrapper>
+                </Providers>
             </body>
         </html>
     );
