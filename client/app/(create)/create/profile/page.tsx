@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Suspense } from "react";
 import { z } from "zod";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -19,14 +18,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import React from "react";
-import { useQuery, useMutation, gql, ApolloError } from "@apollo/client";
-import { API_URL, API_KEY } from "@app/(userFacing)/_components/API_URLS";
-import { createClient } from "@/utils/supabase/client";
-import { redirect } from "next/navigation";
+import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { useUser } from "@/lib/hooks/useUser";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
+import { GET_LANGUAGE } from "./_components/graphql/queries";
+import { CREATE_USER } from "./_components/graphql/mutations";
 
 const FormSchema = z.object({
     username: z.string().min(3, {
@@ -44,30 +42,12 @@ type Language = {
     name: string;
 };
 
-const GET_LANGUAGE = gql`
-    query GetLanguages {
-        languages {
-            id
-            name
-        }
-    }
-`;
-const CREATE_USER = gql`
-    mutation CreateUser($email: String!, $username: String!) {
-        createUser(email: $email, username: $username) {
-            email
-            username
-        }
-    }
-`;
-
 // TODO: Add a loading spinner
 // TODO: Add Username check while user is typing username
-// TODO: Add redirect if profile already exists
 export default function CreateProfile() {
     const { data: user, isLoading, error } = useUser();
     const [formKey, setFormKey] = useState(0);
-    const router = useRouter()
+    const router = useRouter();
 
     const {
         data: languageData,
@@ -85,38 +65,36 @@ export default function CreateProfile() {
         },
     });
 
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
-
-    if (!user) {
-        router.push("/login");
-    } else if (user.app_metadata.profile) {
-        router.push("/");
-    }
-    
     async function onSubmit(submitData: z.infer<typeof FormSchema>) {
         try {
             const response = await createUser({
-                variables: { email: user?.email as string, username: submitData.username },
+                variables: {
+                    email: user?.email as string,
+                    username: submitData.username,
+                },
             });
             console.log(response.data.createUser);
             toast.success("Your profile has been created!");
 
-            router.push('/')
+            router.push("/");
         } catch (e) {
             if (e instanceof ApolloError) {
                 e.graphQLErrors.forEach((err) => {
-                    if (err.extensions?.code === 'BAD_USER_INPUT' && err.message.includes('Username already exists')) {
-                      form.setError('username', {
-                        type: 'manual',
-                        message: 'This username is already taken. Please choose another.',
-                      });
+                    if (
+                        err.extensions?.code === "BAD_USER_INPUT" &&
+                        err.message.includes("Username already exists")
+                    ) {
+                        form.setError("username", {
+                            type: "manual",
+                            message:
+                                "This username is already taken. Please choose another.",
+                        });
                     } else {
-                      toast.error(`Error: ${err.message}`);
+                        toast.error(`Error: ${err.message}`);
                     }
                 });
             } else {
-                console.log(e)
+                console.log(e);
                 toast.error(
                     "An unknown error occurred while creating your profile. Please try again."
                 );
@@ -124,113 +102,128 @@ export default function CreateProfile() {
         }
     }
 
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
+
+    if (!user) {
+        router.push("/login");
+        return null;
+    }
+
+    if (user.app_metadata.profile) {
+        router.push("/");
+    }
+
     return (
-        <div className="flex flex-col items-center justify-center h-screen bg-background">
-            <Form {...form}>
-                <form
-                    key={formKey}
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8"
-                >
-                    <div className="font-bold text-2xl">
-                        Create your Profile
-                    </div>
-                    <FormField
-                        control={form.control}
-                        name="username"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Username</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="Enter a unique username"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormDescription>
-                                    This is your public display name.
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="languages"
-                        render={() => (
-                            <FormItem>
-                                <div className="mb-4">
-                                    <FormLabel className="text-base">
-                                        Choose your languages
-                                    </FormLabel>
+        !user.app_metadata.profile && (
+            <div className="flex flex-col items-center justify-center h-screen bg-background">
+                <Form {...form}>
+                    <form
+                        key={formKey}
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="space-y-8"
+                    >
+                        <div className="font-bold text-2xl">
+                            Create your Profile
+                        </div>
+                        <FormField
+                            control={form.control}
+                            name="username"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Username</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="Enter a unique username"
+                                            {...field}
+                                        />
+                                    </FormControl>
                                     <FormDescription>
-                                        Select your the languages you want to
-                                        learn!
+                                        This is your public display name.
                                     </FormDescription>
-                                </div>
-                                {languageLoading ? (
-                                    <Skeleton count={10} />
-                                ) : languageData ? (
-                                    languageData.languages.map(
-                                        (item: Language) => (
-                                            <FormField
-                                                key={item.id}
-                                                control={form.control}
-                                                name="languages"
-                                                render={({ field }) => {
-                                                    return (
-                                                        <FormItem
-                                                            key={item.id}
-                                                            className="flex flex-row items-start space-x-3 space-y-0"
-                                                        >
-                                                            <FormControl>
-                                                                <Checkbox
-                                                                    checked={field.value?.includes(
-                                                                        item.id
-                                                                    )}
-                                                                    onCheckedChange={(
-                                                                        checked
-                                                                    ) => {
-                                                                        return checked
-                                                                            ? field.onChange(
-                                                                                  [
-                                                                                      ...field.value,
-                                                                                      item.id,
-                                                                                  ]
-                                                                              )
-                                                                            : field.onChange(
-                                                                                  field.value?.filter(
-                                                                                      (
-                                                                                          value
-                                                                                      ) =>
-                                                                                          value !==
-                                                                                          item.id
-                                                                                  )
-                                                                              );
-                                                                    }}
-                                                                />
-                                                            </FormControl>
-                                                            <FormLabel className="font-normal">
-                                                                {item.name}
-                                                            </FormLabel>
-                                                        </FormItem>
-                                                    );
-                                                }}
-                                            />
-                                        )
-                                    )
-                                ) : (
-                                    <div>
-                                        There was an error loading the languages
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="languages"
+                            render={() => (
+                                <FormItem>
+                                    <div className="mb-4">
+                                        <FormLabel className="text-base">
+                                            Choose your languages
+                                        </FormLabel>
+                                        <FormDescription>
+                                            Select your the languages you want
+                                            to learn!
+                                        </FormDescription>
                                     </div>
-                                )}
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <Button type="submit">Submit</Button>
-                </form>
-            </Form>
-        </div>
+                                    {languageLoading ? (
+                                        <Skeleton count={10} />
+                                    ) : languageData ? (
+                                        languageData.languages.map(
+                                            (item: Language) => (
+                                                <FormField
+                                                    key={item.id}
+                                                    control={form.control}
+                                                    name="languages"
+                                                    render={({ field }) => {
+                                                        return (
+                                                            <FormItem
+                                                                key={item.id}
+                                                                className="flex flex-row items-start space-x-3 space-y-0"
+                                                            >
+                                                                <FormControl>
+                                                                    <Checkbox
+                                                                        checked={field.value?.includes(
+                                                                            item.id
+                                                                        )}
+                                                                        onCheckedChange={(
+                                                                            checked
+                                                                        ) => {
+                                                                            return checked
+                                                                                ? field.onChange(
+                                                                                      [
+                                                                                          ...field.value,
+                                                                                          item.id,
+                                                                                      ]
+                                                                                  )
+                                                                                : field.onChange(
+                                                                                      field.value?.filter(
+                                                                                          (
+                                                                                              value
+                                                                                          ) =>
+                                                                                              value !==
+                                                                                              item.id
+                                                                                      )
+                                                                                  );
+                                                                        }}
+                                                                    />
+                                                                </FormControl>
+                                                                <FormLabel className="font-normal">
+                                                                    {item.name}
+                                                                </FormLabel>
+                                                            </FormItem>
+                                                        );
+                                                    }}
+                                                />
+                                            )
+                                        )
+                                    ) : (
+                                        <div>
+                                            There was an error loading the
+                                            languages
+                                        </div>
+                                    )}
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <Button type="submit">Submit</Button>
+                    </form>
+                </Form>
+            </div>
+        )
     );
 }
