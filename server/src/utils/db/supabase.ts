@@ -1,13 +1,10 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../../database.types";
-import dotenv from "dotenv";
-dotenv.config();
-const supabaseUrl = process.env.SUPABASE_URL as string;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY as string;
-const supabaseServiceRoleKey = process.env.SUPBASE_SERVICE_ROLE_KEY as string;
+import { supabaseUrl, supabaseServiceRoleKey } from "../config/config";
 
 declare global {
     var supabaseServiceClient: SupabaseClient | undefined;
+    var supabaseClient: SupabaseClient | undefined;
 }
 
 // export const supabase = createClient<Database>(
@@ -23,18 +20,13 @@ declare global {
 // )
 
 export default function supabaseClient(token: string) {
-    return createClient<Database>(supabaseUrl, supabaseAnonKey, {
-        auth: {
-            autoRefreshToken: false,
-            persistSession: false,
-            detectSessionInUrl: false,
-        },
-        global: {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        },
-    });
+    const client = global.supabaseClient || createSupabaseClient(token);
+
+    if (process.env.NODE_ENV !== "production") {
+        global.supabaseClient = client;
+    }
+
+    return client;
 }
 
 export const getServiceSupabase = (): SupabaseClient => {
@@ -48,3 +40,18 @@ export const getServiceSupabase = (): SupabaseClient => {
 
     return client;
 };
+
+function createSupabaseClient(token: string) {
+    return createClient<Database>(supabaseUrl, supabaseServiceRoleKey, {
+        auth: {
+            autoRefreshToken: false,
+            persistSession: false,
+            detectSessionInUrl: false,
+        },
+        global: {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    });
+}
