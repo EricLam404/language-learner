@@ -69,8 +69,8 @@ export default function CreateProfile() {
         try {
             const response = await createUser({
                 variables: {
-                    email: user?.email as string,
                     username: submitData.username,
+                    languages: submitData.languages
                 },
             });
             console.log(response.data.createUser);
@@ -115,7 +115,7 @@ export default function CreateProfile() {
     }
 
     return (
-        !user.app_metadata.profile && (
+        user.app_metadata.profile && (
             <div className="flex flex-col items-center justify-center h-screen bg-background">
                 <Form {...form}>
                     <form
@@ -165,19 +165,19 @@ export default function CreateProfile() {
                                         languageData.languages.map(
                                             (item: Language) => (
                                                 <FormField
-                                                    key={item.id}
+                                                    key={item.name}
                                                     control={form.control}
                                                     name="languages"
                                                     render={({ field }) => {
                                                         return (
                                                             <FormItem
-                                                                key={item.id}
+                                                                key={item.name}
                                                                 className="flex flex-row items-start space-x-3 space-y-0"
                                                             >
                                                                 <FormControl>
                                                                     <Checkbox
                                                                         checked={field.value?.includes(
-                                                                            item.id
+                                                                            item.name
                                                                         )}
                                                                         onCheckedChange={(
                                                                             checked
@@ -186,7 +186,7 @@ export default function CreateProfile() {
                                                                                 ? field.onChange(
                                                                                       [
                                                                                           ...field.value,
-                                                                                          item.id,
+                                                                                          item.name,
                                                                                       ]
                                                                                   )
                                                                                 : field.onChange(
@@ -195,7 +195,7 @@ export default function CreateProfile() {
                                                                                               value
                                                                                           ) =>
                                                                                               value !==
-                                                                                              item.id
+                                                                                              item.name
                                                                                       )
                                                                                   );
                                                                         }}
