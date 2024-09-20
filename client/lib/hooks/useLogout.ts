@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { createClient } from "./client";
+import { createClient } from "../../utils/supabase/client";
 
 export async function useLogout() {
     const supabase = createClient();

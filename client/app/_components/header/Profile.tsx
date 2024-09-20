@@ -2,7 +2,7 @@
 
 import { NavLink } from "@/components/Nav";
 import { useUser } from "@/lib/hooks/useUser";
-import { useLogout } from "@/utils/supabase/logout";
+import { useLogout } from "@/lib/hooks/useLogout";
 
 const Profile = () => {
     const { data: user, isLoading, error } = useUser();
