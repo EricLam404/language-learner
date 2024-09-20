@@ -5,9 +5,6 @@ async function fetchUser() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     console.log(user)
-    if (!user) {
-        throw new Error("User not found");
-    }
     return user;
 }
 

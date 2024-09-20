@@ -1,5 +1,5 @@
 import Nav, { NavLink } from "@/components/Nav";
-import { signout } from "@/utils/supabase/signout";
+import Profile from "./Profile";
 
 const Header = () => {
     return (
@@ -8,7 +8,7 @@ const Header = () => {
             <NavLink href="/story">Story</NavLink>
             <NavLink href="/vocabulary">Vocabulary</NavLink>
             <NavLink href="/worksheets">Worksheets</NavLink>
-            <NavLink href="/" onClick={(signout) }>Sign Out</NavLink>
+            <Profile />
         </Nav>
     );
 };
