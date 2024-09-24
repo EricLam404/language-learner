@@ -34,11 +34,11 @@
         "compile": "npm run generate && tsc",
         "build": "tsc --build",
         "start": "npm run compile && node ./dist/index.js",
-        "start:dev": "tsx watch ./src/index.ts",
-        "dev": "nodemon --exec node --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts",
+        "dev": "tsx watch ./src/index.ts",
         "generate": "graphql-codegen --config codegen.yml",
         "postinstall": "npm run compile",
-        "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w \" \"nodemon ./dist/index.js \""
+        "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w \" \"nodemon ./dist/index.js \"",
+        "watch:dev": "concurrently \"graphql-codegen --watch 'src/**/*.ts'\" \"tsc --watch ./src/index.ts\""
     },
     "prisma": {
         "seed": "tsx prisma/seed.ts"
