@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Libre_Franklin } from 'next/font/google'
+import { Chivo } from 'next/font/google'
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@components/ui/sonner";
@@ -8,6 +10,15 @@ import Providers from "@/lib/providers";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
+const libre_franklin = Libre_Franklin({
+  subsets: ['latin'],
+  display: 'swap',
+})
+
+const chivo = Chivo({
+  subsets: ['latin'],
+  display: 'swap',
+})
 export const metadata: Metadata = {
     title: "Language Leaner",
     description:
