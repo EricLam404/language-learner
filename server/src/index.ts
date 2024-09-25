@@ -80,8 +80,10 @@ app.use(
             }
             return {
                 cookies: req.cookies,
-                supabase,
-                prisma,
+                dataSources: {
+                    supabase,
+                    prisma,
+                },
                 user,
             };
         },

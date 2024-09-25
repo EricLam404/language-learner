@@ -6,7 +6,9 @@ export interface MyContext {
     cookies: {
         [key: string]: string;
     };
-    supabase: SupabaseClient<Database>;
-    prisma: PrismaClient;
+    dataSources: {
+        supabase: SupabaseClient<Database>;
+        prisma: PrismaClient;
+    };
     user: User;
 }
