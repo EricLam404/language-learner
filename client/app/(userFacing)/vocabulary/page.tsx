@@ -20,22 +20,16 @@ import {
     SelectTrigger,
     SelectValue,
     SelectContent,
-    SelectItem,
 } from "@/components/ui/select";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogFooter,
-    DialogClose,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { GET_VOCABULARY } from "@app/_components/graphql/queries";
 import { useQuery } from "@apollo/client";
 import Skeleton from "react-loading-skeleton";
-import { VocabularyForm } from "@app/_components/forms/CreateVocabulary";
-import { useUser } from "@/lib/hooks/useUser";
+import {
+    CreateVocabularyForm,
+    UpdateVocabularyForm,
+} from "@app/_components/forms/VocabularyForms";
+import Selections from "@app/_components/forms/Selections";
 
 // TODO: Add word to vocabulary list validation check
 // FEATURE: Add radio button to select words for flashcards
@@ -48,18 +42,36 @@ import { useUser } from "@/lib/hooks/useUser";
 
 // FUTURE FEATURE: Add export functionality for vocabulary list
 
+interface Vocabulary {
+    __typename?: "Vocabulary";
+    id: string;
+    languageName: string;
+    word: string;
+    meaning: string;
+    example?: string | null;
+}
 export default function Component() {
-    const { data: user, isLoading, error: userError } = useUser();
     const { data: vocabulary, loading, error } = useQuery(GET_VOCABULARY);
     const [selectedLanguage, setSelectedLanguage] = useState<string>();
     const [showModal, setShowModal] = useState(false);
+    const [editModal, setEditModal] = useState(false);
+    const [selectedVocab, setSelectedVocab] = useState<Vocabulary>();
 
-    const handleClose = () => {
+    const handleShowClose = () => {
         setShowModal(false);
     };
 
-    if (userError || error) {
-        return <div>An Unknown Error has occurred</div>;
+    const handleEditClose = () => {
+        setEditModal(false);
+    };
+
+    const handleEditClick = (vocab: Vocabulary) => {
+        setSelectedVocab(vocab);
+        setEditModal(true);
+    };
+
+    if (error) {
+        return <div>An unknown error has occurred</div>;
     }
 
     return (
@@ -73,34 +85,25 @@ export default function Component() {
                             <UploadIcon className="mr-2 h-4 w-4" />
                             Import CSV
                         </Button>
-                        <Button onClick={() => setShowModal(true)}>
+                        <Button
+                            onClick={() => setShowModal(true)}
+                            disabled={!selectedLanguage}
+                        >
                             <PlusIcon className="mr-2 h-4 w-4" />
                             Add Word
                         </Button>
-                        {isLoading ? (
-                            <Skeleton height={40} width={40} />
-                        ) : (
-                            <Select
-                                value={selectedLanguage}
-                                onValueChange={setSelectedLanguage}
-                            >
-                                <SelectTrigger className="w-48">
-                                    <SelectValue placeholder="Select Language" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {user?.app_metadata.profile.languages.map(
-                                        (language: string) => (
-                                            <SelectItem
-                                                key={language}
-                                                value={language}
-                                            >
-                                                {language}
-                                            </SelectItem>
-                                        )
-                                    )}
-                                </SelectContent>
-                            </Select>
-                        )}
+
+                        <Select
+                            value={selectedLanguage}
+                            onValueChange={setSelectedLanguage}
+                        >
+                            <SelectTrigger className="w-48">
+                                <SelectValue placeholder="Select Language" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <Selections />
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
                 <div className="border rounded-lg overflow-hidden">
@@ -161,22 +164,23 @@ export default function Component() {
                                             vocab.languageName ===
                                             selectedLanguage
                                     )
-                                    .map((word, index) => (
-                                        <TableRow key={index}>
+                                    .map((vocab) => (
+                                        <TableRow key={vocab.id}>
                                             <TableCell className="font-medium">
-                                                {word.word}
+                                                {vocab.word}
                                             </TableCell>
                                             <TableCell>
-                                                {word.meaning}
+                                                {vocab.meaning}
                                             </TableCell>
                                             <TableCell>
-                                                {word.example}
+                                                {vocab.example}
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex items-center gap-2">
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
+                                                        onClick={() => handleEditClick(vocab)}
                                                     >
                                                         <FilePenIcon className="h-4 w-4" />
                                                         <span className="sr-only">
@@ -204,12 +208,24 @@ export default function Component() {
             </div>
             <Dialog open={showModal} onOpenChange={setShowModal}>
                 <DialogContent className="sm:max-w-[425px]">
-                    <VocabularyForm
-                        handleClose={handleClose}
+                    <CreateVocabularyForm
+                        handleClose={handleShowClose}
                         defaultLanguage={selectedLanguage || ""}
                     />
                 </DialogContent>
             </Dialog>
+
+            {selectedVocab && (
+                <Dialog open={editModal} onOpenChange={setEditModal}>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <UpdateVocabularyForm
+                            handleClose={handleEditClose}
+                            language={selectedLanguage || ""}
+                            vocab={selectedVocab}
+                        />
+                    </DialogContent>
+                </Dialog>
+            )}
         </section>
     );
 }
