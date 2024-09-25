@@ -9,12 +9,15 @@ type Language {
 }
 
 type Mutation {
-  createUser(email: String!, username: String!): UserResponse
+  createUser(languages: [String!]!, username: String!): User!
   createUserLanguage(languageName: String!, userId: ID!): UserLanguageResponse
-  deleteUser(id: ID!): UserResponse
+  createVocabulary(example: String, languageName: String!, meaning: String!, word: String!): Vocabulary
+  deleteUser(id: ID!): User
   deleteUserLanguage(languageName: String!, userId: ID!): UserLanguageResponse
-  updateUser(email: String, id: ID!, username: String): UserResponse
+  deleteVocabulary(id: ID!): Vocabulary
+  updateUser(id: ID!, username: String): User
   updateUserLanguage(languageName: String!, userId: ID!): UserLanguageResponse
+  updateVocabulary(example: String, id: ID!, languageName: String, meaning: String, word: String): Vocabulary
 }
 
 type Query {
@@ -23,13 +26,13 @@ type Query {
   languages: [Language!]!
   stories: [Story!]!
   story(id: ID!): Story
-  user(id: ID!): User
+  user(userId: ID!): User
   userLanguage(languageName: String!, userId: ID!): UserLanguage
   userLanguages(userId: ID!): [UserLanguage!]!
   users: [User!]
   vocabularies: [Vocabulary!]!
   vocabulary(id: ID!): Vocabulary
-  worksheet(id: Int!): Worksheet
+  worksheet(id: ID!): Worksheet
   worksheets: [Worksheet!]!
 }
 
@@ -40,16 +43,16 @@ type Story {
   id: ID!
   languageName: String!
   updatedAt: DateTime!
-  userId: Int!
+  userId: ID!
 }
 
 type User {
   createdAt: DateTime!
   email: String!
-  id: ID!
   languages: [UserLanguage!]
   stories: [Story!]
   updatedAt: DateTime!
+  userId: ID!
   username: String!
   vocabularies: [Vocabulary!]
   worksheets: [Worksheet!]
@@ -66,21 +69,15 @@ type UserLanguageResponse {
   userLanguage: UserLanguage
 }
 
-type UserResponse {
-  message: String
-  success: Boolean!
-  user: User
-}
-
 type Vocabulary {
   createdAt: DateTime!
   example: String
   id: ID!
   languageName: String!
   meaning: String!
-  storyId: ID
+  story: Story
   updatedAt: DateTime!
-  userId: ID!
+  user: User
   word: String!
 }
 
@@ -88,8 +85,8 @@ type Worksheet {
   completedAt: DateTime
   content: String!
   createdAt: DateTime!
-  id: Int!
+  id: ID!
   languageName: String!
   updatedAt: DateTime!
-  userId: Int!
+  userId: ID!
 }

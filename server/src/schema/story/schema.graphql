@@ -1,7 +1,7 @@
 type Story {
   id: ID!
   content: String!
-  userId: Int!
+  userId: ID!
   languageName: String!
   createdAt: DateTime!
   updatedAt: DateTime!

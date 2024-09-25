@@ -1,5 +1,5 @@
 type User {
-  id: ID!
+  userId: ID!
   email: String!
   username: String!
   createdAt: DateTime!
@@ -10,21 +10,15 @@ type User {
   worksheets: [Worksheet!]
 }
 
-scalar DateTime
-
 extend type Query {
   users: [User!]
-  user(id: ID!): User
-}
-
-type UserResponse {
-  success: Boolean!
-  message: String
-  user: User
+  user(userId: ID!): User
 }
 
 extend type Mutation {
-  createUser(email: String!, username: String!): UserResponse
-  updateUser(id: ID!, email: String, username: String): UserResponse
-  deleteUser(id: ID!): UserResponse
+  createUser(username: String!, languages: [String!]!): User!
+  updateUser(id: ID!, username: String): User!
+  deleteUser(id: ID!): User
 }
+
+scalar DateTime

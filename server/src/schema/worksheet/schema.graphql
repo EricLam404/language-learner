@@ -1,7 +1,7 @@
 type Worksheet {
-  id: Int!
+  id: ID!
   content: String!
-  userId: Int!
+  userId: ID!
   languageName: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -10,7 +10,7 @@ type Worksheet {
 
 extend type Query {
   worksheets: [Worksheet!]!
-  worksheet(id: Int!): Worksheet
+  worksheet(id: ID!): Worksheet
 }
 
 # type WorksheetResponse {

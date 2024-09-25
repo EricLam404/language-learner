@@ -7,8 +7,8 @@ type Vocabulary {
   createdAt: DateTime!
   updatedAt: DateTime!
 
-  storyId: ID
-  userId: ID!
+  story: Story
+  user: User
 }
 
 scalar DateTime
@@ -18,14 +18,8 @@ extend type Query {
   vocabulary(id: ID!): Vocabulary
 }
 
-# type VocabularyResponse {
-#   success: Boolean!
-#   message: String
-#   vocabulary: Vocabulary
-# }
-
-# extend type Mutation {
-#   createVocabulary(word: String!, meaning: String!, example: String, languageName: String!, userId: ID!): VocabularyResponse
-#   updateVocabulary(id: ID!, word: String, meaning: String, example: String, languageName: String, userId: ID): VocabularyResponse
-#   deleteVocabulary(id: ID!): VocabularyResponse
-# }
+extend type Mutation {
+  createVocabulary(word: String!, meaning: String!, example: String, languageName: String!): Vocabulary
+  updateVocabulary(id: ID!, word: String, meaning: String, example: String, languageName: String): Vocabulary
+  deleteVocabulary(id: ID!): Vocabulary
+}
