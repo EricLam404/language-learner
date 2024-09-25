@@ -16,6 +16,7 @@ const documents = {
     "\n    mutation CreateUser($username: String!, $languages: [String!]!) {\n        createUser(username: $username, languages: $languages) {\n            username\n            languages {\n                languageName\n            }\n        }\n    }\n": types.CreateUserDocument,
     "\n    mutation CreateVocabulary(\n        $word: String!\n        $meaning: String!\n        $example: String\n        $languageName: String!\n    ) {\n        createVocabulary(\n            word: $word\n            meaning: $meaning\n            example: $example\n            languageName: $languageName\n        ) {\n            example\n            id\n            meaning\n        }\n    }\n": types.CreateVocabularyDocument,
     "\n    mutation UpdateVocabulary(\n        $id: ID!\n        $word: String!\n        $meaning: String!\n        $example: String\n        $languageName: String!\n    ) {\n    updateVocabulary(\n        id: $id\n        word: $word\n        meaning: $meaning\n        example: $example\n        languageName: $languageName\n    ) {\n        id,\n        word,\n        meaning,\n        example,\n        languageName\n    }\n    }\n": types.UpdateVocabularyDocument,
+    "\n    mutation DeleteVocabulary($id: ID!) {\n        deleteVocabulary(id: $id) {\n            id\n        }\n    }\n": types.DeleteVocabularyDocument,
     "\n    query GetLanguages {\n        languages {\n            id\n            name\n        }\n    }\n": types.GetLanguagesDocument,
     "\n    query GET_VOCABULARIES {\n        vocabularies {\n            id\n            languageName\n            word\n            meaning\n            example\n        }\n    }\n": types.Get_VocabulariesDocument,
 };
@@ -46,6 +47,10 @@ export function gql(source: "\n    mutation CreateVocabulary(\n        $word: St
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n    mutation UpdateVocabulary(\n        $id: ID!\n        $word: String!\n        $meaning: String!\n        $example: String\n        $languageName: String!\n    ) {\n    updateVocabulary(\n        id: $id\n        word: $word\n        meaning: $meaning\n        example: $example\n        languageName: $languageName\n    ) {\n        id,\n        word,\n        meaning,\n        example,\n        languageName\n    }\n    }\n"): (typeof documents)["\n    mutation UpdateVocabulary(\n        $id: ID!\n        $word: String!\n        $meaning: String!\n        $example: String\n        $languageName: String!\n    ) {\n    updateVocabulary(\n        id: $id\n        word: $word\n        meaning: $meaning\n        example: $example\n        languageName: $languageName\n    ) {\n        id,\n        word,\n        meaning,\n        example,\n        languageName\n    }\n    }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    mutation DeleteVocabulary($id: ID!) {\n        deleteVocabulary(id: $id) {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation DeleteVocabulary($id: ID!) {\n        deleteVocabulary(id: $id) {\n            id\n        }\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

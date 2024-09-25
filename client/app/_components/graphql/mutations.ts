@@ -54,3 +54,11 @@ export const UPDATE_VOCABULARY = gql(`
     }
     }
 `);
+
+export const DELETE_VOCABULARY = gql(`
+    mutation DeleteVocabulary($id: ID!) {
+        deleteVocabulary(id: $id) {
+            id
+        }
+    }
+`);

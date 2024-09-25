@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@apollo/client";
-import { CREATE_VOCABULARY, UPDATE_VOCABULARY } from "../graphql/mutations";
-import { DialogHeader } from "@components/ui/dialog";
+import { CREATE_VOCABULARY, DELETE_VOCABULARY, UPDATE_VOCABULARY } from "../graphql/mutations";
+import { DialogClose, DialogHeader } from "@components/ui/dialog";
 import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -33,7 +33,7 @@ const formSchema = z.object({
 });
 
 interface CreateVocabularyFormProps {
-    handleClose: () => void;
+    handleClose: (type: string) => void;
     defaultLanguage: string;
 }
 
@@ -77,11 +77,11 @@ export function CreateVocabularyForm({
             }
             toast.success("Vocabulary has been successfully created!");
             form.reset();
-            handleClose();
+            handleClose("create");
         } catch (e) {
             console.log(e);
             toast.error(
-                "An unknown error occurred while creating your profile. Please try again."
+                "An unknown error occurred while creating the vocabulary word. Please try again."
             );
         }
     }
@@ -172,7 +172,7 @@ export function CreateVocabularyForm({
 }
 
 interface UpdateVocabularyFormProps {
-    handleClose: () => void;
+    handleClose: (type: string) => void;
     language: string;
     vocab: {
         __typename?: "Vocabulary";
@@ -226,11 +226,11 @@ export function UpdateVocabularyForm({
             }
             toast.success("Vocabulary has been successfully updated!");
             form.reset();
-            handleClose();
+            handleClose("update");
         } catch (e) {
             console.log(e);
             toast.error(
-                "An unknown error occurred while creating your profile. Please try again."
+                "An unknown error occurred while updating the vocabulary word. Please try again."
             );
         }
     }
@@ -317,5 +317,65 @@ export function UpdateVocabularyForm({
                 </Button>
             </form>
         </Form>
+    );
+}
+
+interface DeleteVocabularyFormProps {
+    handleClose: (type: string) => void;
+    vocab: {
+        __typename?: "Vocabulary";
+        id: string;
+        languageName: string;
+        word: string;
+        meaning: string;
+        example?: string | null;
+    };
+}
+
+export function DeleteVocabularyForm({ handleClose, vocab }: DeleteVocabularyFormProps) {
+    const [deleteVocabulary, { loading, error }] = useMutation(
+        DELETE_VOCABULARY,
+        {
+            refetchQueries: [{ query: GET_VOCABULARY }],
+            awaitRefetchQueries: true,
+        }
+    );
+
+    async function onDelete() {
+        try {
+            const response = await deleteVocabulary({
+                variables: {
+                    id: vocab.id
+                },
+            });
+
+            toast.success("Vocabulary has been successfully deleted!");
+            handleClose("delete");
+        } catch (e) {
+            console.log(e);
+            toast.error(
+                "An unknown error occurred while deleting the vocabulary word. Please try again."
+            );
+        }
+    }
+
+    return (
+        <>
+            <DialogHeader>
+                <DialogTitle className="font-bold text-xl sm:text-lg">
+                    Are you sure you?
+                </DialogTitle>
+                <DialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    the vocabulary word "{vocab.word}" from your list.
+                </DialogDescription>
+                <Button type="submit" variant="destructive" onClick={onDelete} disabled={loading}>
+                    Delete
+                </Button>
+                <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                </DialogClose>
+            </DialogHeader>
+        </>
     );
 }

@@ -27,6 +27,7 @@ import { useQuery } from "@apollo/client";
 import Skeleton from "react-loading-skeleton";
 import {
     CreateVocabularyForm,
+    DeleteVocabularyForm,
     UpdateVocabularyForm,
 } from "@app/_components/forms/VocabularyForms";
 import Selections from "@app/_components/forms/Selections";
@@ -53,21 +54,30 @@ interface Vocabulary {
 export default function Component() {
     const { data: vocabulary, loading, error } = useQuery(GET_VOCABULARY);
     const [selectedLanguage, setSelectedLanguage] = useState<string>();
-    const [showModal, setShowModal] = useState(false);
-    const [editModal, setEditModal] = useState(false);
+    const [createModal, setCreateModal] = useState(false);
+    const [updateModal, setUpdateModal] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [deleteVocab, setDeleteVocab] = useState<Vocabulary>();
     const [selectedVocab, setSelectedVocab] = useState<Vocabulary>();
 
-    const handleShowClose = () => {
-        setShowModal(false);
-    };
-
-    const handleEditClose = () => {
-        setEditModal(false);
+    const handleClose = (type: string) => {
+        if (type === "create") {
+            setCreateModal(false);
+        } else if (type === "update") {
+            setUpdateModal(false);
+        } else if (type === "delete") {
+            setDeleteModal(false);
+        }
     };
 
     const handleEditClick = (vocab: Vocabulary) => {
         setSelectedVocab(vocab);
-        setEditModal(true);
+        setUpdateModal(true);
+    };
+
+    const handleDeleteClick = (vocab: Vocabulary) => {
+        setDeleteVocab(vocab);
+        setDeleteModal(true);
     };
 
     if (error) {
@@ -86,7 +96,7 @@ export default function Component() {
                             Import CSV
                         </Button>
                         <Button
-                            onClick={() => setShowModal(true)}
+                            onClick={() => setCreateModal(true)}
                             disabled={!selectedLanguage}
                         >
                             <PlusIcon className="mr-2 h-4 w-4" />
@@ -180,7 +190,11 @@ export default function Component() {
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        onClick={() => handleEditClick(vocab)}
+                                                        onClick={() =>
+                                                            handleEditClick(
+                                                                vocab
+                                                            )
+                                                        }
                                                     >
                                                         <FilePenIcon className="h-4 w-4" />
                                                         <span className="sr-only">
@@ -191,6 +205,11 @@ export default function Component() {
                                                         variant="ghost"
                                                         size="icon"
                                                         className="text-red-500"
+                                                        onClick={() =>
+                                                            handleDeleteClick(
+                                                                vocab
+                                                            )
+                                                        }
                                                     >
                                                         <TrashIcon className="h-4 w-4" />
                                                         <span className="sr-only">
@@ -206,22 +225,33 @@ export default function Component() {
                     </Table>
                 </div>
             </div>
-            <Dialog open={showModal} onOpenChange={setShowModal}>
+            <Dialog open={createModal} onOpenChange={setCreateModal}>
                 <DialogContent className="sm:max-w-[425px]">
                     <CreateVocabularyForm
-                        handleClose={handleShowClose}
+                        handleClose={handleClose}
                         defaultLanguage={selectedLanguage || ""}
                     />
                 </DialogContent>
             </Dialog>
 
             {selectedVocab && (
-                <Dialog open={editModal} onOpenChange={setEditModal}>
+                <Dialog open={updateModal} onOpenChange={setUpdateModal}>
                     <DialogContent className="sm:max-w-[425px]">
                         <UpdateVocabularyForm
-                            handleClose={handleEditClose}
+                            handleClose={handleClose}
                             language={selectedLanguage || ""}
                             vocab={selectedVocab}
+                        />
+                    </DialogContent>
+                </Dialog>
+            )}
+
+            {deleteVocab && (
+                <Dialog open={deleteModal} onOpenChange={setDeleteModal}>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DeleteVocabularyForm
+                            handleClose={handleClose}
+                            vocab={deleteVocab}
                         />
                     </DialogContent>
                 </Dialog>
