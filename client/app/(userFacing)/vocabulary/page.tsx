@@ -29,7 +29,6 @@ import {
     SelectContent,
     SelectItem,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import {
     Dialog,
     DialogTrigger,
@@ -42,7 +41,10 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { data } from "@/public/dummydata/vocabulary";
+import { GET_VOCABULARY } from "@app/_components/graphql/queries";
+import { useQuery } from "@apollo/client";
+import Skeleton from "react-loading-skeleton";
+import { data } from "@/public/dummydata/Vocabulary";
 
 type vocabularyList = {
     word: string;
@@ -59,11 +61,12 @@ type vocabularyList = {
 // FEATURE: Add delete functionality for vocabulary list
 // FEATURE: Add edit functionality for vocabulary list
 
-// NOT IMPORTANT FEATURE: Add export functionality for vocabulary list
+// FUTURE FEATURE: Add export functionality for vocabulary list
 
 export default function Component() {
-    let vocabularyList: vocabularyList = data;
-    const [selectedLanguage, setSelectedLanguage] = useState("es");
+    const vocabularyList: vocabularyList = data;
+    const { data: vocabulary, loading, error } = useQuery(GET_VOCABULARY);
+    const [selectedLanguage, setSelectedLanguage] = useState("Spanish");
     const [showModal, setShowModal] = useState(false);
     const [newWord, setNewWord] = useState("");
     const [newMeaning, setNewMeaning] = useState("");
@@ -74,6 +77,11 @@ export default function Component() {
         console.log("New example:", newExample);
         setShowModal(false);
     };
+
+    if (error) {
+        return <div>Error! {error.message}</div>;
+    }
+
     return (
         <section>
             <div className="w-full max-w-4xl mx-auto py-12">
@@ -97,8 +105,8 @@ export default function Component() {
                                 <SelectValue placeholder="Select Language" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="es">Spanish</SelectItem>
-                                <SelectItem value="fr">French</SelectItem>
+                                <SelectItem value="Spanish">Spanish</SelectItem>
+                                <SelectItem value="French">French</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -122,35 +130,82 @@ export default function Component() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {vocabularyList.map((word, index) => (
-                                <TableRow key={index}>
-                                    <TableCell className="font-medium">
-                                        {word.word}
-                                    </TableCell>
-                                    <TableCell>{word.meaning}</TableCell>
-                                    <TableCell>{word.sentence}</TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <Button variant="ghost" size="icon">
-                                                <FilePenIcon className="h-4 w-4" />
-                                                <span className="sr-only">
-                                                    Edit
-                                                </span>
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="text-red-500"
-                                            >
-                                                <TrashIcon className="h-4 w-4" />
-                                                <span className="sr-only">
-                                                    Delete
-                                                </span>
-                                            </Button>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                            {loading ? (
+                                <>
+                                    {Array.from({ length: 10 }).map(
+                                        (_, index) => (
+                                            <TableRow key={index}>
+                                                {/* TODO: Fix Skeleton loading - width is at 0 */}
+                                                <TableCell>
+                                                    <Skeleton height={20} />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Skeleton height={20} />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Skeleton height={20} />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-2">
+                                                        <Skeleton
+                                                            circle
+                                                            height={20}
+                                                        />
+                                                        <Skeleton
+                                                            circle
+                                                            height={20}
+                                                        />
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    )}
+                                </>
+                            ) : (
+                                vocabulary &&
+                                vocabulary.vocabularies
+                                    .filter(
+                                        (vocab) =>
+                                            vocab.languageName ===
+                                            selectedLanguage
+                                    )
+                                    .map((word, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell className="font-medium">
+                                                {word.word}
+                                            </TableCell>
+                                            <TableCell>
+                                                {word.meaning}
+                                            </TableCell>
+                                            <TableCell>
+                                                {word.example}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                    >
+                                                        <FilePenIcon className="h-4 w-4" />
+                                                        <span className="sr-only">
+                                                            Edit
+                                                        </span>
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="text-red-500"
+                                                    >
+                                                        <TrashIcon className="h-4 w-4" />
+                                                        <span className="sr-only">
+                                                            Delete
+                                                        </span>
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                            )}
                         </TableBody>
                     </Table>
                 </div>

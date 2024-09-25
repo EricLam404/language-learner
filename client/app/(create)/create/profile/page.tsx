@@ -70,10 +70,14 @@ export default function CreateProfile() {
             const response = await createUser({
                 variables: {
                     username: submitData.username,
-                    languages: submitData.languages
+                    languages: submitData.languages,
                 },
             });
-            console.log(response.data.createUser);
+            if (response.data) {
+                console.log(response.data.createUser);
+            } else {
+                console.error("No data returned from createUser mutation");
+            }
             toast.success("Your profile has been created!");
 
             router.push("/");
@@ -112,118 +116,116 @@ export default function CreateProfile() {
 
     if (user.app_metadata.profile) {
         router.push("/");
+        return null;
     }
 
     return (
-        user.app_metadata.profile && (
-            <div className="flex flex-col items-center justify-center h-screen bg-background">
-                <Form {...form}>
-                    <form
-                        key={formKey}
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-8"
-                    >
-                        <div className="font-bold text-2xl">
-                            Create your Profile
-                        </div>
-                        <FormField
-                            control={form.control}
-                            name="username"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Username</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter a unique username"
-                                            {...field}
-                                        />
-                                    </FormControl>
+        <div className="flex flex-col items-center justify-center h-screen bg-background">
+            <Form {...form}>
+                <form
+                    key={formKey}
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-8"
+                >
+                    <div className="font-bold text-2xl">
+                        Create your Profile
+                    </div>
+                    <FormField
+                        control={form.control}
+                        name="username"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Username</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        placeholder="Enter a unique username"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormDescription>
+                                    This is your public display name.
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="languages"
+                        render={() => (
+                            <FormItem>
+                                <div className="mb-4">
+                                    <FormLabel className="text-base">
+                                        Choose your languages
+                                    </FormLabel>
                                     <FormDescription>
-                                        This is your public display name.
+                                        Select your the languages you want to
+                                        learn!
                                     </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="languages"
-                            render={() => (
-                                <FormItem>
-                                    <div className="mb-4">
-                                        <FormLabel className="text-base">
-                                            Choose your languages
-                                        </FormLabel>
-                                        <FormDescription>
-                                            Select your the languages you want
-                                            to learn!
-                                        </FormDescription>
+                                </div>
+                                {languageLoading ? (
+                                    <Skeleton count={10} />
+                                ) : languageError ? (
+                                    <div>
+                                        There was an error loading the languages
                                     </div>
-                                    {languageLoading ? (
-                                        <Skeleton count={10} />
-                                    ) : languageData ? (
-                                        languageData.languages.map(
-                                            (item: Language) => (
-                                                <FormField
-                                                    key={item.name}
-                                                    control={form.control}
-                                                    name="languages"
-                                                    render={({ field }) => {
-                                                        return (
-                                                            <FormItem
-                                                                key={item.name}
-                                                                className="flex flex-row items-start space-x-3 space-y-0"
-                                                            >
-                                                                <FormControl>
-                                                                    <Checkbox
-                                                                        checked={field.value?.includes(
-                                                                            item.name
-                                                                        )}
-                                                                        onCheckedChange={(
-                                                                            checked
-                                                                        ) => {
-                                                                            return checked
-                                                                                ? field.onChange(
-                                                                                      [
-                                                                                          ...field.value,
-                                                                                          item.name,
-                                                                                      ]
+                                ) : (
+                                    languageData && languageData.languages.map(
+                                        (item: Language) => (
+                                            <FormField
+                                                key={item.name}
+                                                control={form.control}
+                                                name="languages"
+                                                render={({ field }) => {
+                                                    return (
+                                                        <FormItem
+                                                            key={item.name}
+                                                            className="flex flex-row items-start space-x-3 space-y-0"
+                                                        >
+                                                            <FormControl>
+                                                                <Checkbox
+                                                                    checked={field.value?.includes(
+                                                                        item.name
+                                                                    )}
+                                                                    onCheckedChange={(
+                                                                        checked
+                                                                    ) => {
+                                                                        return checked
+                                                                            ? field.onChange(
+                                                                                  [
+                                                                                      ...field.value,
+                                                                                      item.name,
+                                                                                  ]
+                                                                              )
+                                                                            : field.onChange(
+                                                                                  field.value?.filter(
+                                                                                      (
+                                                                                          value
+                                                                                      ) =>
+                                                                                          value !==
+                                                                                          item.name
                                                                                   )
-                                                                                : field.onChange(
-                                                                                      field.value?.filter(
-                                                                                          (
-                                                                                              value
-                                                                                          ) =>
-                                                                                              value !==
-                                                                                              item.name
-                                                                                      )
-                                                                                  );
-                                                                        }}
-                                                                    />
-                                                                </FormControl>
-                                                                <FormLabel className="font-normal">
-                                                                    {item.name}
-                                                                </FormLabel>
-                                                            </FormItem>
-                                                        );
-                                                    }}
-                                                />
-                                            )
+                                                                              );
+                                                                    }}
+                                                                />
+                                                            </FormControl>
+                                                            <FormLabel className="font-normal">
+                                                                {item.name}
+                                                            </FormLabel>
+                                                        </FormItem>
+                                                    );
+                                                }}
+                                            />
                                         )
-                                    ) : (
-                                        <div>
-                                            There was an error loading the
-                                            languages
-                                        </div>
-                                    )}
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button type="submit">Submit</Button>
-                    </form>
-                </Form>
-            </div>
-        )
+                                    )
+                                )}
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button type="submit">Submit</Button>
+                </form>
+            </Form>
+        </div>
     );
 }
