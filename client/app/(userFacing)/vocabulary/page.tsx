@@ -1,12 +1,5 @@
 "use client";
 import { useState } from "react";
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import {
     Table,
@@ -31,7 +24,6 @@ import {
 } from "@/components/ui/select";
 import {
     Dialog,
-    DialogTrigger,
     DialogContent,
     DialogHeader,
     DialogTitle,
@@ -39,18 +31,11 @@ import {
     DialogFooter,
     DialogClose,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { GET_VOCABULARY } from "@app/_components/graphql/queries";
 import { useQuery } from "@apollo/client";
 import Skeleton from "react-loading-skeleton";
-import { data } from "@/public/dummydata/Vocabulary";
-
-type vocabularyList = {
-    word: string;
-    meaning: string;
-    sentence: string;
-}[];
+import { VocabularyForm } from "@app/_components/forms/CreateVocabulary";
+import { useUser } from "@/lib/hooks/useUser";
 
 // TODO: Add word to vocabulary list validation check
 // FEATURE: Add radio button to select words for flashcards
@@ -64,22 +49,17 @@ type vocabularyList = {
 // FUTURE FEATURE: Add export functionality for vocabulary list
 
 export default function Component() {
-    const vocabularyList: vocabularyList = data;
+    const { data: user, isLoading, error: userError } = useUser();
     const { data: vocabulary, loading, error } = useQuery(GET_VOCABULARY);
-    const [selectedLanguage, setSelectedLanguage] = useState("Spanish");
+    const [selectedLanguage, setSelectedLanguage] = useState<string>();
     const [showModal, setShowModal] = useState(false);
-    const [newWord, setNewWord] = useState("");
-    const [newMeaning, setNewMeaning] = useState("");
-    const [newExample, setNewExample] = useState("");
-    const handleAddWord = () => {
-        console.log("New word:", newWord);
-        console.log("New meaning:", newMeaning);
-        console.log("New example:", newExample);
+
+    const handleClose = () => {
         setShowModal(false);
     };
 
-    if (error) {
-        return <div>Error! {error.message}</div>;
+    if (userError || error) {
+        return <div>An Unknown Error has occurred</div>;
     }
 
     return (
@@ -97,18 +77,30 @@ export default function Component() {
                             <PlusIcon className="mr-2 h-4 w-4" />
                             Add Word
                         </Button>
-                        <Select
-                            value={selectedLanguage}
-                            onValueChange={setSelectedLanguage}
-                        >
-                            <SelectTrigger className="w-48">
-                                <SelectValue placeholder="Select Language" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Spanish">Spanish</SelectItem>
-                                <SelectItem value="French">French</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        {isLoading ? (
+                            <Skeleton height={40} width={40} />
+                        ) : (
+                            <Select
+                                value={selectedLanguage}
+                                onValueChange={setSelectedLanguage}
+                            >
+                                <SelectTrigger className="w-48">
+                                    <SelectValue placeholder="Select Language" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {user?.app_metadata.profile.languages.map(
+                                        (language: string) => (
+                                            <SelectItem
+                                                key={language}
+                                                value={language}
+                                            >
+                                                {language}
+                                            </SelectItem>
+                                        )
+                                    )}
+                                </SelectContent>
+                            </Select>
+                        )}
                     </div>
                 </div>
                 <div className="border rounded-lg overflow-hidden">
@@ -212,55 +204,10 @@ export default function Component() {
             </div>
             <Dialog open={showModal} onOpenChange={setShowModal}>
                 <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Add New Word</DialogTitle>
-                        <DialogDescription>
-                            Add a new word to the{" "}
-                            {selectedLanguage === "es" ? "Spanish" : "French"}{" "}
-                            vocabulary list.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid items-center grid-cols-4 gap-4">
-                            <Label htmlFor="word" className="text-right">
-                                Word
-                            </Label>
-                            <Input
-                                id="word"
-                                value={newWord}
-                                onChange={(e) => setNewWord(e.target.value)}
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid items-center grid-cols-4 gap-4">
-                            <Label htmlFor="meaning" className="text-right">
-                                Meaning
-                            </Label>
-                            <Input
-                                id="meaning"
-                                value={newMeaning}
-                                onChange={(e) => setNewMeaning(e.target.value)}
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid items-center grid-cols-4 gap-4">
-                            <Label htmlFor="example" className="text-right">
-                                Example
-                            </Label>
-                            <Input
-                                id="example"
-                                value={newExample}
-                                onChange={(e) => setNewExample(e.target.value)}
-                                className="col-span-3"
-                            />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button onClick={handleAddWord}>Save</Button>
-                        <DialogClose asChild>
-                            <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                    </DialogFooter>
+                    <VocabularyForm
+                        handleClose={handleClose}
+                        defaultLanguage={selectedLanguage || ""}
+                    />
                 </DialogContent>
             </Dialog>
         </section>
