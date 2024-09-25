@@ -3,13 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DEV_DATABASE_URL")
-  directUrl         = env("DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("DEV_DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  userId      String         @id @unique @db.Uuid
+  userId       String         @id @unique @db.Uuid
   email        String         @unique
   username     String         @unique
   createdAt    DateTime       @default(now()) @db.Timestamptz(3)
@@ -21,7 +21,7 @@ model User {
 }
 
 model UserLanguage {
-  userId      String   @db.Uuid
+  userId       String   @db.Uuid
   languageName String
   user         User     @relation(fields: [userId], references: [userId])
   language     Language @relation(fields: [languageName], references: [name])
@@ -43,20 +43,20 @@ model Vocabulary {
   word         String
   meaning      String
   example      String?
-  userId      String   @db.Uuid
+  userId       String   @db.Uuid
   user         User     @relation(fields: [userId], references: [userId])
   languageName String
   language     Language @relation(fields: [languageName], references: [name])
   createdAt    DateTime @default(now()) @db.Timestamptz(3)
   updatedAt    DateTime @updatedAt @db.Timestamptz(3)
-  Story        Story?   @relation(fields: [storyId], references: [id])
   storyId      Int?
+  Story        Story?   @relation(fields: [storyId], references: [id])
 }
 
 model Story {
   id           Int          @id @default(autoincrement())
   content      String
-  userId      String       @db.Uuid
+  userId       String       @db.Uuid
   user         User         @relation(fields: [userId], references: [userId])
   languageName String
   language     Language     @relation(fields: [languageName], references: [name])
@@ -69,7 +69,7 @@ model Story {
 model Worksheet {
   id           Int       @id @default(autoincrement())
   content      String
-  userId      String    @db.Uuid
+  userId       String    @db.Uuid
   user         User      @relation(fields: [userId], references: [userId])
   languageName String
   language     Language  @relation(fields: [languageName], references: [name])
