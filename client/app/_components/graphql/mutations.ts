@@ -30,3 +30,27 @@ export const CREATE_VOCABULARY = gql(`
         }
     }
 `);
+
+export const UPDATE_VOCABULARY = gql(`
+    mutation UpdateVocabulary(
+        $id: ID!
+        $word: String!
+        $meaning: String!
+        $example: String
+        $languageName: String!
+    ) {
+    updateVocabulary(
+        id: $id
+        word: $word
+        meaning: $meaning
+        example: $example
+        languageName: $languageName
+    ) {
+        id,
+        word,
+        meaning,
+        example,
+        languageName
+    }
+    }
+`);
