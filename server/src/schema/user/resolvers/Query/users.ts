@@ -5,7 +5,7 @@ export const users: NonNullable<QueryResolvers['users']> = async (
     _ctx
 ) => {
     /* Implement Query.users resolver logic here */
-    const { data, error } = await _ctx.supabase.from("User").select();
+    const { data, error } = await _ctx.dataSources.supabase.from("User").select();
     if (error) {
         throw error;
     }
