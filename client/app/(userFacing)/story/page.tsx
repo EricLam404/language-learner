@@ -14,6 +14,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
+import { useLanguages } from "@/lib/hooks/useLanguage";
 
 interface stories {
     id: number;
@@ -25,24 +26,20 @@ interface stories {
 [];
 
 const difficultyLevels = ["Beginner", "Intermediate", "Advanced"];
-const languages = [
-    "English",
-    "French",
-    "Chinese",
-    "German",
-    "Spanish",
-    "Russian",
-];
 
 export default function page() {
+    const { data: languages, isLoading, error } = useLanguages();
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedLanguages, setSelectedLanguages] = useState<string[]>(
-        stories.map((story) => story.language)
-    );
-    const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>(
-        stories.map((story) => story.difficulty)
-    );
+    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+    const [selectedDifficulties, setSelectedDifficulties] =
+        useState<string[]>(difficultyLevels);
     const [filteredStories, setFilteredStories] = useState(stories);
+
+    useEffect(() => {
+        if (!isLoading && !error && languages) {
+            setSelectedLanguages(languages);
+        }
+    }, [languages]);
 
     const filterStories = () => {
         let filtered = stories;
@@ -72,8 +69,7 @@ export default function page() {
 
     const handleLanguageChange = (value: string) => {
         if (value === "") {
-            const allLanguages = stories.map((story) => story.language);
-            if (selectedLanguages.length === allLanguages.length) {
+            if (selectedLanguages.length === languages?.length) {
                 setSelectedLanguages([]);
             } else {
                 setSelectedLanguages(stories.map((story) => story.language));
@@ -90,8 +86,7 @@ export default function page() {
     };
     const handleDifficultyChange = (value: string) => {
         if (value === "") {
-            const allDifficulties = stories.map((story) => story.difficulty);
-            if (selectedDifficulties.length === allDifficulties.length) {
+            if (selectedDifficulties.length === difficultyLevels.length) {
                 setSelectedDifficulties([]);
             } else {
                 setSelectedDifficulties(
@@ -125,14 +120,14 @@ export default function page() {
                         <DropdownMenuContent className="w-48">
                             <DropdownMenuCheckboxItem
                                 checked={
-                                    selectedLanguages.length === stories.length
+                                    selectedLanguages.length === languages?.length
                                 }
                                 onCheckedChange={() => handleLanguageChange("")}
                             >
                                 All Languages
                             </DropdownMenuCheckboxItem>
                             <DropdownMenuSeparator />
-                            {languages.map((lang) => (
+                            {languages?.map((lang) => (
                                 <DropdownMenuCheckboxItem
                                     key={lang}
                                     checked={selectedLanguages.includes(lang)}
@@ -158,8 +153,7 @@ export default function page() {
                             <DropdownMenuCheckboxItem
                                 checked={
                                     selectedDifficulties.length ===
-                                    stories.map((story) => story.difficulty)
-                                        .length
+                                    difficultyLevels.length
                                 }
                                 onCheckedChange={() =>
                                     handleDifficultyChange("")
