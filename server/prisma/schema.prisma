@@ -54,16 +54,26 @@ model Vocabulary {
 }
 
 model Story {
-  id           Int          @id @default(autoincrement())
-  content      String
-  userId       String       @db.Uuid
-  user         User         @relation(fields: [userId], references: [userId])
-  languageName String
-  language     Language     @relation(fields: [languageName], references: [name])
-  vocabularies Vocabulary[]
-  completedAt  DateTime?    @db.Timestamptz(3)
-  createdAt    DateTime     @default(now()) @db.Timestamptz(3)
-  updatedAt    DateTime     @updatedAt @db.Timestamptz(3)
+  id            Int          @id @default(autoincrement())
+  description   String
+  content       String
+  difficulty    Int
+  readCount     Int
+  tags          String[]
+  audioUrl      String?
+  imageUrl      String?
+  averageRating Float?
+  isPublished   Boolean      @default(false)
+  isReviewed    Boolean      @default(false)
+  vocabularies  Vocabulary[]
+  userId        String       @db.Uuid
+  user          User         @relation(fields: [userId], references: [userId])
+  languageName  String
+  language      Language     @relation(fields: [languageName], references: [name])
+  startedAt     DateTime?    @db.Timestamptz(3)
+  completedAt   DateTime?    @db.Timestamptz(3)
+  createdAt     DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime     @updatedAt @db.Timestamptz(3)
 }
 
 model Worksheet {
