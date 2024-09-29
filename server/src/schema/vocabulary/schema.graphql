@@ -19,7 +19,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  createVocabulary(word: String!, meaning: String!, example: String, languageName: String!): Vocabulary
-  updateVocabulary(id: ID!, word: String, meaning: String, example: String, languageName: String): Vocabulary
+  createVocabulary(word: String!, meaning: String!, example: String, languageName: String!): Vocabulary!
+  updateVocabulary(id: ID!, word: String, meaning: String, example: String, languageName: String): Vocabulary!
   deleteVocabulary(id: ID!): Vocabulary
 }
