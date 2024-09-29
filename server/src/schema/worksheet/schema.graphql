@@ -1,26 +1,14 @@
 type Worksheet {
-  id: ID!
+  id: Int!
   content: String!
-  userId: ID!
-  languageName: String!
+  user: User!
+  language: Language!
+  completedAt: DateTime
   createdAt: DateTime!
   updatedAt: DateTime!
-  completedAt: DateTime
 }
 
 extend type Query {
   worksheets: [Worksheet!]!
   worksheet(id: ID!): Worksheet
 }
-
-# type WorksheetResponse {
-#   success: Boolean!
-#   message: String
-#   worksheet: Worksheet
-# }
-
-# extend type Mutation {
-#   createWorksheet(content: String!, userId: Int!, languageName: String!): WorksheetResponse
-#   updateWorksheet(id: Int!, content: String, userId: Int, languageName: String, completedAt: DateTime): WorksheetResponse
-#   deleteWorksheet(id: Int!): WorksheetResponse
-# }
