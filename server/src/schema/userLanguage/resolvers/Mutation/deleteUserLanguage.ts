@@ -1,22 +1,25 @@
+import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
-export const deleteUserLanguage: NonNullable<
-    MutationResolvers["deleteUserLanguage"]
-> = async (_parent, _arg, _ctx) => {
+export const deleteUserLanguage: NonNullable<MutationResolvers['deleteUserLanguage']> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.deleteUserLanguage resolver logic here */
-    const { error } = await _ctx.supabase
-        .from("UserLanguage")
-        .delete()
-        .eq("id", _arg.userId)
-        .eq("languageName", _arg.languageName);
-    if (error) {
-        return {
-            success: false,
-            message: error.message,
-        };
-    } else {
-        return {
-            success: true,
-            message: "User Language created successfully",
-        };
+    try {
+        const deleteUser = await _ctx.dataSources.prisma.userLanguage.delete({
+            where: {
+                userId_languageName: {
+                    userId: _ctx.user.id,
+                    languageName: _arg.languageName,
+                },
+            },
+        });
+        return deleteUser;
+    } catch (error) {
+        throw new GraphQLError(
+            "An error occurred while deleting user language.",
+            {
+                extensions: {
+                    code: "INTERNAL_SERVER_ERROR",
+                },
+            }
+        );
     }
 };
