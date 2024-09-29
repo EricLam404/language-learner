@@ -1,13 +1,23 @@
+import { GraphQLError } from "graphql";
 import type { QueryResolvers } from "./../../../types.generated";
-export const users: NonNullable<QueryResolvers['users']> = async (
+export const users: NonNullable<QueryResolvers["users"]> = async (
     _parent,
     _arg,
     _ctx
 ) => {
     /* Implement Query.users resolver logic here */
-    const { data, error } = await _ctx.dataSources.supabase.from("User").select();
-    if (error) {
-        throw error;
+    try {
+        return await _ctx.dataSources.prisma.user.findMany();
+    } catch (error) {
+        console.log(error);
+
+        if (error instanceof GraphQLError) {
+            throw error;
+        }
+        throw new GraphQLError("Failed to create vocabulary", {
+            extensions: {
+                code: "VOCABULARY_CREATION_FAILED",
+            },
+        });
     }
-    return data;
 };

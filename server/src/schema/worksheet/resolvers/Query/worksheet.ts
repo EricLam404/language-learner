@@ -5,5 +5,5 @@ export const worksheet: NonNullable<QueryResolvers["worksheet"]> = async (
     _ctx
 ) => {
     /* Implement Query.worksheet resolver logic here */
-    return null
+    return null;
 };
