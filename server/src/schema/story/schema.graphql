@@ -1,11 +1,24 @@
 type Story {
   id: ID!
+  title: String!
+  description: String!
   content: String!
-  userId: ID!
+  difficulty: Int!
+  readCount: Int!
+  audioUrl: String
+  imageUrl: String
+  averageRating: Float
+  isPublished: Boolean!
+  isReviewed: Boolean!
   languageName: String!
+  startedAt: DateTime
+  completedAt: DateTime
   createdAt: DateTime!
   updatedAt: DateTime!
-  completedAt: DateTime
+
+  vocabularies: [Vocabulary!]
+  user: User
+  tags: [Tag!]
 }
 
 scalar DateTime
@@ -15,14 +28,26 @@ extend type Query {
   story(id: ID!): Story
 }
 
-# type StoryResponse {
-#   success: Boolean!
-#   message: String
-#   story: Story
-# }
+input CreateStoryInput {
+  title: String!
+  description: String!
+  content: String!
+  difficulty: Int!
+  languageName: String!
+  tags: [String!]!
+}
 
-# extend type Mutation {
-#   createStory(content: String!, userId: Int!, languageName: String!): StoryResponse
-#   updateStory(id: ID!, content: String, userId: Int, languageName: String, completedAt: DateTime): StoryResponse
-#   deleteStory(id: ID!): StoryResponse
-# }
+input UpdateStoryInput {
+  title: String
+  description: String
+  content: String
+  difficulty: Int
+  languageName: String
+  tags: [String!]
+}
+
+extend type Mutation {
+  createStory(input: CreateStoryInput!): Story!
+  updateStory(id: ID!, input: UpdateStoryInput): Story!
+  deleteStory(id: ID!): Boolean!
+}
