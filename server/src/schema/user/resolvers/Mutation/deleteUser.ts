@@ -6,21 +6,32 @@ export const deleteUser: NonNullable<MutationResolvers['deleteUser']> = async (
     _ctx
 ) => {
     /* Implement Mutation.deleteUser resolver logic here */
-    const { data, error } = await _ctx.dataSources.supabase
-        .from("User")
-        .delete()
-        .eq("id", _arg.id).select().limit(1).single();
+    if(_arg.id !== _ctx.user.id) {
+        throw new GraphQLError("You are not authorized to delete this user", {
+            extensions: {
+                code: "USER_DELETION_FAILED",
+            },
+        });
+    }
+    
+    try {
+        const result = await _ctx.dataSources.prisma.user.delete({
+            where: {
+                userId: _arg.id,
+            },
+        });
 
-    if (error) {
-        throw new GraphQLError(
-            "An error occurred while deleting user.",
-            {
-                extensions: {
-                    code: "INTERNAL_SERVER_ERROR",
-                },
-            }
-        );
-    }  
+        return result;
+    } catch (error) {
+        console.log(error);
 
-    return data;
+        if (error instanceof GraphQLError) {
+            throw error;
+        }
+        throw new GraphQLError("Failed to delete language", {
+            extensions: {
+                code: "LANGUAGE_DELETION_FAILED",
+            },
+        });
+    }
 };

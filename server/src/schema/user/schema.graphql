@@ -4,7 +4,8 @@ type User {
   username: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  languages: [UserLanguage!]
+
+  languages: [Language!]
   vocabularies: [Vocabulary!]
   stories: [Story!]
   worksheets: [Worksheet!]
@@ -17,7 +18,7 @@ extend type Query {
 
 extend type Mutation {
   createUser(username: String!, languages: [String!]!): User!
-  updateUser(id: ID!, username: String): User!
+  updateUser(id: ID!, username: String!): User!
   deleteUser(id: ID!): User
 }
 

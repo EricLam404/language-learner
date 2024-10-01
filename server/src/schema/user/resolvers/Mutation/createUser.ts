@@ -19,7 +19,6 @@ export const createUser: NonNullable<MutationResolvers['createUser']> = async (
                 },
             });
         }
-        console.log(_arg.languages)
 
         const result = await _ctx.dataSources.prisma.user.create({
             data: {
@@ -28,8 +27,8 @@ export const createUser: NonNullable<MutationResolvers['createUser']> = async (
                 updatedAt: new Date(),
                 userId: _ctx.user.id,
                 languages: {
-                    create: _arg.languages.map((language) => ({
-                        languageName: language,
+                    connect: _arg.languages.map((language) => ({
+                        name: language,
                     })),
                 },
             },

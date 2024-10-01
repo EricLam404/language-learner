@@ -1,10 +1,9 @@
 import { GraphQLError } from "graphql";
-import { MyContext } from "../../../../utils/types/context";
 import type { QueryResolvers } from "./../../../types.generated";
 export const user: NonNullable<QueryResolvers['user']> = async (
     _parent,
     _arg,
-    _ctx: MyContext
+    _ctx
 ) => {
     /* Implement Query.user resolver logic here */
     try {
@@ -18,9 +17,9 @@ export const user: NonNullable<QueryResolvers['user']> = async (
         if (error instanceof GraphQLError) {
             throw error;
         }
-        throw new GraphQLError("Failed to create vocabulary", {
+        throw new GraphQLError("Failed to query user", {
             extensions: {
-                code: "VOCABULARY_CREATION_FAILED",
+                code: "INTERNAL_SERVER_ERROR",
             },
         });
     }

@@ -1,11 +1,15 @@
-import type   { UserResolvers } from './../../types.generated';
-    export const User: UserResolvers = {
+import type { UserResolvers } from "./../../types.generated";
+export const User: UserResolvers = {
     /* Implement User resolver logic here */
-    languages: async (parent, args, context, info) => {
-      return await context.dataSources.prisma.userLanguage.findMany({
-        where: {
-          userId: parent.userId as string,
-        },
-      });
+    languages: async (_parent, _arg, _ctx, _info) => {
+        return await _ctx.dataSources.prisma.language.findMany({
+            where: {
+                users: {
+                    some: {
+                        userId: String(_parent.userId),
+                    },
+                },
+            },
+        });
     },
-  };
+};
