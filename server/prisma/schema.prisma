@@ -14,28 +14,21 @@ model User {
   username     String         @unique
   createdAt    DateTime       @default(now()) @db.Timestamptz(3)
   updatedAt    DateTime       @updatedAt @db.Timestamptz(3)
-  languages    UserLanguage[]
+  languages    Language[]
   vocabularies Vocabulary[]
   stories      Story[]
   worksheets   Worksheet[]
 }
 
-model UserLanguage {
-  userId       String   @db.Uuid
-  languageName String
-  user         User     @relation(fields: [userId], references: [userId])
-  language     Language @relation(fields: [languageName], references: [name])
-
-  @@id([userId, languageName])
-}
 
 model Language {
   id           Int            @id @default(autoincrement())
   name         String         @unique
+  code         String         @unique
   vocabularies Vocabulary[]
   stories      Story[]
   worksheets   Worksheet[]
-  users        UserLanguage[]
+  users        User[]
 }
 
 model Vocabulary {
@@ -59,7 +52,6 @@ model Story {
   content       String
   difficulty    Int
   readCount     Int
-  tags          String[]
   audioUrl      String?
   imageUrl      String?
   averageRating Float?
@@ -74,6 +66,15 @@ model Story {
   completedAt   DateTime?    @db.Timestamptz(3)
   createdAt     DateTime     @default(now()) @db.Timestamptz(3)
   updatedAt     DateTime     @updatedAt @db.Timestamptz(3)
+  tags          Tag[]
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  stories   Story[]   
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
 }
 
 model Worksheet {

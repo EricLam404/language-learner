@@ -34,6 +34,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      _LanguageToUser: {
+        Row: {
+          A: number
+          B: string
+        }
+        Insert: {
+          A: number
+          B: string
+        }
+        Update: {
+          A?: number
+          B?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "_LanguageToUser_A_fkey"
+            columns: ["A"]
+            isOneToOne: false
+            referencedRelation: "Language"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "_LanguageToUser_B_fkey"
+            columns: ["B"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
+      _StoryToTag: {
+        Row: {
+          A: number
+          B: number
+        }
+        Insert: {
+          A: number
+          B: number
+        }
+        Update: {
+          A?: number
+          B?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "_StoryToTag_A_fkey"
+            columns: ["A"]
+            isOneToOne: false
+            referencedRelation: "Story"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "_StoryToTag_B_fkey"
+            columns: ["B"]
+            isOneToOne: false
+            referencedRelation: "Tag"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Language: {
         Row: {
           id: number
@@ -51,29 +111,56 @@ export type Database = {
       }
       Story: {
         Row: {
+          audioUrl: string | null
+          averageRating: number | null
           completedAt: string | null
           content: string
           createdAt: string
+          description: string
+          difficulty: number
           id: number
+          imageUrl: string | null
+          isPublished: boolean
+          isReviewed: boolean
           languageName: string
+          readCount: number
+          startedAt: string | null
           updatedAt: string
           userId: string
         }
         Insert: {
+          audioUrl?: string | null
+          averageRating?: number | null
           completedAt?: string | null
           content: string
           createdAt?: string
+          description: string
+          difficulty: number
           id?: number
+          imageUrl?: string | null
+          isPublished?: boolean
+          isReviewed?: boolean
           languageName: string
+          readCount: number
+          startedAt?: string | null
           updatedAt: string
           userId: string
         }
         Update: {
+          audioUrl?: string | null
+          averageRating?: number | null
           completedAt?: string | null
           content?: string
           createdAt?: string
+          description?: string
+          difficulty?: number
           id?: number
+          imageUrl?: string | null
+          isPublished?: boolean
+          isReviewed?: boolean
           languageName?: string
+          readCount?: number
+          startedAt?: string | null
           updatedAt?: string
           userId?: string
         }
@@ -93,6 +180,27 @@ export type Database = {
             referencedColumns: ["userId"]
           },
         ]
+      }
+      Tag: {
+        Row: {
+          createdAt: string
+          id: number
+          name: string
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          id?: number
+          name: string
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          id?: number
+          name?: string
+          updatedAt?: string
+        }
+        Relationships: []
       }
       User: {
         Row: {
@@ -117,36 +225,6 @@ export type Database = {
           username?: string
         }
         Relationships: []
-      }
-      UserLanguage: {
-        Row: {
-          languageName: string
-          userId: string
-        }
-        Insert: {
-          languageName: string
-          userId: string
-        }
-        Update: {
-          languageName?: string
-          userId?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "UserLanguage_languageName_fkey"
-            columns: ["languageName"]
-            isOneToOne: false
-            referencedRelation: "Language"
-            referencedColumns: ["name"]
-          },
-          {
-            foreignKeyName: "UserLanguage_userId_fkey"
-            columns: ["userId"]
-            isOneToOne: false
-            referencedRelation: "User"
-            referencedColumns: ["userId"]
-          },
-        ]
       }
       Vocabulary: {
         Row: {
