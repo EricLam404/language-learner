@@ -1,14 +1,21 @@
 type Language {
-  id: Int!
+  id: ID!
   name: String!
-  vocabularies: [Vocabulary!]!
-  stories: [Story!]!
-  worksheets: [Worksheet!]!
-  users: [UserLanguage!]!
+  code: String!
+  vocabularies: [Vocabulary!]
+  stories: [Story!]
+  worksheets: [Worksheet!]
+  users: [User!]
 }
 
 extend type Query {
   languages: [Language!]!
   language(id: ID!): Language
   languageByName(name: String!): Language
+}
+
+extend type Mutation {
+  createLanguage(name: String!, code: String!): Language!
+  updateLanguage(id: ID!, name: String, code: String): Language!
+  deleteLanguage(id: ID!): Language
 }
