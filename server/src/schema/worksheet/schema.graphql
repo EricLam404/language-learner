@@ -1,5 +1,5 @@
 type Worksheet {
-  id: Int!
+  id: ID!
   content: String!
   user: User!
   language: Language!
@@ -8,7 +8,23 @@ type Worksheet {
   updatedAt: DateTime!
 }
 
+input CreateWorksheetInput {
+  content: String!
+  languageName: String!
+}
+
+input UpdateWorksheetInput {
+  content: String
+  languageName: String
+}
+
 extend type Query {
   worksheets: [Worksheet!]!
   worksheet(id: ID!): Worksheet
+}
+
+extend type Mutation {
+  createWorksheet(input: CreateWorksheetInput!): Worksheet
+  updateWorksheet(id: Int!, input: UpdateWorksheetInput!): Worksheet
+  deleteWorksheet(id: Int!): Worksheet
 }

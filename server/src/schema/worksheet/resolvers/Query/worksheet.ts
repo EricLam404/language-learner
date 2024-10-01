@@ -1,5 +1,5 @@
 import type { QueryResolvers } from "./../../../types.generated";
-export const worksheet: NonNullable<QueryResolvers["worksheet"]> = async (
+export const worksheet: NonNullable<QueryResolvers['worksheet']> = async (
     _parent,
     _arg,
     _ctx
