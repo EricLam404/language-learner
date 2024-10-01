@@ -1,23 +1,39 @@
+input CreateWorksheetInput {
+  content: String!
+  languageName: String!
+}
+
 scalar DateTime
 
 type Language {
+  code: String!
   id: ID!
   name: String!
-  stories: [Story]
-  vocabularies: [Vocabulary]
-  worksheets: [Worksheet]
+  stories: [Story!]
+  users: [User!]
+  vocabularies: [Vocabulary!]
+  worksheets: [Worksheet!]
 }
 
 type Mutation {
+  createLanguage(code: String!, name: String!): Language!
+  createStory(content: String!, description: String!, difficulty: Int!, languageName: String!, tags: [String!]!): Story!
+  createTag(name: String!): Tag!
   createUser(languages: [String!]!, username: String!): User!
-  createUserLanguage(languageName: String!, userId: ID!): UserLanguageResponse
-  createVocabulary(example: String, languageName: String!, meaning: String!, word: String!): Vocabulary
+  createVocabulary(example: String, languageName: String!, meaning: String!, word: String!): Vocabulary!
+  createWorksheet(input: CreateWorksheetInput!): Worksheet!
+  deleteLanguage(id: ID!): Language
+  deleteStory(id: ID!): Story
+  deleteTag(id: ID!): Tag
   deleteUser(id: ID!): User
-  deleteUserLanguage(languageName: String!, userId: ID!): UserLanguageResponse
   deleteVocabulary(id: ID!): Vocabulary
-  updateUser(id: ID!, username: String): User
-  updateUserLanguage(languageName: String!, userId: ID!): UserLanguageResponse
-  updateVocabulary(example: String, id: ID!, languageName: String, meaning: String, word: String): Vocabulary
+  deleteWorksheet(id: Int!): Boolean!
+  updateLanguage(code: String, id: ID!, name: String): Language!
+  updateStory(content: String, description: String, difficulty: Int, id: ID!, languageName: String, tags: [String!]!): Story!
+  updateTag(id: ID!, name: String): Tag!
+  updateUser(id: ID!, username: String): User!
+  updateVocabulary(example: String, id: ID!, languageName: String, meaning: String, word: String): Vocabulary!
+  updateWorksheet(id: Int!, input: UpdateWorksheetInput!): Worksheet!
 }
 
 type Query {
@@ -26,9 +42,9 @@ type Query {
   languages: [Language!]!
   stories: [Story!]!
   story(id: ID!): Story
+  tag(id: ID!): Tag
+  tags: [Tag!]!
   user(userId: ID!): User
-  userLanguage(languageName: String!, userId: ID!): UserLanguage
-  userLanguages(userId: ID!): [UserLanguage!]!
   users: [User!]
   vocabularies: [Vocabulary!]!
   vocabulary(id: ID!): Vocabulary
@@ -37,47 +53,60 @@ type Query {
 }
 
 type Story {
+  audioUrl: String
+  averageRating: Float
   completedAt: DateTime
   content: String!
   createdAt: DateTime!
+  description: String!
+  difficulty: Int!
   id: ID!
-  languageName: String!
+  imageUrl: String
+  isPublished: Boolean!
+  isReviewed: Boolean!
+  language: Language!
+  readCount: Int!
+  startedAt: DateTime
+  tags: [Tag!]!
   updatedAt: DateTime!
-  userId: ID!
+  user: User!
+  vocabularies: [Vocabulary!]!
+}
+
+type Tag {
+  createdAt: DateTime!
+  id: ID!
+  name: String!
+  stories: [Story!]!
+  updatedAt: DateTime!
+}
+
+input UpdateWorksheetInput {
+  content: String
+  languageName: String
 }
 
 type User {
   createdAt: DateTime!
   email: String!
-  languages: [UserLanguage!]
-  stories: [Story!]
+  languages: [Language!]!
+  stories: [Story!]!
   updatedAt: DateTime!
   userId: ID!
   username: String!
-  vocabularies: [Vocabulary!]
-  worksheets: [Worksheet!]
-}
-
-type UserLanguage {
-  languageName: String!
-  userId: ID!
-}
-
-type UserLanguageResponse {
-  message: String
-  success: Boolean!
-  userLanguage: UserLanguage
+  vocabularies: [Vocabulary!]!
+  worksheets: [Worksheet!]!
 }
 
 type Vocabulary {
   createdAt: DateTime!
   example: String
   id: ID!
-  languageName: String!
+  language: Language!
   meaning: String!
   story: Story
   updatedAt: DateTime!
-  user: User
+  user: User!
   word: String!
 }
 
@@ -86,7 +115,7 @@ type Worksheet {
   content: String!
   createdAt: DateTime!
   id: ID!
-  languageName: String!
+  language: Language!
   updatedAt: DateTime!
-  userId: ID!
+  user: User!
 }
