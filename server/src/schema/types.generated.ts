@@ -140,7 +140,7 @@ export type MutationupdateLanguageArgs = {
 
 export type MutationupdateStoryArgs = {
   id: Scalars['ID']['input'];
-  input?: InputMaybe<UpdateStoryInput>;
+  input: UpdateStoryInput;
 };
 
 
@@ -448,7 +448,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
   deleteVocabulary?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteVocabularyArgs, 'id'>>;
   deleteWorksheet?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteWorksheetArgs, 'id'>>;
   updateLanguage?: Resolver<ResolversTypes['Language'], ParentType, ContextType, RequireFields<MutationupdateLanguageArgs, 'id'>>;
-  updateStory?: Resolver<ResolversTypes['Story'], ParentType, ContextType, RequireFields<MutationupdateStoryArgs, 'id'>>;
+  updateStory?: Resolver<ResolversTypes['Story'], ParentType, ContextType, RequireFields<MutationupdateStoryArgs, 'id' | 'input'>>;
   updateTag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType, RequireFields<MutationupdateTagArgs, 'id' | 'name'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationupdateUserArgs, 'id' | 'username'>>;
   updateVocabulary?: Resolver<ResolversTypes['Vocabulary'], ParentType, ContextType, RequireFields<MutationupdateVocabularyArgs, 'id'>>;

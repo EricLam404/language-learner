@@ -48,6 +48,6 @@ input UpdateStoryInput {
 
 extend type Mutation {
   createStory(input: CreateStoryInput!): Story!
-  updateStory(id: ID!, input: UpdateStoryInput): Story!
+  updateStory(id: ID!, input: UpdateStoryInput!): Story!
   deleteStory(id: ID!): Boolean!
 }

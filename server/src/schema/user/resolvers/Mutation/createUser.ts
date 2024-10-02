@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
 
-export const createUser: NonNullable<MutationResolvers["createUser"]> = async (
+export const createUser: NonNullable<MutationResolvers['createUser']> = async (
     _parent,
     _arg,
     _ctx

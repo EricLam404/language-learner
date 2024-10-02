@@ -38,7 +38,7 @@ type Mutation {
   deleteVocabulary(id: ID!): Boolean!
   deleteWorksheet(id: Int!): Boolean!
   updateLanguage(code: String, id: ID!, name: String): Language!
-  updateStory(id: ID!, input: UpdateStoryInput): Story!
+  updateStory(id: ID!, input: UpdateStoryInput!): Story!
   updateTag(id: ID!, name: String!): Tag!
   updateUser(id: ID!, username: String!): User!
   updateVocabulary(example: String, id: ID!, languageName: String, meaning: String, word: String): Vocabulary!

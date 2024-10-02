@@ -1,8 +1,6 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
-export const createStory: NonNullable<
-    MutationResolvers["createStory"]
-> = async (_parent, _arg, _ctx) => {
+export const createStory: NonNullable<MutationResolvers['createStory']> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.createStory resolver logic here */
     try {
         let createTags;
