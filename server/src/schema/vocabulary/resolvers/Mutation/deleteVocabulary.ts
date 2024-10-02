@@ -19,11 +19,11 @@ export const deleteVocabulary: NonNullable<MutationResolvers['deleteVocabulary']
       });
     }
 
-    const vocab = await _ctx.dataSources.prisma.vocabulary.delete({
+    await _ctx.dataSources.prisma.vocabulary.delete({
       where: { id: Number(_arg.id) },
     });
 
-    return vocab;
+    return true;
   } catch (error) {
     console.log(error);
 
