@@ -47,6 +47,11 @@ export async function updateSession(request: NextRequest) {
         url.pathname = "/login";
         return NextResponse.redirect(url);
     }
+    else if (user && !user.app_metadata.profile_created && !request.nextUrl.pathname.startsWith("/create-profile")) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/create-profile";
+        return NextResponse.redirect(url);
+    }
 
     // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
     // creating a new response object with NextResponse.next() make sure to:

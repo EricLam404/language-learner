@@ -56,14 +56,6 @@ app.use(
     express.json(),
     expressMiddleware(server, {
         context: async ({ req }): Promise<MyContext> => {
-            if (!req.cookies["sb-127-auth-token"]) {
-                throw new GraphQLError("User is not authenticated", {
-                    extensions: {
-                        code: "UNAUTHENTICATED",
-                        http: { status: 401 },
-                    },
-                });
-            }
             const token = req.cookies["sb-127-auth-token"].access_token;
             const supabase = getServiceSupabase();
             const {

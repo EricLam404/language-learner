@@ -18,13 +18,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
+import { useEffect } from "react";
 import React from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { useUser } from "@/lib/hooks/useUser";
 import { useRouter } from "next/navigation";
-import { GET_LANGUAGE } from "../../../_components/graphql/queries";
-import { CREATE_USER } from "../../../_components/graphql/mutations";
+import { GET_LANGUAGE } from "../../_components/graphql/queries";
+import { CREATE_USER } from "../../_components/graphql/mutations";
 
 const FormSchema = z.object({
     username: z.string().min(3, {
@@ -46,7 +46,6 @@ type Language = {
 // TODO: Add Username check while user is typing username
 export default function CreateProfile() {
     const { data: user, isLoading, error } = useUser();
-    const [formKey, setFormKey] = useState(0);
     const router = useRouter();
 
     const {
@@ -56,6 +55,13 @@ export default function CreateProfile() {
     } = useQuery(GET_LANGUAGE);
 
     const [createUser] = useMutation(CREATE_USER);
+
+    useEffect(() => {
+        if (user && user.app_metadata.profile_created) {
+            console.log("Profile already created");
+            router.push("/");
+        }
+    }, [user]);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -108,22 +114,12 @@ export default function CreateProfile() {
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
-
-    if (!user) {
-        router.push("/login");
-        return null;
-    }
-
-    if (user.app_metadata.profile) {
-        router.push("/");
-        return null;
-    }
+    if (user && user.app_metadata.profile_created) return null;
 
     return (
         <div className="flex flex-col items-center justify-center h-screen bg-background">
             <Form {...form}>
                 <form
-                    key={formKey}
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-8"
                 >
@@ -170,7 +166,8 @@ export default function CreateProfile() {
                                         There was an error loading the languages
                                     </div>
                                 ) : (
-                                    languageData && languageData.languages.map(
+                                    languageData &&
+                                    languageData.languages.map(
                                         (item: Language) => (
                                             <FormField
                                                 key={item.name}
