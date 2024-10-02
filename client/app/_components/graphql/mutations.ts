@@ -5,7 +5,7 @@ export const CREATE_USER = gql(`
         createUser(username: $username, languages: $languages) {
             username
             languages {
-                languageName
+                name
             }
         }
     }
@@ -57,8 +57,6 @@ export const UPDATE_VOCABULARY = gql(`
 
 export const DELETE_VOCABULARY = gql(`
     mutation DeleteVocabulary($id: ID!) {
-        deleteVocabulary(id: $id) {
-            id
-        }
+        deleteVocabulary(id: $id)
     }
 `);

@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
 
-export const createUser: NonNullable<MutationResolvers['createUser']> = async (
+export const createUser: NonNullable<MutationResolvers["createUser"]> = async (
     _parent,
     _arg,
     _ctx
@@ -10,7 +10,6 @@ export const createUser: NonNullable<MutationResolvers['createUser']> = async (
         const existingUser = await _ctx.dataSources.prisma.user.findUnique({
             where: { username: _arg.username },
         });
-
 
         if (existingUser) {
             throw new GraphQLError("Username already exists", {
@@ -34,19 +33,31 @@ export const createUser: NonNullable<MutationResolvers['createUser']> = async (
             },
         });
 
-        const { error: updateMetaDataError } =
-            await  _ctx.dataSources.supabase.auth.admin.updateUserById(_ctx.user.id, {
-                app_metadata: {
-                    profile: {
-                        ..._ctx.user.app_metadata.profile,
-                        username: _arg.username,
-                        languages: _arg.languages,
+        const { error: updateUserMetaDataError } =
+            await _ctx.dataSources.supabase.auth.admin.updateUserById(
+                _ctx.user.id,
+                {
+                    user_metadata: {
+                        profile: {
+                            ..._ctx.user.app_metadata.profile,
+                            username: _arg.username,
+                            languages: _arg.languages,
+                        },
                     },
-                },
-            });
+                }
+            );
+        const { error: updateAppMetaDataError } =
+            await _ctx.dataSources.supabase.auth.admin.updateUserById(
+                _ctx.user.id,
+                {
+                    app_metadata: {
+                        profile_created: true,
+                    },
+                }
+            );
 
-        if (updateMetaDataError) {
-            console.log(updateMetaDataError)
+        if (updateUserMetaDataError || updateAppMetaDataError) {
+            console.log(updateUserMetaDataError ?? updateAppMetaDataError);
             throw new GraphQLError("An error occurred while creating user.", {
                 extensions: {
                     code: "INTERNAL_SERVER_ERROR",
@@ -56,7 +67,7 @@ export const createUser: NonNullable<MutationResolvers['createUser']> = async (
 
         return result;
     } catch (error) {
-        console.log(error)
+        console.log(error);
 
         if (error instanceof GraphQLError) {
             throw error;
