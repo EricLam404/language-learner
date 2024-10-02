@@ -19,7 +19,7 @@ extend type Query {
 extend type Mutation {
   createUser(username: String!, languages: [String!]!): User!
   updateUser(id: ID!, username: String!): User!
-  deleteUser(id: ID!): User
+  deleteUser(id: ID!): Boolean!
 }
 
 scalar DateTime
