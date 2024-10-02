@@ -1,8 +1,6 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
-export const updateLanguage: NonNullable<
-    MutationResolvers["updateLanguage"]
-> = async (_parent, _arg, _ctx) => {
+export const updateLanguage: NonNullable<MutationResolvers['updateLanguage']> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.updateLanguage resolver logic here */
     if (!_arg.name || !_arg.code) {
         throw new GraphQLError("Name or code are required to update language", {

@@ -1,8 +1,6 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
-export const createStory: NonNullable<
-    MutationResolvers["createStory"]
-> = async (_parent, _arg, _ctx) => {
+export const createStory: NonNullable<MutationResolvers['createStory']> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.createStory resolver logic here */
     try {
         const result = await _ctx.dataSources.prisma.story.create({
@@ -29,9 +27,9 @@ export const createStory: NonNullable<
         if (error instanceof GraphQLError) {
             throw error;
         }
-        throw new GraphQLError("Failed to create language", {
+        throw new GraphQLError("Failed to create story", {
             extensions: {
-                code: "LANGUAGE_CREATION_FAILED",
+                code: "STORY_CREATION_FAILED",
             },
         });
     }

@@ -26,5 +26,5 @@ extend type Query {
 extend type Mutation {
   createWorksheet(input: CreateWorksheetInput!): Worksheet
   updateWorksheet(id: Int!, input: UpdateWorksheetInput!): Worksheet
-  deleteWorksheet(id: Int!): Worksheet
+  deleteWorksheet(id: Int!): Boolean!
 }

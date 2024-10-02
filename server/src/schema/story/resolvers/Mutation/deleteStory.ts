@@ -1,8 +1,6 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
-export const deleteStory: NonNullable<
-    MutationResolvers["deleteStory"]
-> = async (_parent, _arg, _ctx) => {
+export const deleteStory: NonNullable<MutationResolvers['deleteStory']> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.deleteStory resolver logic here */
     try {
         const result = await _ctx.dataSources.prisma.story.delete({

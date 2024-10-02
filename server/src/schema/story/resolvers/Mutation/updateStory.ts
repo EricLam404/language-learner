@@ -1,9 +1,7 @@
 import { GraphQLError } from "graphql";
 import { validateInput } from "../../../../utils/validateInput";
 import type { MutationResolvers } from "./../../../types.generated";
-export const updateStory: NonNullable<
-    MutationResolvers["updateStory"]
-> = async (_parent, _arg, _ctx) => {
+export const updateStory: NonNullable<MutationResolvers['updateStory']> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.updateStory resolver logic here */
     if(!_arg.input) {
         throw new GraphQLError("Input is required to update story", {
@@ -39,9 +37,9 @@ export const updateStory: NonNullable<
     } catch (error) {
         console.log(error);
 
-        throw new GraphQLError("Failed to update language", {
+        throw new GraphQLError("Failed to update story", {
             extensions: {
-                code: "LANGUAGE_UPDATE_FAILED",
+                code: "STORY_UPDATE_FAILED",
             },
         });
     }

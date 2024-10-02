@@ -1,8 +1,6 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
-export const createLanguage: NonNullable<
-    MutationResolvers["createLanguage"]
-> = async (_parent, _arg, _ctx) => {
+export const createLanguage: NonNullable<MutationResolvers['createLanguage']> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.createLanguage resolver logic here */
     try {
         const existingLanguage =

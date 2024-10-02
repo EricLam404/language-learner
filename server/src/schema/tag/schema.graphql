@@ -1,0 +1,19 @@
+type Tag {
+  id: ID!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  stories: [Story!]
+}
+
+extend type Query {
+  tags: [Tag!]!
+  tag(id: ID!): Tag
+}
+
+extend type Mutation {
+  createTag(name: String!): Tag!
+  updateTag(id: ID!, name: String!): Tag!
+  deleteTag(id: ID!): Boolean!
+}
