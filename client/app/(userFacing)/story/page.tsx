@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { stories } from "@/public/dummydata/stories";
 import { SearchIcon, GlobeIcon, ChevronDownIcon } from "@/components/icons";
 import {
     DropdownMenu,
@@ -15,64 +14,81 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { useLanguages } from "@/lib/hooks/useLanguage";
+import { useQuery } from "@apollo/client";
+import { GET_STORIES } from "@app/_components/graphql/stories";
 
-interface stories {
-    id: number;
-    title: string;
-    language: string;
-    difficulty: string;
+const difficultyLevels: Record<number, string> = {
+    1: "Beginner",
+    2: "Intermediate",
+    3: "Advanced",
+};
+
+const levels = Object.values(difficultyLevels);
+
+interface Story {
+    __typename?: "Story";
+    completedAt?: any;
     description: string;
+    id: string;
+    difficulty: number;
+    imageUrl?: string | null;
+    languageName: string;
+    title: string;
+    tags?: { id: string; name: string }[] | null;
 }
-[];
-
-const difficultyLevels = ["Beginner", "Intermediate", "Advanced"];
 
 export default function page() {
-    const { data: languages, isLoading, error } = useLanguages();
+    const { data: languages, isLoading, isError } = useLanguages();
+    const { data: stories, loading, error } = useQuery(GET_STORIES);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
-    const [selectedDifficulties, setSelectedDifficulties] =
-        useState<string[]>(difficultyLevels);
-    const [filteredStories, setFilteredStories] = useState(stories);
+    const [selectedLevels, setSelectedLevels] = useState<string[]>(levels);
+    const [filteredStories, setFilteredStories] = useState<Story[]>([]);
 
     useEffect(() => {
-        if (!isLoading && !error && languages) {
+        if (!isLoading && !isError && languages) {
             setSelectedLanguages(languages);
         }
     }, [languages]);
 
+    useEffect(() => {
+        if (stories?.stories) setFilteredStories(stories.stories);
+    }, [stories]);
+
     const filterStories = () => {
-        let filtered = stories;
+        let filtered = stories?.stories || [];
         if (searchTerm) {
             filtered = filtered.filter(
                 (story) =>
                     story.title
                         .toLowerCase()
                         .includes(searchTerm.toLowerCase()) ||
-                    story.language
+                    story.languageName
                         .toLowerCase()
                         .includes(searchTerm.toLowerCase())
             );
         }
         filtered = filtered.filter((story) =>
-            selectedLanguages.includes(story.language)
+            selectedLanguages.includes(story.languageName)
         );
         filtered = filtered.filter((story) =>
-            selectedDifficulties.includes(story.difficulty)
+            selectedLevels.includes(difficultyLevels[story.difficulty])
         );
         setFilteredStories(filtered);
     };
 
     useEffect(() => {
         filterStories();
-    }, [searchTerm, selectedLanguages, selectedDifficulties]);
+    }, [searchTerm, selectedLanguages, selectedLevels]);
 
     const handleLanguageChange = (value: string) => {
         if (value === "") {
             if (selectedLanguages.length === languages?.length) {
                 setSelectedLanguages([]);
             } else {
-                setSelectedLanguages(stories.map((story) => story.language));
+                setSelectedLanguages(
+                    stories?.stories?.map((story) => story.languageName) || []
+                );
             }
         } else {
             if (selectedLanguages.includes(value)) {
@@ -84,26 +100,23 @@ export default function page() {
             }
         }
     };
-    const handleDifficultyChange = (value: string) => {
+    const handleLevelChange = (value: string) => {
         if (value === "") {
-            if (selectedDifficulties.length === difficultyLevels.length) {
-                setSelectedDifficulties([]);
+            if (selectedLevels.length === levels.length) {
+                setSelectedLevels([]);
             } else {
-                setSelectedDifficulties(
-                    stories.map((story) => story.difficulty)
-                );
+                setSelectedLevels(levels);
             }
         } else {
-            if (selectedDifficulties.includes(value)) {
-                setSelectedDifficulties(
-                    selectedDifficulties.filter((diff) => diff !== value)
+            if (selectedLevels.includes(value)) {
+                setSelectedLevels(
+                    selectedLevels.filter((level) => level !== value)
                 );
             } else {
-                setSelectedDifficulties([...selectedDifficulties, value]);
+                setSelectedLevels([...selectedLevels, value]);
             }
         }
     };
-
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="mb-6 flex items-center justify-between">
@@ -120,7 +133,8 @@ export default function page() {
                         <DropdownMenuContent className="w-48">
                             <DropdownMenuCheckboxItem
                                 checked={
-                                    selectedLanguages.length === languages?.length
+                                    selectedLanguages.length ===
+                                    languages?.length
                                 }
                                 onCheckedChange={() => handleLanguageChange("")}
                             >
@@ -152,27 +166,22 @@ export default function page() {
                         <DropdownMenuContent className="w-48">
                             <DropdownMenuCheckboxItem
                                 checked={
-                                    selectedDifficulties.length ===
-                                    difficultyLevels.length
+                                    selectedLevels.length === levels.length
                                 }
-                                onCheckedChange={() =>
-                                    handleDifficultyChange("")
-                                }
+                                onCheckedChange={() => handleLevelChange("")}
                             >
                                 All Difficulties
                             </DropdownMenuCheckboxItem>
                             <DropdownMenuSeparator />
-                            {difficultyLevels.map((diff) => (
+                            {levels.map((level) => (
                                 <DropdownMenuCheckboxItem
-                                    key={diff}
-                                    checked={selectedDifficulties.includes(
-                                        diff
-                                    )}
+                                    key={level}
+                                    checked={selectedLevels.includes(level)}
                                     onCheckedChange={() =>
-                                        handleDifficultyChange(diff)
+                                        handleLevelChange(level)
                                     }
                                 >
-                                    {diff}
+                                    {level}
                                 </DropdownMenuCheckboxItem>
                             ))}
                         </DropdownMenuContent>
@@ -201,18 +210,20 @@ export default function page() {
                                 </h3>
                                 <Badge
                                     variant={
-                                        story.difficulty.toLowerCase() as
+                                        difficultyLevels[
+                                            story.difficulty
+                                        ].toLowerCase() as
                                             | "beginner"
                                             | "intermediate"
                                             | "advanced"
                                     }
                                 >
-                                    {story.difficulty}
+                                    {difficultyLevels[story.difficulty]}
                                 </Badge>
                             </div>
                             <div className="flex items-center gap-2 text-muted-foreground">
                                 <GlobeIcon className="h-4 w-4" />
-                                <span>{story.language}</span>
+                                <span>{story.languageName}</span>
                             </div>
                             <p className="text-muted-foreground">
                                 {story.description}
