@@ -16,19 +16,16 @@ import {
 import { useLanguages } from "@/lib/hooks/useLanguage";
 import { useQuery } from "@apollo/client";
 import { GET_STORIES } from "@app/_components/graphql/stories";
+import Link from "next/link";
+import { difficultyLevels, levels } from "@app/_components/difficultyLevels";
+import { DeleteStoryForm } from "@app/_components/forms/StoryForms";
+import { Dialog, DialogContent } from "@components/ui/dialog";
 
-const difficultyLevels: Record<number, string> = {
-    1: "Beginner",
-    2: "Intermediate",
-    3: "Advanced",
-};
-
-const levels = Object.values(difficultyLevels);
-
-interface Story {
+export interface Story {
     __typename?: "Story";
     completedAt?: any;
     description: string;
+    content: string;
     id: string;
     difficulty: number;
     imageUrl?: string | null;
@@ -44,7 +41,8 @@ export default function page() {
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
     const [selectedLevels, setSelectedLevels] = useState<string[]>(levels);
     const [filteredStories, setFilteredStories] = useState<Story[]>([]);
-
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [deleteStory, setDeleteStory] = useState<Story | null>(null);
     useEffect(() => {
         if (!isLoading && !isError && languages) {
             setSelectedLanguages(languages);
@@ -54,6 +52,11 @@ export default function page() {
     useEffect(() => {
         if (stories?.stories) setFilteredStories(stories.stories);
     }, [stories]);
+
+    const handleDeleteClick = (story: Story) => {
+        setDeleteStory(story);
+        setDeleteModal(true);
+    };
 
     const filterStories = () => {
         let filtered = stories?.stories || [];
@@ -119,8 +122,8 @@ export default function page() {
     };
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="mb-6 flex items-center justify-between">
-                <div className="flex items-center gap-4">
+            <div className="mb-6 flex flex-col sm:flex-row items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-center gap-4">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="w-48">
@@ -187,17 +190,23 @@ export default function page() {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
-                <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <SearchIcon className="h-5 w-5 text-muted-foreground" />
+
+                <div className="flex flex-col mt-4 sm:flex-row sm:mt-0 gap-4 items-center justify-center">
+                    <Link href="/create-story">
+                        <Button>Add Story</Button>
+                    </Link>
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <SearchIcon className="h-5 w-5 text-muted-foreground" />
+                        </div>
+                        <Input
+                            type="text"
+                            placeholder="Search stories..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-10 pr-4 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+                        />
                     </div>
-                    <Input
-                        type="text"
-                        placeholder="Search stories..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 pr-4 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-1 focus:ring-primary"
-                    />
                 </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -229,25 +238,46 @@ export default function page() {
                                 {story.description}
                             </p>
                         </CardContent>
-                        <CardFooter className="px-4 pb-4">
-                            {/* <Button
+                        <CardFooter className="flex flex-col gap-2">
+                            <Button
                                 variant={
-                                    readStories.includes(story.id)
+                                    !!story.completedAt
                                         ? "secondary"
-                                        : "primary"
+                                        : "default"
                                 }
-                                onClick={() => handleMarkAsRead(story.id)}
-                                className="w-full"
                             >
-                                {readStories.includes(story.id)
-                                    ? "Marked as Read"
-                                    : "Mark as Read"}
-                            </Button> */}
-                            <Button>Mark as Read</Button>
+                                Mark as Read
+                            </Button>
+                            <Link
+                                href={{
+                                    pathname: "/update-story",
+                                    query: {
+                                        story: JSON.stringify(story),
+                                    },
+                                }}
+                            >
+                                <Button variant="outline">Edit</Button>
+                            </Link>
+                            <Button
+                                variant="destructive"
+                                onClick={() => handleDeleteClick(story)}
+                            >
+                                Delete
+                            </Button>
                         </CardFooter>
                     </Card>
                 ))}
             </div>
+            {deleteStory && (
+                <Dialog open={deleteModal} onOpenChange={setDeleteModal}>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DeleteStoryForm
+                            handleClose={() => setDeleteModal(false)}
+                            story={deleteStory}
+                        />
+                    </DialogContent>
+                </Dialog>
+            )}
         </div>
     );
 }

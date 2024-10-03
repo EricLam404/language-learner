@@ -5,6 +5,7 @@ export const GET_STORIES = gql(`
         stories {
             completedAt
             description
+            content
             id
             difficulty
             imageUrl
@@ -24,6 +25,7 @@ export const CREATE_STORY = gql(`
         createStory(input: $input) {
             completedAt
             description
+            content
             id
             difficulty
             imageUrl
@@ -42,6 +44,7 @@ export const UPDATE_STORY = gql(`
         updateStory(id: $updateStoryId, input: $input) {
             completedAt
             description
+            content
             id
             difficulty
             imageUrl
