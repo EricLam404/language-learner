@@ -26,7 +26,8 @@ const page = () => {
                         ...values,
                         description: values.description ? values.description : "",
                         difficulty: Number(DifficultyToNumber[values.difficulty]),
-                        tags: values.tags ? values.tags.split(',').map(item => item.trim()) : []
+                        tags: values.tags ? values.tags.split(',').map(item => item.trim()) : [],
+                        isPublished: values.isPublished === "true",
                     }
                 },
             });

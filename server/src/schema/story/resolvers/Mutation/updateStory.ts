@@ -14,6 +14,18 @@ export const updateStory: NonNullable<
     }
     validateInput(_arg.input);
     try {
+        let createTags;
+        if (_arg.input.tags && _arg.input.tags.length > 1) {
+            createTags = _arg.input.tags.map((tag) => ({
+                create: { name: tag },
+                where: { name: tag },
+            }));
+        } else if (_arg.input.tags && _arg.input.tags.length === 1) {
+            createTags = {
+                create: { name: _arg.input.tags[0] },
+                where: { name: _arg.input.tags[0] },
+            };
+        }
         const story = await _ctx.dataSources.prisma.story.findUnique({
             where: {
                 id: Number(_arg.id),
@@ -54,13 +66,16 @@ export const updateStory: NonNullable<
                 ...(_arg.input.difficulty && {
                     difficulty: _arg.input.difficulty,
                 }),
-                ...(_arg.input.tags && {
+                ...{
                     tags: {
-                        connectOrCreate: _arg.input.tags.map((tag) => ({
-                            where: { name: tag },
-                            create: { name: tag },
-                        })),
+                        connectOrCreate: _arg.input?.tags ? createTags : [],
                     },
+                },
+                ...(_arg.input.translatedTitle && {
+                    translatedTitle: _arg.input.translatedTitle,
+                }),
+                ...(_arg.input.isPublished && {
+                    isPublished: _arg.input.isPublished,
                 }),
             },
         });

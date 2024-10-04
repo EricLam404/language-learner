@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 import type { QueryResolvers } from "./../../../types.generated";
-export const story: NonNullable<QueryResolvers["story"]> = async (
+export const story: NonNullable<QueryResolvers['story']> = async (
     _parent,
     _arg,
     _ctx

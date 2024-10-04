@@ -11,6 +11,8 @@ export const GET_STORIES = gql(`
             imageUrl
             languageName
             title
+            translatedTitle
+            isPublished
             tags {
                 name
                 id
@@ -31,6 +33,8 @@ export const CREATE_STORY = gql(`
             imageUrl
             languageName
             title
+            translatedTitle
+            isPublished
             tags {
                 id
                 name
@@ -50,6 +54,8 @@ export const UPDATE_STORY = gql(`
             imageUrl
             languageName
             title
+            translatedTitle
+            isPublished
             tags {
                 id
                 name
@@ -61,5 +67,27 @@ export const UPDATE_STORY = gql(`
 export const DELETE_STORY = gql(`
     mutation DELETE_STORY($id: ID!) {
         deleteStory(id: $id)
+    }
+`);
+
+export const GET_PUBLIC_STORIES = gql(`
+    query GET_PUBLIC_STORIES($page: Int, $pageSize: Int, $filters: StoryFilters) {
+        publicStories(page: $page, pageSize: $pageSize, filters: $filters) {
+            hasNextPage
+            stories {
+                id
+                title
+                description
+                difficulty
+                languageName
+                user {
+                    username
+                }
+                tags {
+                    name
+                }
+            }
+            totalCount
+        }
     }
 `);

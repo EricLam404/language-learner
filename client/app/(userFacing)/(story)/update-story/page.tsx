@@ -39,6 +39,7 @@ const page = () => {
                         tags: values.tags
                             ? values.tags.split(",").map((item) => item.trim())
                             : [],
+                        isPublished: values.isPublished === "true",
                     },
                 },
             });

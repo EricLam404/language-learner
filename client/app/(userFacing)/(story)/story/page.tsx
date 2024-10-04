@@ -31,6 +31,8 @@ export interface Story {
     imageUrl?: string | null;
     languageName: string;
     title: string;
+    translatedTitle: string;
+    isPublished: boolean;
     tags?: { id: string; name: string }[] | null;
 }
 

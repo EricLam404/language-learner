@@ -33,9 +33,11 @@ import { DialogClose, DialogDescription, DialogHeader, DialogTitle } from "@comp
 const formSchema = z.object({
     languageName: z.string().min(1, { message: "Language is required" }),
     title: z.string().min(1, { message: "Title is required" }),
+    translatedTitle: z.string().min(1, { message: "Translated Title is required" }),
     description: z.string().optional(),
     content: z.string().min(1, { message: "Content is required" }),
     difficulty: z.enum(levels as [string, ...string[]]),
+    isPublished: z.string(),
     tags: z.string().optional(),
 });
 
@@ -50,18 +52,22 @@ export function StoryForm({ onSubmit, story }: StoryFormProps) {
     let defaultValues = {
         languageName: "",
         title: "",
+        translatedTitle: "",
         description: "",
         content: "",
         difficulty: levels[0],
+        isPublished: "false",
         tags: "",
     };
     if (story) {
         defaultValues = {
             languageName: story.languageName,
             title: story.title,
+            translatedTitle: story.translatedTitle,
             description: story.description,
-            content: "",
+            content: story.content,
             difficulty: difficultyLevels[story.difficulty],
+            isPublished: story.isPublished.toString(),
             tags: story.tags ? story.tags.map((tag) => tag.name).join(", ") : "",
         };
     }
@@ -122,6 +128,24 @@ export function StoryForm({ onSubmit, story }: StoryFormProps) {
                 />
                 <FormField
                     control={form.control}
+                    name="translatedTitle"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Translated Title{" "}
+                                <span className="ml-[-2px] text-red-500">
+                                    *
+                                </span>
+                            </FormLabel>
+                            <FormControl>
+                                <Input placeholder="translated title" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
                     name="description"
                     render={({ field }) => (
                         <FormItem>
@@ -150,7 +174,7 @@ export function StoryForm({ onSubmit, story }: StoryFormProps) {
                             >
                                 <FormControl>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select a verified email to display" />
+                                        <SelectValue placeholder="Select a difficuly level" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
@@ -176,6 +200,38 @@ export function StoryForm({ onSubmit, story }: StoryFormProps) {
                             </FormControl>
                             <FormDescription>
                                 Please seperate each tag by a comma
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="isPublished"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Publish Story{" "}
+                                <span className="ml-[-2px] text-red-500">
+                                    *
+                                </span></FormLabel>
+                            <FormControl>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a choice" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="true">Yes</SelectItem>
+                                        <SelectItem value="false">No</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </FormControl>
+                            <FormDescription>
+                                Do you want to make your story public?
                             </FormDescription>
                             <FormMessage />
                         </FormItem>

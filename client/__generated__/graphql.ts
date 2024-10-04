@@ -18,13 +18,25 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type ComprehensionQuestion = {
+  __typename?: 'ComprehensionQuestion';
+  answer: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  options?: Maybe<Array<Scalars['String']['output']>>;
+  question: Scalars['String']['output'];
+  story: Story;
+  storyId: Scalars['ID']['output'];
+};
+
 export type CreateStoryInput = {
   content: Scalars['String']['input'];
   description: Scalars['String']['input'];
   difficulty: Scalars['Int']['input'];
+  isPublished: Scalars['Boolean']['input'];
   languageName: Scalars['String']['input'];
   tags: Array<Scalars['String']['input']>;
   title: Scalars['String']['input'];
+  translatedTitle: Scalars['String']['input'];
 };
 
 export type CreateWorksheetInput = {
@@ -170,11 +182,19 @@ export type MutationUpdateWorksheetArgs = {
   input: UpdateWorksheetInput;
 };
 
+export type PaginatedStoriesResponse = {
+  __typename?: 'PaginatedStoriesResponse';
+  hasNextPage: Scalars['Boolean']['output'];
+  stories: Array<Story>;
+  totalCount: Scalars['Int']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   language?: Maybe<Language>;
   languageByName?: Maybe<Language>;
   languages: Array<Language>;
+  publicStories: PaginatedStoriesResponse;
   stories: Array<Story>;
   story?: Maybe<Story>;
   tag?: Maybe<Tag>;
@@ -195,6 +215,15 @@ export type QueryLanguageArgs = {
 
 export type QueryLanguageByNameArgs = {
   name: Scalars['String']['input'];
+};
+
+
+export type QueryPublicStoriesArgs = {
+  filters?: InputMaybe<StoryFilters>;
+  orderBy?: InputMaybe<Scalars['String']['input']>;
+  orderDirection?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -222,11 +251,24 @@ export type QueryWorksheetArgs = {
   id: Scalars['ID']['input'];
 };
 
+export type ReadingProgress = {
+  __typename?: 'ReadingProgress';
+  completedAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  lastReadAt?: Maybe<Scalars['DateTime']['output']>;
+  startedAt: Scalars['DateTime']['output'];
+  story?: Maybe<Story>;
+  storyId: Scalars['ID']['output'];
+  user?: Maybe<User>;
+  userId: Scalars['ID']['output'];
+};
+
 export type Story = {
   __typename?: 'Story';
   audioUrl?: Maybe<Scalars['String']['output']>;
   averageRating?: Maybe<Scalars['Float']['output']>;
   completedAt?: Maybe<Scalars['DateTime']['output']>;
+  comprehensionQuestions?: Maybe<Array<ComprehensionQuestion>>;
   content: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
   description: Scalars['String']['output'];
@@ -237,12 +279,20 @@ export type Story = {
   isReviewed: Scalars['Boolean']['output'];
   languageName: Scalars['String']['output'];
   readCount: Scalars['Int']['output'];
-  startedAt?: Maybe<Scalars['DateTime']['output']>;
+  readingProgress?: Maybe<Array<ReadingProgress>>;
   tags?: Maybe<Array<Tag>>;
   title: Scalars['String']['output'];
+  translatedTitle: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
   user?: Maybe<User>;
   vocabularies?: Maybe<Array<Vocabulary>>;
+};
+
+export type StoryFilters = {
+  difficulty?: InputMaybe<Scalars['Int']['input']>;
+  languageName?: InputMaybe<Scalars['String']['input']>;
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type Tag = {
@@ -258,9 +308,11 @@ export type UpdateStoryInput = {
   content?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   difficulty?: InputMaybe<Scalars['Int']['input']>;
+  isPublished?: InputMaybe<Scalars['Boolean']['input']>;
   languageName?: InputMaybe<Scalars['String']['input']>;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
   title?: InputMaybe<Scalars['String']['input']>;
+  translatedTitle?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateWorksheetInput = {
@@ -354,14 +406,14 @@ export type Get_VocabulariesQuery = { __typename?: 'Query', vocabularies: Array<
 export type Get_StoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type Get_StoriesQuery = { __typename?: 'Query', stories: Array<{ __typename?: 'Story', completedAt?: any | null, description: string, content: string, id: string, difficulty: number, imageUrl?: string | null, languageName: string, title: string, tags?: Array<{ __typename?: 'Tag', name: string, id: string }> | null }> };
+export type Get_StoriesQuery = { __typename?: 'Query', stories: Array<{ __typename?: 'Story', completedAt?: any | null, description: string, content: string, id: string, difficulty: number, imageUrl?: string | null, languageName: string, title: string, translatedTitle: string, isPublished: boolean, tags?: Array<{ __typename?: 'Tag', name: string, id: string }> | null }> };
 
 export type Create_StoryMutationVariables = Exact<{
   input: CreateStoryInput;
 }>;
 
 
-export type Create_StoryMutation = { __typename?: 'Mutation', createStory: { __typename?: 'Story', completedAt?: any | null, description: string, content: string, id: string, difficulty: number, imageUrl?: string | null, languageName: string, title: string, tags?: Array<{ __typename?: 'Tag', id: string, name: string }> | null } };
+export type Create_StoryMutation = { __typename?: 'Mutation', createStory: { __typename?: 'Story', completedAt?: any | null, description: string, content: string, id: string, difficulty: number, imageUrl?: string | null, languageName: string, title: string, translatedTitle: string, isPublished: boolean, tags?: Array<{ __typename?: 'Tag', id: string, name: string }> | null } };
 
 export type Update_StoryMutationVariables = Exact<{
   updateStoryId: Scalars['ID']['input'];
@@ -369,7 +421,7 @@ export type Update_StoryMutationVariables = Exact<{
 }>;
 
 
-export type Update_StoryMutation = { __typename?: 'Mutation', updateStory: { __typename?: 'Story', completedAt?: any | null, description: string, content: string, id: string, difficulty: number, imageUrl?: string | null, languageName: string, title: string, tags?: Array<{ __typename?: 'Tag', id: string, name: string }> | null } };
+export type Update_StoryMutation = { __typename?: 'Mutation', updateStory: { __typename?: 'Story', completedAt?: any | null, description: string, content: string, id: string, difficulty: number, imageUrl?: string | null, languageName: string, title: string, translatedTitle: string, isPublished: boolean, tags?: Array<{ __typename?: 'Tag', id: string, name: string }> | null } };
 
 export type Delete_StoryMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -378,6 +430,15 @@ export type Delete_StoryMutationVariables = Exact<{
 
 export type Delete_StoryMutation = { __typename?: 'Mutation', deleteStory: boolean };
 
+export type Get_Public_StoriesQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  filters?: InputMaybe<StoryFilters>;
+}>;
+
+
+export type Get_Public_StoriesQuery = { __typename?: 'Query', publicStories: { __typename?: 'PaginatedStoriesResponse', hasNextPage: boolean, totalCount: number, stories: Array<{ __typename?: 'Story', id: string, title: string, description: string, difficulty: number, languageName: string, user?: { __typename?: 'User', username: string } | null, tags?: Array<{ __typename?: 'Tag', name: string }> | null }> } };
+
 
 export const CreateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"username"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"languages"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"username"},"value":{"kind":"Variable","name":{"kind":"Name","value":"username"}}},{"kind":"Argument","name":{"kind":"Name","value":"languages"},"value":{"kind":"Variable","name":{"kind":"Name","value":"languages"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"languages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<CreateUserMutation, CreateUserMutationVariables>;
 export const CreateVocabularyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateVocabulary"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"word"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"meaning"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"example"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"languageName"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createVocabulary"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"word"},"value":{"kind":"Variable","name":{"kind":"Name","value":"word"}}},{"kind":"Argument","name":{"kind":"Name","value":"meaning"},"value":{"kind":"Variable","name":{"kind":"Name","value":"meaning"}}},{"kind":"Argument","name":{"kind":"Name","value":"example"},"value":{"kind":"Variable","name":{"kind":"Name","value":"example"}}},{"kind":"Argument","name":{"kind":"Name","value":"languageName"},"value":{"kind":"Variable","name":{"kind":"Name","value":"languageName"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"example"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"meaning"}}]}}]}}]} as unknown as DocumentNode<CreateVocabularyMutation, CreateVocabularyMutationVariables>;
@@ -385,7 +446,8 @@ export const UpdateVocabularyDocument = {"kind":"Document","definitions":[{"kind
 export const DeleteVocabularyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteVocabulary"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteVocabulary"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<DeleteVocabularyMutation, DeleteVocabularyMutationVariables>;
 export const GetLanguagesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLanguages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"languages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<GetLanguagesQuery, GetLanguagesQueryVariables>;
 export const Get_VocabulariesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GET_VOCABULARIES"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"vocabularies"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"word"}},{"kind":"Field","name":{"kind":"Name","value":"meaning"}},{"kind":"Field","name":{"kind":"Name","value":"example"}}]}}]}}]} as unknown as DocumentNode<Get_VocabulariesQuery, Get_VocabulariesQueryVariables>;
-export const Get_StoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GET_STORIES"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"stories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"completedAt"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"difficulty"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<Get_StoriesQuery, Get_StoriesQueryVariables>;
-export const Create_StoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CREATE_STORY"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateStoryInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createStory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"completedAt"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"difficulty"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<Create_StoryMutation, Create_StoryMutationVariables>;
-export const Update_StoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UPDATE_STORY"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateStoryId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateStoryInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateStory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateStoryId"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"completedAt"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"difficulty"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<Update_StoryMutation, Update_StoryMutationVariables>;
+export const Get_StoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GET_STORIES"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"stories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"completedAt"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"difficulty"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"translatedTitle"}},{"kind":"Field","name":{"kind":"Name","value":"isPublished"}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<Get_StoriesQuery, Get_StoriesQueryVariables>;
+export const Create_StoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CREATE_STORY"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateStoryInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createStory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"completedAt"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"difficulty"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"translatedTitle"}},{"kind":"Field","name":{"kind":"Name","value":"isPublished"}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<Create_StoryMutation, Create_StoryMutationVariables>;
+export const Update_StoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UPDATE_STORY"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateStoryId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateStoryInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateStory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateStoryId"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"completedAt"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"difficulty"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"translatedTitle"}},{"kind":"Field","name":{"kind":"Name","value":"isPublished"}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<Update_StoryMutation, Update_StoryMutationVariables>;
 export const Delete_StoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DELETE_STORY"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteStory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<Delete_StoryMutation, Delete_StoryMutationVariables>;
+export const Get_Public_StoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GET_PUBLIC_STORIES"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"page"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pageSize"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filters"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"StoryFilters"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"publicStories"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"page"},"value":{"kind":"Variable","name":{"kind":"Name","value":"page"}}},{"kind":"Argument","name":{"kind":"Name","value":"pageSize"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pageSize"}}},{"kind":"Argument","name":{"kind":"Name","value":"filters"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filters"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"stories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"difficulty"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}}]}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<Get_Public_StoriesQuery, Get_Public_StoriesQueryVariables>;
