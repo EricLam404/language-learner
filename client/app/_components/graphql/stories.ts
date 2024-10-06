@@ -91,3 +91,13 @@ export const GET_PUBLIC_STORIES = gql(`
         }
     }
 `);
+
+export const GET_STORY = gql(`
+    query GET_STORY($storyId: ID!) {
+        story(id: $storyId) {
+            title,
+            translatedTitle
+            content
+        }
+    }
+`);

@@ -21,7 +21,7 @@ export const story: NonNullable<QueryResolvers['story']> = async (
             });
         }
 
-        if (story.userId !== _ctx.user.id) {
+        if (story.userId !== _ctx.user.id && !story.isPublished) {
             throw new GraphQLError(
                 "You are not authorized to access this story",
                 {

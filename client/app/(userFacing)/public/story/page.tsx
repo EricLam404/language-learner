@@ -17,6 +17,7 @@ import { useLanguages } from "@/lib/hooks/useLanguage";
 import { useQuery } from "@apollo/client";
 import { GET_PUBLIC_STORIES } from "@app/_components/graphql/stories";
 import { difficultyLevels, levels } from "@app/_components/difficultyLevels";
+import Link from "next/link";
 
 export interface Story {
     __typename?: "Story";
@@ -35,7 +36,6 @@ export interface Story {
         name: string;
     }> | null;
 }
-
 
 // TODO: Add search functionality with timeout
 // TODO: Add search by tags
@@ -56,7 +56,8 @@ export default function page() {
     }, [languages]);
 
     useEffect(() => {
-        if (stories?.publicStories) setFilteredStories(stories.publicStories.stories);
+        if (stories?.publicStories)
+            setFilteredStories(stories.publicStories.stories);
     }, [stories]);
 
     // const handleSearchChange = (e) => {
@@ -102,7 +103,9 @@ export default function page() {
                 setSelectedLanguages([]);
             } else {
                 setSelectedLanguages(
-                    stories?.publicStories.stories.map((story) => story.languageName) || []
+                    stories?.publicStories.stories.map(
+                        (story) => story.languageName
+                    ) || []
                 );
             }
         } else {
@@ -220,37 +223,46 @@ export default function page() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {filteredStories.map((story) => (
-                    <Card key={story.id} className="relative">
-                        <CardContent className="p-4 space-y-2">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-medium">
-                                    {story.title}
-                                </h3>
-                                <Badge
-                                    variant={
-                                        difficultyLevels[
-                                            story.difficulty
-                                        ].toLowerCase() as
-                                            | "beginner"
-                                            | "intermediate"
-                                            | "advanced"
-                                    }
-                                >
-                                    {difficultyLevels[story.difficulty]}
-                                </Badge>
-                            </div>
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                                <GlobeIcon className="h-4 w-4" />
-                                <span>{story.languageName}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                                <span>Author: {story.user ? story.user.username : "N/A"}</span>
-                            </div>
-                            <p className="text-muted-foreground">
-                                {story.description}
-                            </p>
-                        </CardContent>
-                    </Card>
+                    <Link href={`/story/view/${story.id}`} key={story.id}>
+                        <Card key={story.id} className="relative h-full">
+                            <CardContent className="p-4 space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-lg font-medium">
+                                        {story.title}
+                                    </h3>
+                                    <Badge
+                                        variant={
+                                            difficultyLevels[
+                                                story.difficulty
+                                            ].toLowerCase() as
+                                                | "beginner"
+                                                | "intermediate"
+                                                | "advanced"
+                                        }
+                                    >
+                                        {difficultyLevels[story.difficulty]}
+                                    </Badge>
+                                </div>
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                    <GlobeIcon className="h-4 w-4" />
+                                    <span>{story.languageName}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                    <span>
+                                        Author:{" "}
+                                        {story.user
+                                            ? story.user.username
+                                            : "N/A"}
+                                    </span>
+                                </div>
+                                <p className="text-muted-foreground">
+                                    {story.description
+                                        ? story.description
+                                        : "No description"}
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </Link>
                 ))}
             </div>
         </div>

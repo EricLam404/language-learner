@@ -24,6 +24,7 @@ const documents = {
     "\n    mutation UPDATE_STORY($updateStoryId: ID!, $input: UpdateStoryInput!) {\n        updateStory(id: $updateStoryId, input: $input) {\n            completedAt\n            description\n            content\n            id\n            difficulty\n            imageUrl\n            languageName\n            title\n            translatedTitle\n            isPublished\n            tags {\n                id\n                name\n            }\n        }\n    }\n": types.Update_StoryDocument,
     "\n    mutation DELETE_STORY($id: ID!) {\n        deleteStory(id: $id)\n    }\n": types.Delete_StoryDocument,
     "\n    query GET_PUBLIC_STORIES($page: Int, $pageSize: Int, $filters: StoryFilters) {\n        publicStories(page: $page, pageSize: $pageSize, filters: $filters) {\n            hasNextPage\n            stories {\n                id\n                title\n                description\n                difficulty\n                languageName\n                user {\n                    username\n                }\n                tags {\n                    name\n                }\n            }\n            totalCount\n        }\n    }\n": types.Get_Public_StoriesDocument,
+    "\n    query GET_STORY($storyId: ID!) {\n        story(id: $storyId) {\n            title,\n            translatedTitle\n            content\n        }\n    }\n": types.Get_StoryDocument,
 };
 
 /**
@@ -84,6 +85,10 @@ export function gql(source: "\n    mutation DELETE_STORY($id: ID!) {\n        de
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n    query GET_PUBLIC_STORIES($page: Int, $pageSize: Int, $filters: StoryFilters) {\n        publicStories(page: $page, pageSize: $pageSize, filters: $filters) {\n            hasNextPage\n            stories {\n                id\n                title\n                description\n                difficulty\n                languageName\n                user {\n                    username\n                }\n                tags {\n                    name\n                }\n            }\n            totalCount\n        }\n    }\n"): (typeof documents)["\n    query GET_PUBLIC_STORIES($page: Int, $pageSize: Int, $filters: StoryFilters) {\n        publicStories(page: $page, pageSize: $pageSize, filters: $filters) {\n            hasNextPage\n            stories {\n                id\n                title\n                description\n                difficulty\n                languageName\n                user {\n                    username\n                }\n                tags {\n                    name\n                }\n            }\n            totalCount\n        }\n    }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    query GET_STORY($storyId: ID!) {\n        story(id: $storyId) {\n            title,\n            translatedTitle\n            content\n        }\n    }\n"): (typeof documents)["\n    query GET_STORY($storyId: ID!) {\n        story(id: $storyId) {\n            title,\n            translatedTitle\n            content\n        }\n    }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

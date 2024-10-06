@@ -213,61 +213,56 @@ export default function page() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {filteredStories.map((story) => (
-                    <Card key={story.id} className="relative">
-                        <CardContent className="p-4 space-y-2">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-medium">
-                                    {story.title}
-                                </h3>
-                                <Badge
-                                    variant={
-                                        difficultyLevels[
-                                            story.difficulty
-                                        ].toLowerCase() as
-                                            | "beginner"
-                                            | "intermediate"
-                                            | "advanced"
-                                    }
+                    <Link href={`/story/view/${story.id}`} key={story.id}>
+                        <Card key={story.id} className="relative h-full">
+                            <CardContent className="p-4 space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-lg font-medium">
+                                        {story.title}
+                                    </h3>
+                                    <Badge
+                                        variant={
+                                            difficultyLevels[
+                                                story.difficulty
+                                            ].toLowerCase() as
+                                                | "beginner"
+                                                | "intermediate"
+                                                | "advanced"
+                                        }
+                                    >
+                                        {difficultyLevels[story.difficulty]}
+                                    </Badge>
+                                </div>
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                    <GlobeIcon className="h-4 w-4" />
+                                    <span>{story.languageName}</span>
+                                </div>
+                                <p className="text-muted-foreground">
+                                    {story.description
+                                        ? story.description
+                                        : "No description"}
+                                </p>
+                            </CardContent>
+                            <CardFooter className="flex flex-col gap-2">
+                                <Link
+                                    href={{
+                                        pathname: "/update-story",
+                                        query: {
+                                            story: JSON.stringify(story),
+                                        },
+                                    }}
                                 >
-                                    {difficultyLevels[story.difficulty]}
-                                </Badge>
-                            </div>
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                                <GlobeIcon className="h-4 w-4" />
-                                <span>{story.languageName}</span>
-                            </div>
-                            <p className="text-muted-foreground">
-                                {story.description}
-                            </p>
-                        </CardContent>
-                        <CardFooter className="flex flex-col gap-2">
-                            <Button
-                                variant={
-                                    !!story.completedAt
-                                        ? "secondary"
-                                        : "default"
-                                }
-                            >
-                                Mark as Read
-                            </Button>
-                            <Link
-                                href={{
-                                    pathname: "/update-story",
-                                    query: {
-                                        story: JSON.stringify(story),
-                                    },
-                                }}
-                            >
-                                <Button variant="outline">Edit</Button>
-                            </Link>
-                            <Button
-                                variant="destructive"
-                                onClick={() => handleDeleteClick(story)}
-                            >
-                                Delete
-                            </Button>
-                        </CardFooter>
-                    </Card>
+                                    <Button variant="outline">Edit</Button>
+                                </Link>
+                                <Button
+                                    variant="destructive"
+                                    onClick={() => handleDeleteClick(story)}
+                                >
+                                    Delete
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    </Link>
                 ))}
             </div>
             {deleteStory && (
