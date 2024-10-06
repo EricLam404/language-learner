@@ -9,6 +9,40 @@ import {
 import { Button } from "@components/ui/button";
 import { MountainIcon, ChevronDownIcon, MenuIcon } from "lucide-react";
 
+const links = [
+    {
+        href: "/dashboard",
+        label: "Dashboard",
+    },
+    {
+        href: "library",
+        label: "My Library",
+    },
+    {
+        href: "/story",
+        label: "My Stories",
+    },
+    {
+        href: "/vocabulary",
+        label: "My Vocabulary",
+    },
+]
+
+const publicContent = [
+    {
+        href: "/public/story",
+        label: "Public Stories",
+    },
+    // {
+    //     href: "#",
+    //     label: "Public Vocabulary",
+    // },
+    // {
+    //     href: "#",
+    //     label: "Public Worksheets",
+    // },
+]
+
 const Header = () => {
     return (
         <Nav>
@@ -23,27 +57,16 @@ const Header = () => {
             <div className="flex w-full justify-end gap-2 md:gap-16">
                 {/* Desktop Navigation */}
                 <nav className="hidden items-center gap-4 justify-right md:justify-center md:flex">
-                    <NavLink
-                        href="/dashboard"
-                        className="font-medium hover:text-primary"
-                        prefetch={false}
-                    >
-                        Dashboard
-                    </NavLink>
-                    <NavLink
-                        href="/story"
-                        className="font-medium hover:text-primary"
-                        prefetch={false}
-                    >
-                        My Stories
-                    </NavLink>
-                    <NavLink
-                        href="/vocabulary"
-                        className="font-medium hover:text-primary"
-                        prefetch={false}
-                    >
-                        My Vocabulary
-                    </NavLink>
+                    {links.map((link) => (
+                        <NavLink
+                            href={link.href}
+                            className="font-medium hover:text-primary"
+                            prefetch={false}
+                        >
+                            {link.label}
+                        </NavLink>
+                    ))}
+                    
                     {/* <NavLink
                     href="#"
                     className="font-medium hover:text-primary"
@@ -62,21 +85,16 @@ const Header = () => {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                                <NavLink href="/public/story" prefetch={false}>
-                                    Public Stories
-                                </NavLink>
-                            </DropdownMenuItem>
-                            {/* <DropdownMenuItem>
-                            <NavLink href="#" prefetch={false}>
-                                Public Vocabulary
-                            </NavLink>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <NavLink href="#" prefetch={false}>
-                                Public Worksheets
-                            </NavLink>
-                        </DropdownMenuItem> */}
+                            {publicContent.map((link) => (
+                                <DropdownMenuItem>
+                                    <NavLink
+                                        href={link.href}
+                                        prefetch={false}
+                                    >
+                                        {link.label}
+                                    </NavLink>
+                                </DropdownMenuItem>
+                            ))}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </nav>
@@ -93,53 +111,39 @@ const Header = () => {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                                <NavLink
-                                    href="/dashboard"
-                                    className="font-medium hover:text-primary"
-                                    prefetch={false}
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <NavLink
-                                    href="/story"
-                                    className="font-medium hover:text-primary"
-                                    prefetch={false}
-                                >
-                                    My Stories
-                                </NavLink>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <NavLink
-                                    href="/vocabulary"
-                                    className="font-medium hover:text-primary"
-                                    prefetch={false}
-                                >
-                                    My Vocabulary
-                                </NavLink>
-                            </DropdownMenuItem>
+                            {links.map((link) => (
+                                <DropdownMenuItem>
+                                    <NavLink
+                                        href={link.href}
+                                        className="font-medium hover:text-primary"
+                                        prefetch={false}
+                                    >
+                                        {link.label}
+                                    </NavLink>
+                                </DropdownMenuItem>
+                            ))}
                             <DropdownMenuItem>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button
                                             variant="ghost"
-                                            className="font-medium text-base"
+                                            className="md:font-medium text-base"
                                         >
                                             Public Content{" "}
                                             <ChevronDownIcon className="ml-1 h-4 w-4" />
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuItem>
-                                            <NavLink
-                                                href="/public/story"
-                                                prefetch={false}
-                                            >
-                                                Public Stories
-                                            </NavLink>
-                                        </DropdownMenuItem>
+                                        {publicContent.map((link) => (
+                                            <DropdownMenuItem>
+                                                <NavLink
+                                                    href={link.href}
+                                                    prefetch={false}
+                                                >
+                                                    {link.label}
+                                                </NavLink>
+                                            </DropdownMenuItem>
+                                        ))}
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </DropdownMenuItem>
