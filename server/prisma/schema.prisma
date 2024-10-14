@@ -9,15 +9,16 @@ datasource db {
 }
 
 model User {
-  userId       String       @id @unique @db.Uuid
-  email        String       @unique
-  username     String       @unique
-  createdAt    DateTime     @default(now()) @db.Timestamptz(3)
-  updatedAt    DateTime     @updatedAt @db.Timestamptz(3)
-  languages    Language[]
-  vocabularies Vocabulary[]
-  stories      Story[]
-  worksheets   Worksheet[]
+  userId          String            @id @unique @db.Uuid
+  email           String            @unique
+  username        String            @unique
+  createdAt       DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime          @updatedAt @db.Timestamptz(3)
+  languages       Language[]
+  vocabularies    Vocabulary[]
+  stories         Story[]
+  worksheets      Worksheet[]
+  readingProgress ReadingProgress[]
 }
 
 model Language {
@@ -46,27 +47,56 @@ model Vocabulary {
 }
 
 model Story {
-  id            Int          @id @default(autoincrement())
-  title         String
-  description   String
-  content       String
-  difficulty    Int
-  readCount     Int
-  audioUrl      String?
-  imageUrl      String?
-  averageRating Float?
-  isPublished   Boolean      @default(false)
-  isReviewed    Boolean      @default(false)
-  vocabularies  Vocabulary[]
-  userId        String       @db.Uuid
-  user          User         @relation(fields: [userId], references: [userId])
-  languageName  String
-  language      Language     @relation(fields: [languageName], references: [name])
-  startedAt     DateTime?    @db.Timestamptz(3)
-  completedAt   DateTime?    @db.Timestamptz(3)
-  createdAt     DateTime     @default(now()) @db.Timestamptz(3)
-  updatedAt     DateTime     @updatedAt @db.Timestamptz(3)
-  tags          Tag[]
+  id                     Int                     @id @default(autoincrement())
+  title                  String
+  translatedTitle        String
+  description            String
+  content                String
+  difficulty             Int
+  readCount              Int                     @default(0)
+  audioUrl               String?
+  imageUrl               String?
+  averageRating          Float?
+  isPublished            Boolean                 @default(false)
+  isReviewed             Boolean                 @default(false)
+  vocabularies           Vocabulary[]
+  userId                 String                  @db.Uuid
+  user                   User                    @relation(fields: [userId], references: [userId])
+  languageName           String
+  language               Language                @relation(fields: [languageName], references: [name])
+  createdAt              DateTime                @default(now()) @db.Timestamptz(3)
+  updatedAt              DateTime                @updatedAt @db.Timestamptz(3)
+  tags                   Tag[]
+  readingProgress        ReadingProgress[]
+  comprehensionQuestions ComprehensionQuestion[]
+}
+
+model ReadingProgress {
+  id               Int       @id @default(autoincrement())
+  userId           String    @db.Uuid
+  user             User      @relation(fields: [userId], references: [userId])
+  storyId          Int
+  story            Story     @relation(fields: [storyId], references: [id])
+  progress         Float     @default(0)
+  startedAt        DateTime  @db.Timestamptz(3)
+  completedAt      DateTime? @db.Timestamptz(3)
+  lastReadAt       DateTime? @db.Timestamptz(3)
+  addedToLibraryAt DateTime? @db.Timestamptz(3)
+  currentPosition  Json?
+  rating           Int?
+  createdAt        DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime  @updatedAt @db.Timestamptz(3)
+
+  @@unique([userId, storyId])
+}
+
+model ComprehensionQuestion {
+  id       Int      @id @default(autoincrement())
+  question String
+  options  String[]
+  answer   Int
+  storyId  Int
+  story    Story    @relation(fields: [storyId], references: [id])
 }
 
 model Tag {
@@ -88,3 +118,34 @@ model Worksheet {
   createdAt    DateTime  @default(now()) @db.Timestamptz(3)
   updatedAt    DateTime  @updatedAt @db.Timestamptz(3)
 }
+
+// model FlashcardSet {
+//   id           Int          @id @default(autoincrement())
+//   name         String
+//   description  String?
+//   userId       String       @db.Uuid
+//   user         User         @relation(fields: [userId], references: [userId])
+//   vocabularies Vocabulary[]
+//   cards        Flashcard[]
+// }
+
+// model Flashcard {
+//   id            Int          @id @default(autoincrement())
+//   setId         Int
+//   set           FlashcardSet @relation(fields: [setId], references: [id])
+//   nextReviewAt  DateTime     @db.Timestamptz(3)
+//   easeFactor    Float        @default(2.5)
+//   interval      Int          @default(0)
+//   repetitions   Int          @default(0)
+// }
+
+// model ChatSession {
+//   id           Int      @id @default(autoincrement())
+//   userId       String   @db.Uuid
+//   user         User     @relation(fields: [userId], references: [userId])
+//   languageName String
+//   language     Language @relation(fields: [languageName], references: [name])
+//   messages     Json[]   // Array of message objects
+//   createdAt    DateTime @default(now()) @db.Timestamptz(3)
+//   updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+// }
