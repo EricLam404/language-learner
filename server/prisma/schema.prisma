@@ -19,84 +19,122 @@ model User {
   stories         Story[]
   worksheets      Worksheet[]
   readingProgress ReadingProgress[]
+  FlashcardSet    FlashcardSet[]
+  ChatSession     ChatSession[]
+  Submission      Submission[]
 }
 
 model Language {
-  id           Int          @id @default(autoincrement())
-  name         String       @unique
-  code         String       @unique
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  code         String        @unique
   vocabularies Vocabulary[]
   stories      Story[]
   worksheets   Worksheet[]
   users        User[]
+  ChatSession  ChatSession[]
 }
 
 model Vocabulary {
-  id           Int      @id @default(autoincrement())
-  word         String
-  meaning      String
-  example      String?
-  userId       String   @db.Uuid
-  user         User     @relation(fields: [userId], references: [userId])
-  languageName String
-  language     Language @relation(fields: [languageName], references: [name])
-  createdAt    DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
-  storyId      Int?
-  Story        Story?   @relation(fields: [storyId], references: [id])
+  id             Int           @id @default(autoincrement())
+  word           String
+  meaning        String
+  example        String?
+  userId         String        @db.Uuid
+  user           User          @relation(fields: [userId], references: [userId])
+  languageName   String
+  language       Language      @relation(fields: [languageName], references: [name])
+  createdAt      DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime      @updatedAt @db.Timestamptz(3)
+  stories        Story[]
+  FlashcardSet   FlashcardSet? @relation(fields: [flashcardSetId], references: [id])
+  flashcardSetId Int?
 }
 
 model Story {
+  id              Int               @id @default(autoincrement())
+  title           String
+  translatedTitle String
+  description     String
+  content         String
+  difficulty      Int
+  readCount       Int               @default(0)
+  audioUrl        String?
+  imageUrl        String?
+  averageRating   Float?
+  isPublished     Boolean           @default(false)
+  isReviewed      Boolean           @default(false)
+  vocabularies    Vocabulary[]
+  userId          String            @db.Uuid
+  user            User              @relation(fields: [userId], references: [userId])
+  languageName    String
+  language        Language          @relation(fields: [languageName], references: [name])
+  createdAt       DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime          @updatedAt @db.Timestamptz(3)
+  tags            Tag[]
+  readingProgress ReadingProgress[]
+  chapters        Chapter[]
+}
+
+model Chapter {
   id                     Int                     @id @default(autoincrement())
   title                  String
-  translatedTitle        String
-  description            String
   content                String
-  difficulty             Int
-  readCount              Int                     @default(0)
+  orderIndex             Int // To maintain chapter order
+  estimatedReadingTime   Int // In minutes
   audioUrl               String?
-  imageUrl               String?
-  averageRating          Float?
-  isPublished            Boolean                 @default(false)
-  isReviewed             Boolean                 @default(false)
-  vocabularies           Vocabulary[]
-  userId                 String                  @db.Uuid
-  user                   User                    @relation(fields: [userId], references: [userId])
-  languageName           String
-  language               Language                @relation(fields: [languageName], references: [name])
+  storyId                Int
+  story                  Story                   @relation(fields: [storyId], references: [id])
   createdAt              DateTime                @default(now()) @db.Timestamptz(3)
   updatedAt              DateTime                @updatedAt @db.Timestamptz(3)
-  tags                   Tag[]
-  readingProgress        ReadingProgress[]
+  chapterProgresses      ChapterProgress[]
   comprehensionQuestions ComprehensionQuestion[]
+
+  @@unique([storyId, orderIndex])
 }
 
 model ReadingProgress {
-  id               Int       @id @default(autoincrement())
-  userId           String    @db.Uuid
-  user             User      @relation(fields: [userId], references: [userId])
-  storyId          Int
-  story            Story     @relation(fields: [storyId], references: [id])
-  progress         Float     @default(0)
-  startedAt        DateTime  @db.Timestamptz(3)
-  completedAt      DateTime? @db.Timestamptz(3)
-  lastReadAt       DateTime? @db.Timestamptz(3)
-  addedToLibraryAt DateTime? @db.Timestamptz(3)
-  currentPosition  Json?
-  rating           Int?
-  createdAt        DateTime  @default(now()) @db.Timestamptz(3)
-  updatedAt        DateTime  @updatedAt @db.Timestamptz(3)
+  id                Int               @id @default(autoincrement())
+  userId            String            @db.Uuid
+  user              User              @relation(fields: [userId], references: [userId])
+  storyId           Int
+  story             Story             @relation(fields: [storyId], references: [id])
+  progress          Float             @default(0)
+  startedAt         DateTime          @db.Timestamptz(3)
+  completedAt       DateTime?         @db.Timestamptz(3)
+  lastReadAt        DateTime?         @db.Timestamptz(3)
+  addedToLibraryAt  DateTime?         @db.Timestamptz(3)
+  currentPosition   Json?
+  rating            Int?
+  createdAt         DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime          @updatedAt @db.Timestamptz(3)
+  chapterProgresses ChapterProgress[]
 
   @@unique([userId, storyId])
 }
 
+model ChapterProgress {
+  id                Int             @id @default(autoincrement())
+  readingProgressId Int
+  readingProgress   ReadingProgress @relation(fields: [readingProgressId], references: [id])
+  chapterId         Int
+  chapter           Chapter         @relation(fields: [chapterId], references: [id])
+  progress          Float           @default(0) // Percentage of completion
+  currentPosition   Json? // Stores last reading position data
+  startedAt         DateTime?       @db.Timestamptz(3)
+  completedAt       DateTime?       @db.Timestamptz(3)
+  lastReadAt        DateTime?       @db.Timestamptz(3)
+
+  @@unique([readingProgressId, chapterId])
+}
+
 model ComprehensionQuestion {
-  id       Int      @id @default(autoincrement())
-  question String
-  options  String[]
-  answer   Int
-  storyId  Int
-  story    Story    @relation(fields: [storyId], references: [id])
+  id        Int      @id @default(autoincrement())
+  question  String
+  options   String[]
+  answer    Int
+  chapterId Int
+  chapter   Chapter  @relation(fields: [chapterId], references: [id])
 }
 
 model Tag {
@@ -108,44 +146,99 @@ model Tag {
 }
 
 model Worksheet {
-  id           Int       @id @default(autoincrement())
-  content      String
-  userId       String    @db.Uuid
-  user         User      @relation(fields: [userId], references: [userId])
+  id           Int        @id @default(autoincrement())
+  title        String
+  description  String?
+  userId       String     @db.Uuid
+  user         User       @relation(fields: [userId], references: [userId])
   languageName String
-  language     Language  @relation(fields: [languageName], references: [name])
-  completedAt  DateTime? @db.Timestamptz(3)
-  createdAt    DateTime  @default(now()) @db.Timestamptz(3)
-  updatedAt    DateTime  @updatedAt @db.Timestamptz(3)
+  language     Language   @relation(fields: [languageName], references: [name])
+  exercises    Exercise[]
+  completedAt  DateTime?  @db.Timestamptz(3)
+  createdAt    DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime   @updatedAt @db.Timestamptz(3)
 }
 
-// model FlashcardSet {
-//   id           Int          @id @default(autoincrement())
-//   name         String
-//   description  String?
-//   userId       String       @db.Uuid
-//   user         User         @relation(fields: [userId], references: [userId])
-//   vocabularies Vocabulary[]
-//   cards        Flashcard[]
-// }
+model Exercise {
+  id          Int          @id @default(autoincrement())
+  type        ExerciseType
+  content     Json // Stores exercise data in a flexible format
+  order       Int
+  worksheetId Int
+  worksheet   Worksheet    @relation(fields: [worksheetId], references: [id])
+  submissions Submission[]
+}
 
-// model Flashcard {
-//   id            Int          @id @default(autoincrement())
-//   setId         Int
-//   set           FlashcardSet @relation(fields: [setId], references: [id])
-//   nextReviewAt  DateTime     @db.Timestamptz(3)
-//   easeFactor    Float        @default(2.5)
-//   interval      Int          @default(0)
-//   repetitions   Int          @default(0)
-// }
+enum ExerciseType {
+  MULTIPLE_CHOICE
+  FILL_IN_BLANK
+  MATCHING
+  SENTENCE_CONSTRUCTION
+  TRANSLATION
+  // Add more types as needed
+}
 
-// model ChatSession {
-//   id           Int      @id @default(autoincrement())
-//   userId       String   @db.Uuid
-//   user         User     @relation(fields: [userId], references: [userId])
-//   languageName String
-//   language     Language @relation(fields: [languageName], references: [name])
-//   messages     Json[]   // Array of message objects
-//   createdAt    DateTime @default(now()) @db.Timestamptz(3)
-//   updatedAt    DateTime @updatedAt @db.Timestamptz(3)
-// }
+model Submission {
+  id         Int      @id @default(autoincrement())
+  exerciseId Int
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  userId     String   @db.Uuid
+  user       User     @relation(fields: [userId], references: [userId])
+  answer     Json
+  isCorrect  Boolean
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+}
+
+model FlashcardSet {
+  id           Int          @id @default(autoincrement())
+  name         String
+  description  String?
+  userId       String       @db.Uuid
+  user         User         @relation(fields: [userId], references: [userId])
+  vocabularies Vocabulary[]
+  cards        Flashcard[]
+}
+
+model Flashcard {
+  id           Int             @id @default(autoincrement())
+  setId        Int
+  set          FlashcardSet    @relation(fields: [setId], references: [id])
+  faces        FlashcardFace[]
+  nextReviewAt DateTime        @db.Timestamptz(3)
+  easeFactor   Float           @default(2.5)
+  interval     Int             @default(0)
+  repetitions  Int             @default(0)
+  createdAt    DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime        @updatedAt @db.Timestamptz(3)
+}
+
+model FlashcardFace {
+  id          Int       @id @default(autoincrement())
+  flashcardId Int
+  flashcard   Flashcard @relation(fields: [flashcardId], references: [id])
+  content     String
+  type        FaceType
+  order       Int
+  audioUrl    String?
+  imageUrl    String?
+}
+
+enum FaceType {
+  FRONT
+  BACK
+  PINYIN
+  CHARACTER
+  TRANSLATION
+  OTHER
+}
+
+model ChatSession {
+  id           Int      @id @default(autoincrement())
+  userId       String   @db.Uuid
+  user         User     @relation(fields: [userId], references: [userId])
+  languageName String
+  language     Language @relation(fields: [languageName], references: [name])
+  messages     Json[] // Array of message objects
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+}
