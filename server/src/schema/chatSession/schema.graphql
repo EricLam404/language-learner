@@ -1,0 +1,11 @@
+type ChatSession {
+    id: ID!
+    userId: ID!
+    languageName: String!
+    messages: [JSON!]
+    createdAt: DateTime!
+    updatedAt: DateTime!
+
+    user: User!
+    language: Language!
+}

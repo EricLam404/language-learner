@@ -1,0 +1,18 @@
+type Exercise {
+    id: ID!
+    type: ExerciseType!
+    content: JSON!
+    order: Int!
+    worksheetId: ID!
+
+    worksheet: Worksheet!
+    submissions: [Submission!]
+}
+
+enum ExerciseType {
+  MULTIPLE_CHOICE
+  FILL_IN_BLANK
+  MATCHING
+  SENTENCE_CONSTRUCTION
+  TRANSLATION
+}

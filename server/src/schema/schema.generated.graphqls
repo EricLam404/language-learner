@@ -1,10 +1,21 @@
+type ComprehensionQuestion {
+  answer: Int!
+  id: ID!
+  options: [String!]
+  question: String!
+  story: Story!
+  storyId: ID!
+}
+
 input CreateStoryInput {
   content: String!
   description: String!
   difficulty: Int!
+  isPublished: Boolean!
   languageName: String!
   tags: [String!]!
   title: String!
+  translatedTitle: String!
 }
 
 input CreateWorksheetInput {
@@ -45,10 +56,17 @@ type Mutation {
   updateWorksheet(id: Int!, input: UpdateWorksheetInput!): Worksheet
 }
 
+type PaginatedStoriesResponse {
+  hasNextPage: Boolean!
+  stories: [Story!]!
+  totalCount: Int!
+}
+
 type Query {
   language(id: ID!): Language
   languageByName(name: String!): Language
   languages: [Language!]!
+  publicStories(filters: StoryFilters, orderBy: String = "createdAt", orderDirection: String = "desc", page: Int = 1, pageSize: Int = 10): PaginatedStoriesResponse!
   stories: [Story!]!
   story(id: ID!): Story
   tag(id: ID!): Tag
@@ -61,10 +79,22 @@ type Query {
   worksheets: [Worksheet!]!
 }
 
+type ReadingProgress {
+  completedAt: DateTime
+  id: ID!
+  lastReadAt: DateTime
+  startedAt: DateTime!
+  story: Story
+  storyId: ID!
+  user: User
+  userId: ID!
+}
+
 type Story {
   audioUrl: String
   averageRating: Float
   completedAt: DateTime
+  comprehensionQuestions: [ComprehensionQuestion!]
   content: String!
   createdAt: DateTime!
   description: String!
@@ -75,12 +105,20 @@ type Story {
   isReviewed: Boolean!
   languageName: String!
   readCount: Int!
-  startedAt: DateTime
+  readingProgress: [ReadingProgress!]
   tags: [Tag!]
   title: String!
+  translatedTitle: String!
   updatedAt: DateTime!
   user: User
   vocabularies: [Vocabulary!]
+}
+
+input StoryFilters {
+  difficulty: Int
+  languageName: String
+  searchTerm: String
+  tags: [String!]
 }
 
 type Tag {
@@ -95,9 +133,11 @@ input UpdateStoryInput {
   content: String
   description: String
   difficulty: Int
+  isPublished: Boolean
   languageName: String
   tags: [String!]
   title: String
+  translatedTitle: String
 }
 
 input UpdateWorksheetInput {

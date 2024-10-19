@@ -1,0 +1,29 @@
+type Chapter {
+    id: ID!
+    title: String!
+    content: String!
+    orderIndex: Int!
+    estimatedReadingTime: Int
+    audioUrl: String
+    storyId: ID!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+
+    story: Story!
+    chapterProgresses: [ChapterProgress!]
+    comprehensionQuestions: [ComprehensionQuestion!]
+}
+
+type ChapterProgress {
+    id: ID!
+    readingProgressId: ID!
+    chapterId: ID!
+    progress: Float!
+    currentPosition: JSON
+    startedAt: DateTime
+    completedAt: DateTime
+    lastReadAt: DateTime
+
+    readingProgress: ReadingProgress!
+    chapter: Chapter!
+}

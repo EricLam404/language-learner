@@ -1,0 +1,18 @@
+type ReadingProgress {
+    id: ID!
+    userId: ID!
+    storyId: ID!
+    progress: Float!
+    startedAt: DateTime
+    completedAt: DateTime
+    lastReadAt: DateTime
+    addedToLibraryAt: DateTime
+    currentPosition: JSON
+    rating: Int
+    createdAt: DateTime!
+    updatedAt: DateTime!
+
+    user: User
+    story: Story
+    chapterProgresses: [ChapterProgress!]
+}

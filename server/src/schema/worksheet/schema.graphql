@@ -1,11 +1,16 @@
 type Worksheet {
   id: ID!
-  content: String!
-  user: User!
-  language: Language!
+  userId: ID!
+  languageName: String!
+  title: String!
+  description: String!
   completedAt: DateTime
   createdAt: DateTime!
   updatedAt: DateTime!
+
+  user: User!
+  language: Language!
+  exercises:    [Exercise]
 }
 
 input CreateWorksheetInput {

@@ -1,25 +1,29 @@
 type User {
-  userId: ID!
-  email: String!
-  username: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
+    userId: ID!
+    email: String!
+    username: String!
+    createdAt: DateTime!
+    updatedAt: DateTime!
 
-  languages: [Language!]
-  vocabularies: [Vocabulary!]
-  stories: [Story!]
-  worksheets: [Worksheet!]
+    languages: [Language!]
+    vocabularies: [Vocabulary!]
+    stories: [Story!]
+    worksheets: [Worksheet!]
+    readingProgress: [ReadingProgress!]
+    flashcardSet: [FlashcardSet!]
+    chatSession: [ChatSession!]
+    submission: [Submission!]
 }
 
 extend type Query {
-  users: [User!]
-  user(userId: ID!): User
+    users: [User!]
+    user(userId: ID!): User
 }
 
 extend type Mutation {
-  createUser(username: String!, languages: [String!]!): User!
-  updateUser(id: ID!, username: String!): User!
-  deleteUser(id: ID!): Boolean!
+    createUser(username: String!, languages: [String!]!): User!
+    updateUser(id: ID!, username: String!): User!
+    deleteUser(id: ID!): Boolean!
 }
 
 scalar DateTime

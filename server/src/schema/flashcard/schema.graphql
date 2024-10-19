@@ -1,0 +1,31 @@
+type FlashcardSet {
+    id: ID!
+    name: String!
+    description: String
+    userId: ID!
+
+    user: User!
+    vocabularies: [Vocabulary!]
+    cards: [Flashcard!]
+}
+
+type FlashcardFace {
+    id: ID!
+    flashcardId: Int!
+    content: String!
+    type: FaceType!
+    order: Int!
+    audioUrl: String
+    imageUrl: String
+    
+    flashcard: Flashcard!
+}
+
+enum FaceType {
+  FRONT
+  BACK
+  PINYIN
+  CHARACTER
+  TRANSLATION
+  OTHER
+}

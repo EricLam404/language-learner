@@ -1,53 +1,83 @@
 type Story {
-  id: ID!
-  title: String!
-  description: String!
-  content: String!
-  difficulty: Int!
-  readCount: Int!
-  audioUrl: String
-  imageUrl: String
-  averageRating: Float
-  isPublished: Boolean!
-  isReviewed: Boolean!
-  languageName: String!
-  startedAt: DateTime
-  completedAt: DateTime
-  createdAt: DateTime!
-  updatedAt: DateTime!
+    id: ID!
+    userId: ID!
+    title: String!
+    translatedTitle: String!
+    description: String!
+    content: String!
+    difficulty: Int!
+    readCount: Int!
+    audioUrl: String
+    imageUrl: String
+    averageRating: Float
+    isPublished: Boolean!
+    isReviewed: Boolean!
+    languageName: String!
+    completedAt: DateTime
+    createdAt: DateTime!
+    updatedAt: DateTime!
 
-  vocabularies: [Vocabulary!]
-  user: User
-  tags: [Tag!]
+    vocabularies: [Vocabulary!]
+    user: User!
+    tags: [Tag!]
+    language: Language!
+    readingProgress: [ReadingProgress!]
+    comprehensionQuestions: [ComprehensionQuestion!]
+    chapters: [Chapter!]
+}
+
+input StoryFilters {
+    languageName: String
+    difficulty: Int
+    tags: [String!]
+    searchTerm: String
+}
+
+type PaginatedStoriesResponse {
+    stories: [Story!]!
+    totalCount: Int!
+    hasNextPage: Boolean!
 }
 
 scalar DateTime
 
-extend type Query {
-  stories: [Story!]!
-  story(id: ID!): Story
-}
 
 input CreateStoryInput {
-  title: String!
-  description: String!
-  content: String!
-  difficulty: Int!
-  languageName: String!
-  tags: [String!]!
+    title: String!
+    translatedTitle: String!
+    description: String!
+    content: String!
+    difficulty: Int!
+    languageName: String!
+    isPublished: Boolean!
+    tags: [String!]!
 }
 
 input UpdateStoryInput {
-  title: String
-  description: String
-  content: String
-  difficulty: Int
-  languageName: String
-  tags: [String!]
+    title: String
+    translatedTitle: String
+    description: String
+    content: String
+    difficulty: Int
+    languageName: String
+    isPublished: Boolean
+    tags: [String!]
+}
+
+extend type Query {
+    stories: [Story!]!
+    story(id: ID!): Story
+    publicStories(
+        filters: StoryFilters
+        page: Int = 1
+        pageSize: Int = 10
+        orderBy: String = "createdAt"
+        orderDirection: String = "desc"
+    ): PaginatedStoriesResponse!
 }
 
 extend type Mutation {
-  createStory(input: CreateStoryInput!): Story!
-  updateStory(id: ID!, input: UpdateStoryInput!): Story!
-  deleteStory(id: ID!): Boolean!
+    createStory(input: CreateStoryInput!): Story!
+    updateStory(id: ID!, input: UpdateStoryInput!): Story!
+    deleteStory(id: ID!): Boolean!
 }

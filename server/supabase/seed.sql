@@ -8,7 +8,7 @@ VALUES (
   NOW()
 );
 
--- Insert Languages with Codes
+-- Insert Languages
 INSERT INTO "Language" (id, name, code)
 VALUES 
 (1, 'English', 'en'),
@@ -37,10 +37,25 @@ VALUES
 (2, '00c60d2d-4b8f-4019-b187-e85f6dffc000');  -- Spanish for user1
 
 -- Insert Stories
-INSERT INTO "Story" (id, title, description, content, difficulty, "readCount", "userId", "languageName", "isPublished", "isReviewed", "createdAt", "updatedAt")
+INSERT INTO "Story" (
+  id, 
+  title, 
+  "translatedTitle",
+  description, 
+  content, 
+  difficulty, 
+  "readCount", 
+  "userId", 
+  "languageName", 
+  "isPublished", 
+  "isReviewed", 
+  "createdAt", 
+  "updatedAt"
+)
 VALUES 
 (
   1,
+  'English Story',
   'English Story',
   'A simple English story',
   'Once upon a time...',
@@ -56,6 +71,7 @@ VALUES
 (
   2,
   'Historia en español',
+  'Spanish Story',
   'Una historia simple en español',
   'Había una vez...',
   1,
@@ -77,13 +93,25 @@ VALUES
 (2, 4);  -- Spanish story - cuento de hadas
 
 -- Insert Vocabularies
-INSERT INTO "Vocabulary" (word, meaning, example, "userId", "languageName", "createdAt", "updatedAt")
+INSERT INTO "Vocabulary" (id, word, meaning, example, "userId", "languageName", "createdAt", "updatedAt")
 VALUES 
-('hello', 'a greeting', 'Hello, how are you?', '00c60d2d-4b8f-4019-b187-e85f6dffc000', 'English', NOW(), NOW()),
-('hola', 'a greeting', 'Hola, ¿cómo estás?', '00c60d2d-4b8f-4019-b187-e85f6dffc000', 'Spanish', NOW(), NOW());
+(1, 'hello', 'a greeting', 'Hello, how are you?', '00c60d2d-4b8f-4019-b187-e85f6dffc000', 'English', NOW(), NOW()),
+(2, 'hola', 'a greeting', 'Hola, ¿cómo estás?', '00c60d2d-4b8f-4019-b187-e85f6dffc000', 'Spanish', NOW(), NOW());
 
 -- Insert Worksheets
-INSERT INTO "Worksheet" (content, "userId", "languageName", "createdAt", "updatedAt")
+INSERT INTO "Worksheet" (id, content, "userId", "languageName", "createdAt", "updatedAt")
 VALUES 
-('English Worksheet 1', '00c60d2d-4b8f-4019-b187-e85f6dffc000', 'English', NOW(), NOW()),
-('Spanish Worksheet 1', '00c60d2d-4b8f-4019-b187-e85f6dffc000', 'Spanish', NOW(), NOW());
+(1, 'English Worksheet 1', '00c60d2d-4b8f-4019-b187-e85f6dffc000', 'English', NOW(), NOW()),
+(2, 'Spanish Worksheet 1', '00c60d2d-4b8f-4019-b187-e85f6dffc000', 'Spanish', NOW(), NOW());
+
+-- Insert some sample comprehension questions
+INSERT INTO "ComprehensionQuestion" (id, question, options, answer, "storyId")
+VALUES 
+(1, 'What happens in the English story?', ARRAY['Nothing', 'Something magical', 'It starts with once upon a time', 'It ends quickly'], 2, 1),
+(2, '¿Qué sucede en la historia en español?', ARRAY['Nada', 'Algo mágico', 'Comienza con había una vez', 'Termina rápidamente'], 2, 2);
+
+-- Insert sample reading progress
+INSERT INTO "ReadingProgress" (id, "userId", "storyId", "startedAt", "lastReadAt")
+VALUES 
+(1, '00c60d2d-4b8f-4019-b187-e85f6dffc000', 1, NOW(), NOW()),
+(2, '00c60d2d-4b8f-4019-b187-e85f6dffc000', 2, NOW(), NOW());

@@ -2,11 +2,14 @@ type Language {
   id: ID!
   name: String!
   code: String!
+
   vocabularies: [Vocabulary!]
   stories: [Story!]
   worksheets: [Worksheet!]
   users: [User!]
+  chatSession:  [ChatSession!]
 }
+
 
 extend type Query {
   languages: [Language!]!

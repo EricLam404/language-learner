@@ -6,9 +6,15 @@ type Vocabulary {
   languageName: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  userId: ID!
+  languageName: String!
+  flashcardSetId: Int
 
-  story: Story
-  user: User
+  user: User!
+  story: Story!
+  language: Language!
+  stories: [Story!]
+  flashcardSet: FlashcardSet
 }
 
 scalar DateTime
