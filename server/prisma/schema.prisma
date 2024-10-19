@@ -129,12 +129,22 @@ model ChapterProgress {
 }
 
 model ComprehensionQuestion {
-  id        Int      @id @default(autoincrement())
-  question  String
-  options   String[]
-  answer    Int
-  chapterId Int
-  chapter   Chapter  @relation(fields: [chapterId], references: [id])
+    id        Int                           @id @default(autoincrement())
+    question  String
+    chapterId Int
+    chapter   Chapter                       @relation(fields: [chapterId], references: [id])
+    options   ComprehensionQuestionOption[]
+}
+
+model ComprehensionQuestionOption {
+    id         Int                   @id @default(autoincrement())
+    content    String
+    order      Int
+    isCorrect  Boolean               @default(false)
+    questionId Int
+    question   ComprehensionQuestion @relation(fields: [questionId], references: [id])
+
+    @@unique([questionId, order])
 }
 
 model Tag {
@@ -196,6 +206,7 @@ model FlashcardSet {
   user         User         @relation(fields: [userId], references: [userId])
   vocabularies Vocabulary[]
   cards        Flashcard[]
+  chatSessions ChatSession[]
 }
 
 model Flashcard {
@@ -232,12 +243,32 @@ enum FaceType {
 }
 
 model ChatSession {
-  id           Int      @id @default(autoincrement())
-  userId       String   @db.Uuid
-  user         User     @relation(fields: [userId], references: [userId])
-  languageName String
-  language     Language @relation(fields: [languageName], references: [name])
-  messages     Json[] // Array of message objects
-  createdAt    DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+    id             Int           @id @default(autoincrement())
+    userId         String        @db.Uuid
+    user           User          @relation(fields: [userId], references: [userId])
+    languageName   String
+    language       Language      @relation(fields: [languageName], references: [name])
+    flashcardSetId Int?         // Optional - can have chats without flashcard sets
+    flashcardSet   FlashcardSet? @relation(fields: [flashcardSetId], references: [id])
+    messages       ChatMessage[]
+    createdAt      DateTime      @default(now()) @db.Timestamptz(3)
+    updatedAt      DateTime      @updatedAt @db.Timestamptz(3)
+
+    @@index([userId])
+    @@index([flashcardSetId])
+}
+
+model ChatMessage {
+    id            Int         @id @default(autoincrement())
+    sessionId     Int
+    session       ChatSession @relation(fields: [sessionId], references: [id])
+    role          String 
+    content       String
+    // flashcardId   Int?
+    // flashcard     Flashcard?  @relation(fields: [flashcardId], references: [id])
+    // vocabularyIds Int[]      // Array of vocabulary IDs used in this message
+    timestamp     DateTime    @default(now()) @db.Timestamptz(3)
+
+    @@index([sessionId, timestamp])
+    // @@index([flashcardId])
 }

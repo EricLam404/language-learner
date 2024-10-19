@@ -1,9 +1,19 @@
 type ComprehensionQuestion {
     id: ID!
     question: String!
-    options: [String!]
+    options: [ComprehensionQuestionOption!]!
     answer: Int!
+
 
     chapterId: ID!
     chapter: Chapter!
+}
+
+type ComprehensionQuestionOption {
+    id: ID!
+    content: String!
+    order: Int!
+    isCorrect: Boolean!
+    questionId: ID!
+    question: ComprehensionQuestion!
 }

@@ -1,0 +1,28 @@
+type ChatSession {
+    id: ID!
+    userId: ID!
+    languageName: String!
+    messages: [JSON!]
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    flashcardSetId: ID
+
+
+    user: User!
+    language: Language!
+    flashcardSet: FlashcardSet
+    messages: [ChatMessage!]
+}
+
+type ChatMessage {
+    id: ID!
+    sessionId: ID!
+    role: String!
+    content: String!
+    # flashcardId: ID
+    # flashcard: Flashcard
+    # vocabularyIds: [ID!]
+    timestamp: DateTime!
+    
+    session: ChatSession!
+}

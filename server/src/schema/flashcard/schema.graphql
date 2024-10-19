@@ -7,6 +7,7 @@ type FlashcardSet {
     user: User!
     vocabularies: [Vocabulary!]
     cards: [Flashcard!]
+    chatSessions: [ChatSession!]
 }
 
 type FlashcardFace {
