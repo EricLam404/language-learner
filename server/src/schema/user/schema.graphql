@@ -25,5 +25,3 @@ extend type Mutation {
     updateUser(id: ID!, username: String!): User!
     deleteUser(id: ID!): Boolean!
 }
-
-scalar DateTime

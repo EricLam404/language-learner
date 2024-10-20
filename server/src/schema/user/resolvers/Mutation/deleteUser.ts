@@ -21,7 +21,7 @@ export const deleteUser: NonNullable<MutationResolvers['deleteUser']> = async (
             },
         });
 
-        return result;
+        return result ? true : false;
     } catch (error) {
         console.log(error);
 

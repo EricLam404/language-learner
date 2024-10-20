@@ -1,12 +1,12 @@
 import { gql } from "@/__generated__";
 
 export const GET_STORIES = gql(`
-    query GET_STORIES{
+    query GET_STORIES {
         stories {
             completedAt
             description
-            content
             id
+            content
             difficulty
             imageUrl
             languageName
@@ -17,10 +17,14 @@ export const GET_STORIES = gql(`
                 name
                 id
             }
+            chapters {
+                title,
+                content
+            }
         }
     }
-`);
 
+`);
 
 export const CREATE_STORY = gql(`
     mutation CREATE_STORY($input: CreateStoryInput!) {

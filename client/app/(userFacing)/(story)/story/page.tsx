@@ -20,21 +20,9 @@ import Link from "next/link";
 import { difficultyLevels, levels } from "@app/_components/difficultyLevels";
 import { DeleteStoryForm } from "@app/_components/forms/StoryForms";
 import { Dialog, DialogContent } from "@components/ui/dialog";
+import { Get_StoriesQuery } from "@/__generated__/graphql";
 
-export interface Story {
-    __typename?: "Story";
-    completedAt?: any;
-    description: string;
-    content: string;
-    id: string;
-    difficulty: number;
-    imageUrl?: string | null;
-    languageName: string;
-    title: string;
-    translatedTitle: string;
-    isPublished: boolean;
-    tags?: { id: string; name: string }[] | null;
-}
+export type Story = Get_StoriesQuery["stories"][number];
 
 export default function page() {
     const { data: languages, isLoading, isError } = useLanguages();
@@ -137,6 +125,7 @@ export default function page() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-48">
                             <DropdownMenuCheckboxItem
+                                key="all-languages"
                                 checked={
                                     selectedLanguages.length ===
                                     languages?.length
@@ -170,6 +159,7 @@ export default function page() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-48">
                             <DropdownMenuCheckboxItem
+                                key="all-levels"
                                 checked={
                                     selectedLevels.length === levels.length
                                 }
@@ -213,9 +203,12 @@ export default function page() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {filteredStories.map((story) => (
-                    <Link href={`/story/view/${story.id}`} key={story.id}>
-                        <Card key={story.id} className="relative h-full">
-                            <CardContent className="p-4 space-y-2">
+                    <Card key={story.id} className="relative h-full flex flex-col">
+                        <CardContent className="p-4 space-y-2 flex-grow">
+                            <Link
+                                href={`/story/view/${story.id}`}
+                                className="block"
+                            >
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-lg font-medium">
                                         {story.title}
@@ -242,27 +235,34 @@ export default function page() {
                                         ? story.description
                                         : "No description"}
                                 </p>
-                            </CardContent>
-                            <CardFooter className="flex flex-col gap-2">
-                                <Link
-                                    href={{
-                                        pathname: "/update-story",
-                                        query: {
-                                            story: JSON.stringify(story),
-                                        },
-                                    }}
-                                >
-                                    <Button variant="outline">Edit</Button>
-                                </Link>
-                                <Button
-                                    variant="destructive"
-                                    onClick={() => handleDeleteClick(story)}
-                                >
-                                    Delete
+                            </Link>
+                        </CardContent>
+                        <CardFooter className="flex flex-col gap-2 auto">
+                            <Link
+                                href={{
+                                    pathname: "/update-story",
+                                    query: {
+                                        story: JSON.stringify(story),
+                                    },
+                                }}
+                                className="w-full"
+                            >
+                                <Button variant="outline" className="w-full">
+                                    Edit
                                 </Button>
-                            </CardFooter>
-                        </Card>
-                    </Link>
+                            </Link>
+                            <Button
+                                variant="destructive"
+                                className="w-full"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleDeleteClick(story);
+                                }}
+                            >
+                                Delete
+                            </Button>
+                        </CardFooter>
+                    </Card>
                 ))}
             </div>
             {deleteStory && (

@@ -49,7 +49,7 @@ const page = () => {
             } else {
                 console.error("No data returned from createStory mutation");
             }
-            toast.success("Story has been successfully created!");
+            toast.success("Story has been successfully updated!");
             router.push("/story");
         } catch (e) {
             console.log(e);

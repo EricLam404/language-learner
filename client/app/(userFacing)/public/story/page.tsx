@@ -150,6 +150,7 @@ export default function page() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-48">
                             <DropdownMenuCheckboxItem
+                                key="all-languages"
                                 checked={
                                     selectedLanguages.length ===
                                     languages?.length
@@ -183,6 +184,7 @@ export default function page() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-48">
                             <DropdownMenuCheckboxItem
+                                key="all-levels"
                                 checked={
                                     selectedLevels.length === levels.length
                                 }
@@ -222,10 +224,13 @@ export default function page() {
                 </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {filteredStories.map((story) => (
-                    <Link href={`/story/view/${story.id}`} key={story.id}>
-                        <Card key={story.id} className="relative h-full">
-                            <CardContent className="p-4 space-y-2">
+            {filteredStories.map((story) => (
+                    <Card key={story.id} className="relative h-full flex flex-col">
+                        <CardContent className="p-4 space-y-2 flex-grow">
+                            <Link
+                                href={`/story/view/${story.id}`}
+                                className="block"
+                            >
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-lg font-medium">
                                         {story.title}
@@ -260,10 +265,10 @@ export default function page() {
                                         ? story.description
                                         : "No description"}
                                 </p>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                ))}
+                            </Link>
+                        </CardContent>
+                    </Card>
+                ))} 
             </div>
         </div>
     );
