@@ -14,10 +14,10 @@ const links = [
         href: "/dashboard",
         label: "Dashboard",
     },
-    {
-        href: "library",
-        label: "My Library",
-    },
+    // {
+    //     href: "library",
+    //     label: "My Library",
+    // },
     {
         href: "/story",
         label: "My Stories",
@@ -25,6 +25,10 @@ const links = [
     {
         href: "/vocabulary",
         label: "My Vocabulary",
+    },
+    {
+        href: "/flashcard",
+        label: "My Flashcards",
     },
 ]
 
@@ -62,6 +66,7 @@ const Header = () => {
                             href={link.href}
                             className="font-medium hover:text-primary"
                             prefetch={false}
+                            key={link.href}
                         >
                             {link.label}
                         </NavLink>
@@ -86,7 +91,7 @@ const Header = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             {publicContent.map((link) => (
-                                <DropdownMenuItem>
+                                <DropdownMenuItem key={link.href}>
                                     <NavLink
                                         href={link.href}
                                         prefetch={false}
@@ -112,7 +117,7 @@ const Header = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             {links.map((link) => (
-                                <DropdownMenuItem>
+                                <DropdownMenuItem key={link.href}>
                                     <NavLink
                                         href={link.href}
                                         className="font-medium hover:text-primary"
@@ -135,7 +140,7 @@ const Header = () => {
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         {publicContent.map((link) => (
-                                            <DropdownMenuItem>
+                                            <DropdownMenuItem key={link.href}>
                                                 <NavLink
                                                     href={link.href}
                                                     prefetch={false}
