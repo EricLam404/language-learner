@@ -56,6 +56,10 @@ app.use(
     express.json(),
     expressMiddleware(server, {
         context: async ({ req }): Promise<MyContext> => {
+            if (req.cookies.introspection) {
+                // @ts-expect-error: Introspection cookie is used for internal purposes only
+                return null;
+            }
             const token = req.cookies["sb-127-auth-token"].access_token;
             const supabase = getServiceSupabase();
             const {
