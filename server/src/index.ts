@@ -14,7 +14,7 @@ import prisma from "./utils/db/prisma";
 import parseCookies from "./utils/middleware/parseCookie";
 import { MyContext } from "./utils/types/context";
 import { GraphQLError } from "graphql";
-import { SERVER_HOSTNAME, SERVER_PORT } from "./utils/config/config";
+import { authTokenName, SERVER_HOSTNAME, SERVER_PORT } from "./utils/config/config";
 import { loggingHandler } from "./utils/middleware/loggingHandler";
 
 dotenv.config();
@@ -60,7 +60,7 @@ app.use(
                 // @ts-expect-error: Introspection cookie is used for internal purposes only
                 return null;
             }
-            const token = req.cookies["sb-127-auth-token"].access_token;
+            const token = req.cookies[authTokenName].access_token;
             const supabase = getServiceSupabase();
             const {
                 data: { user },

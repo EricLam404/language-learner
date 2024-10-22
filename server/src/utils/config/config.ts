@@ -11,6 +11,7 @@ export const supabaseUrl = process.env.SUPABASE_URL as string;
 export const supabaseAnonKey = process.env.SUPABASE_ANON_KEY as string;
 export const supabaseServiceRoleKey = process.env.SUPBASE_SERVICE_ROLE_KEY as string;
 export const isProduction = process.env.NODE_ENV === 'production';
+export const authTokenName = process.env.AUTH_TOKEN_NAME as string;
 
 export const supabase = {
     supabaseUrl,
