@@ -2,7 +2,7 @@
 
 import { Request, Response, NextFunction } from "express";
 import { GraphQLError } from "graphql";
-import { isProduction } from "../config/config";
+import { authTokenName, isProduction } from "../config/config";
 
 export default function parseCookies() {
     return function parseCookies(
@@ -10,7 +10,6 @@ export default function parseCookies() {
         res: Response,
         next: NextFunction
     ) {
-        const tokenName = "sb-127-auth-token";
         if (!req.headers.cookie) {
             req.cookies = {};
             next();
@@ -20,16 +19,43 @@ export default function parseCookies() {
         const cookieObject: { [key: string]: string } = {};
         const cookies = req.headers.cookie.split("; ");
 
+        const tokenSegments: { [key: string]: string[] } = {};
         for (let cookie of cookies) {
             let [name, value] = cookie.split("=");
-            if (name === tokenName) {
-                value = value.replace(/^base64-/, "");
-                value = atob(value);
-            }
+            const segmentMatch = name.match(
+                new RegExp(`^(${authTokenName})\.(\\d+)$`)
+            );
+            if (segmentMatch) {
+                const [, baseName, index] = segmentMatch;
 
-            cookieObject[name] = parseJSONCookies(decodeURIComponent(value));
+                if (!tokenSegments[baseName]) {
+                    tokenSegments[baseName] = [];
+                }
+
+                tokenSegments[baseName][Number(index)] =
+                    decodeURIComponent(value);
+            } else if (name === authTokenName) {
+                value = decodeURIComponent(value.replace(/^base64-/, ""));
+                cookieObject[name] = parseJSONCookies(value);
+            } else {
+                cookieObject[name] = parseJSONCookies(
+                    decodeURIComponent(value)
+                );
+            }
         }
-        if (!isProduction && !cookieObject["introspection"] && !cookieObject["sb-127-auth-token"]) {
+
+        for (const [baseName, segments] of Object.entries(tokenSegments)) {
+            if (segments.length > 0) {
+                const concatenatedToken = segments.join("");
+                cookieObject[baseName] = parseJSONCookies(concatenatedToken);
+            }
+        }
+
+        if (
+            !isProduction &&
+            !cookieObject["introspection"] &&
+            !cookieObject[authTokenName]
+        ) {
             throw new GraphQLError("User is not authenticated", {
                 extensions: {
                     code: "UNAUTHENTICATED",
@@ -37,7 +63,11 @@ export default function parseCookies() {
                 },
             });
         }
-
+        if (cookieObject[authTokenName]) {
+            let value = cookieObject[authTokenName].replace(/^base64-/, "");
+            value = Buffer.from(value, 'base64').toString('utf-8');
+            cookieObject[authTokenName] = parseJSONCookies(value);
+        }
         req.cookies = cookieObject;
         next();
     };
