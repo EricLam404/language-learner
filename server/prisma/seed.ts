@@ -254,6 +254,7 @@ async function main() {
       data: {
         name: 'Basic English Vocabulary',
         description: 'Essential English words for beginners',
+        language: { connect: { name: 'English' } },
         user: { connect: { userId: userIds[0] } },
         cards: {
           create: [
@@ -298,6 +299,7 @@ async function main() {
     prisma.flashcardSet.create({
       data: {
         name: 'Chinese Characters',
+        language: { connect: { name: 'Chinese' } },
         description: 'Common Chinese characters',
         user: { connect: { userId: userIds[1] } },
         cards: {

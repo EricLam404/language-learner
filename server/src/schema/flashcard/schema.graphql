@@ -3,11 +3,27 @@ type FlashcardSet {
     name: String!
     description: String
     userId: ID!
+    languageName: String!
 
-    user: User!
+    user: User
+    language: Language
     vocabularies: [Vocabulary!]
     cards: [Flashcard!]
     chatSessions: [ChatSession!]
+}
+
+type Flashcard {
+    id: ID!
+    setId: ID!
+    nextReviewAt: DateTime
+    easeFactor: Float
+    interval: Int
+    repetitions: Int
+    createdAt: DateTime!
+    updatedAt: DateTime!
+
+    set: FlashcardSet
+    faces: [FlashcardFace!]
 }
 
 type FlashcardFace {
@@ -29,4 +45,16 @@ enum FaceType {
   CHARACTER
   TRANSLATION
   OTHER
+}
+
+extend type Query {
+  flashcardSets: [FlashcardSet!]!
+  flashcardSetsByLanguage(languageName: String!): [FlashcardSet!]!
+  flashcardSet(id: ID!): FlashcardSet
+}
+
+extend type Mutation {
+  createFlashcardSet(languageName: String!, name: String!, description: String): FlashcardSet!
+  updateFlashcardSet(id: ID!, languageName: String, name: String, description: String): FlashcardSet!
+  deleteFlashcardSet(id: ID!): Boolean!
 }

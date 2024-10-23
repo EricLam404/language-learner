@@ -148,7 +148,7 @@ export type Flashcard = {
   interval?: Maybe<Scalars['Int']['output']>;
   nextReviewAt?: Maybe<Scalars['DateTime']['output']>;
   repetitions?: Maybe<Scalars['Int']['output']>;
-  set: FlashcardSet;
+  set?: Maybe<FlashcardSet>;
   setId: Scalars['ID']['output'];
   updatedAt: Scalars['DateTime']['output'];
 };
@@ -171,8 +171,10 @@ export type FlashcardSet = {
   chatSessions?: Maybe<Array<ChatSession>>;
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  language?: Maybe<Language>;
+  languageName: Scalars['String']['output'];
   name: Scalars['String']['output'];
-  user: User;
+  user?: Maybe<User>;
   userId: Scalars['ID']['output'];
   vocabularies?: Maybe<Array<Vocabulary>>;
 };
@@ -191,24 +193,34 @@ export type Language = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createFlashcardSet: FlashcardSet;
   createLanguage: Language;
   createStory: Story;
   createTag: Tag;
   createUser: User;
   createVocabulary: Vocabulary;
   createWorksheet?: Maybe<Worksheet>;
+  deleteFlashcardSet: Scalars['Boolean']['output'];
   deleteLanguage: Scalars['Boolean']['output'];
   deleteStory: Scalars['Boolean']['output'];
   deleteTag: Scalars['Boolean']['output'];
   deleteUser: Scalars['Boolean']['output'];
   deleteVocabulary: Scalars['Boolean']['output'];
   deleteWorksheet: Scalars['Boolean']['output'];
+  updateFlashcardSet: FlashcardSet;
   updateLanguage: Language;
   updateStory: Story;
   updateTag: Tag;
   updateUser: User;
   updateVocabulary: Vocabulary;
   updateWorksheet?: Maybe<Worksheet>;
+};
+
+
+export type MutationCreateFlashcardSetArgs = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  languageName: Scalars['String']['input'];
+  name: Scalars['String']['input'];
 };
 
 
@@ -247,6 +259,11 @@ export type MutationCreateWorksheetArgs = {
 };
 
 
+export type MutationDeleteFlashcardSetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationDeleteLanguageArgs = {
   id: Scalars['ID']['input'];
 };
@@ -274,6 +291,14 @@ export type MutationDeleteVocabularyArgs = {
 
 export type MutationDeleteWorksheetArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateFlashcardSetArgs = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  languageName?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -325,6 +350,9 @@ export type PaginatedStoriesResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  flashcardSet?: Maybe<FlashcardSet>;
+  flashcardSets: Array<FlashcardSet>;
+  flashcardSetsByLanguage: Array<FlashcardSet>;
   language?: Maybe<Language>;
   languageByName?: Maybe<Language>;
   languages: Array<Language>;
@@ -339,6 +367,16 @@ export type Query = {
   vocabulary?: Maybe<Vocabulary>;
   worksheet?: Maybe<Worksheet>;
   worksheets: Array<Worksheet>;
+};
+
+
+export type QueryFlashcardSetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryFlashcardSetsByLanguageArgs = {
+  languageName: Scalars['String']['input'];
 };
 
 
@@ -443,7 +481,7 @@ export type Submission = {
   __typename?: 'Submission';
   answer: Scalars['JSON']['output'];
   createdAt: Scalars['DateTime']['output'];
-  exercise: Exercise;
+  exercise?: Maybe<Exercise>;
   exerciseId: Scalars['ID']['output'];
   id: Scalars['ID']['output'];
   isCorrect: Scalars['Boolean']['output'];
@@ -500,13 +538,13 @@ export type Vocabulary = {
   flashcardSet?: Maybe<FlashcardSet>;
   flashcardSetId?: Maybe<Scalars['Int']['output']>;
   id: Scalars['ID']['output'];
-  language: Language;
+  language?: Maybe<Language>;
   languageName: Scalars['String']['output'];
   meaning: Scalars['String']['output'];
   stories?: Maybe<Array<Story>>;
-  story: Story;
+  story?: Maybe<Story>;
   updatedAt: Scalars['DateTime']['output'];
-  user: User;
+  user?: Maybe<User>;
   userId: Scalars['ID']['output'];
   word: Scalars['String']['output'];
 };
@@ -518,13 +556,34 @@ export type Worksheet = {
   description: Scalars['String']['output'];
   exercises?: Maybe<Array<Maybe<Exercise>>>;
   id: Scalars['ID']['output'];
-  language: Language;
+  language?: Maybe<Language>;
   languageName: Scalars['String']['output'];
   title: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
-  user: User;
+  user?: Maybe<User>;
   userId: Scalars['ID']['output'];
 };
+
+export type GetFlashcardSetsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFlashcardSetsQuery = { __typename?: 'Query', flashcardSets: Array<{ __typename?: 'FlashcardSet', description?: string | null, id: string, name: string, languageName: string, userId: string }> };
+
+export type CreateFlashcardSetMutationVariables = Exact<{
+  languageName: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type CreateFlashcardSetMutation = { __typename?: 'Mutation', createFlashcardSet: { __typename?: 'FlashcardSet', description?: string | null, id: string, name: string, userId: string } };
+
+export type DeleteFlashcardSetMutationVariables = Exact<{
+  deleteFlashcardSetId: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteFlashcardSetMutation = { __typename?: 'Mutation', deleteFlashcardSet: boolean };
 
 export type CreateUserMutationVariables = Exact<{
   username: Scalars['String']['input'];
@@ -616,6 +675,9 @@ export type Get_StoryQueryVariables = Exact<{
 export type Get_StoryQuery = { __typename?: 'Query', story?: { __typename?: 'Story', title: string, translatedTitle: string, content: string } | null };
 
 
+export const GetFlashcardSetsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFlashcardSets"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"flashcardSets"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]} as unknown as DocumentNode<GetFlashcardSetsQuery, GetFlashcardSetsQueryVariables>;
+export const CreateFlashcardSetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateFlashcardSet"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"languageName"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"description"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createFlashcardSet"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"languageName"},"value":{"kind":"Variable","name":{"kind":"Name","value":"languageName"}}},{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"description"},"value":{"kind":"Variable","name":{"kind":"Name","value":"description"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]} as unknown as DocumentNode<CreateFlashcardSetMutation, CreateFlashcardSetMutationVariables>;
+export const DeleteFlashcardSetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteFlashcardSet"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"deleteFlashcardSetId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteFlashcardSet"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"deleteFlashcardSetId"}}}]}]}}]} as unknown as DocumentNode<DeleteFlashcardSetMutation, DeleteFlashcardSetMutationVariables>;
 export const CreateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"username"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"languages"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"username"},"value":{"kind":"Variable","name":{"kind":"Name","value":"username"}}},{"kind":"Argument","name":{"kind":"Name","value":"languages"},"value":{"kind":"Variable","name":{"kind":"Name","value":"languages"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"languages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<CreateUserMutation, CreateUserMutationVariables>;
 export const CreateVocabularyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateVocabulary"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"word"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"meaning"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"example"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"languageName"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createVocabulary"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"word"},"value":{"kind":"Variable","name":{"kind":"Name","value":"word"}}},{"kind":"Argument","name":{"kind":"Name","value":"meaning"},"value":{"kind":"Variable","name":{"kind":"Name","value":"meaning"}}},{"kind":"Argument","name":{"kind":"Name","value":"example"},"value":{"kind":"Variable","name":{"kind":"Name","value":"example"}}},{"kind":"Argument","name":{"kind":"Name","value":"languageName"},"value":{"kind":"Variable","name":{"kind":"Name","value":"languageName"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"example"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"meaning"}}]}}]}}]} as unknown as DocumentNode<CreateVocabularyMutation, CreateVocabularyMutationVariables>;
 export const UpdateVocabularyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateVocabulary"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"word"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"meaning"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"example"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"languageName"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateVocabulary"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"word"},"value":{"kind":"Variable","name":{"kind":"Name","value":"word"}}},{"kind":"Argument","name":{"kind":"Name","value":"meaning"},"value":{"kind":"Variable","name":{"kind":"Name","value":"meaning"}}},{"kind":"Argument","name":{"kind":"Name","value":"example"},"value":{"kind":"Variable","name":{"kind":"Name","value":"example"}}},{"kind":"Argument","name":{"kind":"Name","value":"languageName"},"value":{"kind":"Variable","name":{"kind":"Name","value":"languageName"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"word"}},{"kind":"Field","name":{"kind":"Name","value":"meaning"}},{"kind":"Field","name":{"kind":"Name","value":"example"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}}]}}]}}]} as unknown as DocumentNode<UpdateVocabularyMutation, UpdateVocabularyMutationVariables>;

@@ -94,26 +94,489 @@ export type Database = {
           },
         ]
       }
+      _StoryToVocabulary: {
+        Row: {
+          A: number
+          B: number
+        }
+        Insert: {
+          A: number
+          B: number
+        }
+        Update: {
+          A?: number
+          B?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "_StoryToVocabulary_A_fkey"
+            columns: ["A"]
+            isOneToOne: false
+            referencedRelation: "Story"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "_StoryToVocabulary_B_fkey"
+            columns: ["B"]
+            isOneToOne: false
+            referencedRelation: "Vocabulary"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Chapter: {
+        Row: {
+          audioUrl: string | null
+          content: string
+          createdAt: string
+          estimatedReadingTime: number | null
+          id: number
+          orderIndex: number
+          storyId: number
+          title: string
+          updatedAt: string
+        }
+        Insert: {
+          audioUrl?: string | null
+          content: string
+          createdAt?: string
+          estimatedReadingTime?: number | null
+          id?: number
+          orderIndex: number
+          storyId: number
+          title: string
+          updatedAt: string
+        }
+        Update: {
+          audioUrl?: string | null
+          content?: string
+          createdAt?: string
+          estimatedReadingTime?: number | null
+          id?: number
+          orderIndex?: number
+          storyId?: number
+          title?: string
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Chapter_storyId_fkey"
+            columns: ["storyId"]
+            isOneToOne: false
+            referencedRelation: "Story"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ChapterProgress: {
+        Row: {
+          chapterId: number
+          completedAt: string | null
+          currentPosition: Json | null
+          id: number
+          lastReadAt: string | null
+          progress: number
+          readingProgressId: number
+          startedAt: string | null
+        }
+        Insert: {
+          chapterId: number
+          completedAt?: string | null
+          currentPosition?: Json | null
+          id?: number
+          lastReadAt?: string | null
+          progress?: number
+          readingProgressId: number
+          startedAt?: string | null
+        }
+        Update: {
+          chapterId?: number
+          completedAt?: string | null
+          currentPosition?: Json | null
+          id?: number
+          lastReadAt?: string | null
+          progress?: number
+          readingProgressId?: number
+          startedAt?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ChapterProgress_chapterId_fkey"
+            columns: ["chapterId"]
+            isOneToOne: false
+            referencedRelation: "Chapter"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ChapterProgress_readingProgressId_fkey"
+            columns: ["readingProgressId"]
+            isOneToOne: false
+            referencedRelation: "ReadingProgress"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ChatMessage: {
+        Row: {
+          content: string
+          id: number
+          role: string
+          sessionId: number
+          timestamp: string
+        }
+        Insert: {
+          content: string
+          id?: number
+          role: string
+          sessionId: number
+          timestamp?: string
+        }
+        Update: {
+          content?: string
+          id?: number
+          role?: string
+          sessionId?: number
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ChatMessage_sessionId_fkey"
+            columns: ["sessionId"]
+            isOneToOne: false
+            referencedRelation: "ChatSession"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ChatSession: {
+        Row: {
+          createdAt: string
+          flashcardSetId: number | null
+          id: number
+          languageName: string
+          updatedAt: string
+          userId: string
+        }
+        Insert: {
+          createdAt?: string
+          flashcardSetId?: number | null
+          id?: number
+          languageName: string
+          updatedAt: string
+          userId: string
+        }
+        Update: {
+          createdAt?: string
+          flashcardSetId?: number | null
+          id?: number
+          languageName?: string
+          updatedAt?: string
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ChatSession_flashcardSetId_fkey"
+            columns: ["flashcardSetId"]
+            isOneToOne: false
+            referencedRelation: "FlashcardSet"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ChatSession_languageName_fkey"
+            columns: ["languageName"]
+            isOneToOne: false
+            referencedRelation: "Language"
+            referencedColumns: ["name"]
+          },
+          {
+            foreignKeyName: "ChatSession_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
+      ComprehensionQuestion: {
+        Row: {
+          chapterId: number
+          id: number
+          question: string
+        }
+        Insert: {
+          chapterId: number
+          id?: number
+          question: string
+        }
+        Update: {
+          chapterId?: number
+          id?: number
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ComprehensionQuestion_chapterId_fkey"
+            columns: ["chapterId"]
+            isOneToOne: false
+            referencedRelation: "Chapter"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ComprehensionQuestionOption: {
+        Row: {
+          content: string
+          id: number
+          isCorrect: boolean
+          order: number
+          questionId: number
+        }
+        Insert: {
+          content: string
+          id?: number
+          isCorrect?: boolean
+          order: number
+          questionId: number
+        }
+        Update: {
+          content?: string
+          id?: number
+          isCorrect?: boolean
+          order?: number
+          questionId?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ComprehensionQuestionOption_questionId_fkey"
+            columns: ["questionId"]
+            isOneToOne: false
+            referencedRelation: "ComprehensionQuestion"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Exercise: {
+        Row: {
+          content: Json
+          id: number
+          order: number
+          type: Database["public"]["Enums"]["ExerciseType"]
+          worksheetId: number
+        }
+        Insert: {
+          content: Json
+          id?: number
+          order: number
+          type: Database["public"]["Enums"]["ExerciseType"]
+          worksheetId: number
+        }
+        Update: {
+          content?: Json
+          id?: number
+          order?: number
+          type?: Database["public"]["Enums"]["ExerciseType"]
+          worksheetId?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Exercise_worksheetId_fkey"
+            columns: ["worksheetId"]
+            isOneToOne: false
+            referencedRelation: "Worksheet"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Flashcard: {
+        Row: {
+          createdAt: string
+          easeFactor: number
+          id: number
+          interval: number
+          nextReviewAt: string
+          repetitions: number
+          setId: number
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          easeFactor?: number
+          id?: number
+          interval?: number
+          nextReviewAt: string
+          repetitions?: number
+          setId: number
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          easeFactor?: number
+          id?: number
+          interval?: number
+          nextReviewAt?: string
+          repetitions?: number
+          setId?: number
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Flashcard_setId_fkey"
+            columns: ["setId"]
+            isOneToOne: false
+            referencedRelation: "FlashcardSet"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      FlashcardFace: {
+        Row: {
+          audioUrl: string | null
+          content: string
+          flashcardId: number
+          id: number
+          imageUrl: string | null
+          order: number
+          type: Database["public"]["Enums"]["FaceType"]
+        }
+        Insert: {
+          audioUrl?: string | null
+          content: string
+          flashcardId: number
+          id?: number
+          imageUrl?: string | null
+          order: number
+          type: Database["public"]["Enums"]["FaceType"]
+        }
+        Update: {
+          audioUrl?: string | null
+          content?: string
+          flashcardId?: number
+          id?: number
+          imageUrl?: string | null
+          order?: number
+          type?: Database["public"]["Enums"]["FaceType"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "FlashcardFace_flashcardId_fkey"
+            columns: ["flashcardId"]
+            isOneToOne: false
+            referencedRelation: "Flashcard"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      FlashcardSet: {
+        Row: {
+          description: string | null
+          id: number
+          name: string
+          userId: string
+        }
+        Insert: {
+          description?: string | null
+          id?: number
+          name: string
+          userId: string
+        }
+        Update: {
+          description?: string | null
+          id?: number
+          name?: string
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "FlashcardSet_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
       Language: {
         Row: {
+          code: string
           id: number
           name: string
         }
         Insert: {
+          code: string
           id?: number
           name: string
         }
         Update: {
+          code?: string
           id?: number
           name?: string
         }
         Relationships: []
       }
+      ReadingProgress: {
+        Row: {
+          addedToLibraryAt: string | null
+          completedAt: string | null
+          createdAt: string
+          currentPosition: Json | null
+          id: number
+          lastReadAt: string | null
+          progress: number
+          rating: number | null
+          startedAt: string
+          storyId: number
+          updatedAt: string
+          userId: string
+        }
+        Insert: {
+          addedToLibraryAt?: string | null
+          completedAt?: string | null
+          createdAt?: string
+          currentPosition?: Json | null
+          id?: number
+          lastReadAt?: string | null
+          progress?: number
+          rating?: number | null
+          startedAt: string
+          storyId: number
+          updatedAt: string
+          userId: string
+        }
+        Update: {
+          addedToLibraryAt?: string | null
+          completedAt?: string | null
+          createdAt?: string
+          currentPosition?: Json | null
+          id?: number
+          lastReadAt?: string | null
+          progress?: number
+          rating?: number | null
+          startedAt?: string
+          storyId?: number
+          updatedAt?: string
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ReadingProgress_storyId_fkey"
+            columns: ["storyId"]
+            isOneToOne: false
+            referencedRelation: "Story"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ReadingProgress_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
       Story: {
         Row: {
           audioUrl: string | null
           averageRating: number | null
-          completedAt: string | null
           content: string
           createdAt: string
           description: string
@@ -124,14 +587,14 @@ export type Database = {
           isReviewed: boolean
           languageName: string
           readCount: number
-          startedAt: string | null
+          title: string
+          translatedTitle: string
           updatedAt: string
           userId: string
         }
         Insert: {
           audioUrl?: string | null
           averageRating?: number | null
-          completedAt?: string | null
           content: string
           createdAt?: string
           description: string
@@ -141,15 +604,15 @@ export type Database = {
           isPublished?: boolean
           isReviewed?: boolean
           languageName: string
-          readCount: number
-          startedAt?: string | null
+          readCount?: number
+          title: string
+          translatedTitle: string
           updatedAt: string
           userId: string
         }
         Update: {
           audioUrl?: string | null
           averageRating?: number | null
-          completedAt?: string | null
           content?: string
           createdAt?: string
           description?: string
@@ -160,7 +623,8 @@ export type Database = {
           isReviewed?: boolean
           languageName?: string
           readCount?: number
-          startedAt?: string | null
+          title?: string
+          translatedTitle?: string
           updatedAt?: string
           userId?: string
         }
@@ -174,6 +638,48 @@ export type Database = {
           },
           {
             foreignKeyName: "Story_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
+      Submission: {
+        Row: {
+          answer: Json
+          createdAt: string
+          exerciseId: number
+          id: number
+          isCorrect: boolean
+          userId: string
+        }
+        Insert: {
+          answer: Json
+          createdAt?: string
+          exerciseId: number
+          id?: number
+          isCorrect: boolean
+          userId: string
+        }
+        Update: {
+          answer?: Json
+          createdAt?: string
+          exerciseId?: number
+          id?: number
+          isCorrect?: boolean
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Submission_exerciseId_fkey"
+            columns: ["exerciseId"]
+            isOneToOne: false
+            referencedRelation: "Exercise"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Submission_userId_fkey"
             columns: ["userId"]
             isOneToOne: false
             referencedRelation: "User"
@@ -230,10 +736,10 @@ export type Database = {
         Row: {
           createdAt: string
           example: string | null
+          flashcardSetId: number | null
           id: number
           languageName: string
           meaning: string
-          storyId: number | null
           updatedAt: string
           userId: string
           word: string
@@ -241,10 +747,10 @@ export type Database = {
         Insert: {
           createdAt?: string
           example?: string | null
+          flashcardSetId?: number | null
           id?: number
           languageName: string
           meaning: string
-          storyId?: number | null
           updatedAt: string
           userId: string
           word: string
@@ -252,28 +758,28 @@ export type Database = {
         Update: {
           createdAt?: string
           example?: string | null
+          flashcardSetId?: number | null
           id?: number
           languageName?: string
           meaning?: string
-          storyId?: number | null
           updatedAt?: string
           userId?: string
           word?: string
         }
         Relationships: [
           {
+            foreignKeyName: "Vocabulary_flashcardSetId_fkey"
+            columns: ["flashcardSetId"]
+            isOneToOne: false
+            referencedRelation: "FlashcardSet"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "Vocabulary_languageName_fkey"
             columns: ["languageName"]
             isOneToOne: false
             referencedRelation: "Language"
             referencedColumns: ["name"]
-          },
-          {
-            foreignKeyName: "Vocabulary_storyId_fkey"
-            columns: ["storyId"]
-            isOneToOne: false
-            referencedRelation: "Story"
-            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "Vocabulary_userId_fkey"
@@ -287,28 +793,31 @@ export type Database = {
       Worksheet: {
         Row: {
           completedAt: string | null
-          content: string
           createdAt: string
+          description: string | null
           id: number
           languageName: string
+          title: string
           updatedAt: string
           userId: string
         }
         Insert: {
           completedAt?: string | null
-          content: string
           createdAt?: string
+          description?: string | null
           id?: number
           languageName: string
+          title: string
           updatedAt: string
           userId: string
         }
         Update: {
           completedAt?: string | null
-          content?: string
           createdAt?: string
+          description?: string | null
           id?: number
           languageName?: string
+          title?: string
           updatedAt?: string
           userId?: string
         }
@@ -337,7 +846,19 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      ExerciseType:
+        | "MULTIPLE_CHOICE"
+        | "FILL_IN_BLANK"
+        | "MATCHING"
+        | "SENTENCE_CONSTRUCTION"
+        | "TRANSLATION"
+      FaceType:
+        | "FRONT"
+        | "BACK"
+        | "PINYIN"
+        | "CHARACTER"
+        | "TRANSLATION"
+        | "OTHER"
     }
     CompositeTypes: {
       [_ in never]: never

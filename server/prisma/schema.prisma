@@ -25,14 +25,15 @@ model User {
 }
 
 model Language {
-  id           Int           @id @default(autoincrement())
-  name         String        @unique
-  code         String        @unique
+  id           Int            @id @default(autoincrement())
+  name         String         @unique
+  code         String         @unique
   vocabularies Vocabulary[]
   stories      Story[]
   worksheets   Worksheet[]
   users        User[]
   chatSession  ChatSession[]
+  FlashcardSet FlashcardSet[]
 }
 
 model Vocabulary {
@@ -204,6 +205,8 @@ model FlashcardSet {
   description  String?
   userId       String        @db.Uuid
   user         User          @relation(fields: [userId], references: [userId])
+  languageName String
+  language     Language      @relation(fields: [languageName], references: [name])
   vocabularies Vocabulary[]
   cards        Flashcard[]
   chatSessions ChatSession[]
