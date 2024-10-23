@@ -102,11 +102,7 @@ export default function page() {
             if (selectedLanguages.length === languages?.length) {
                 setSelectedLanguages([]);
             } else {
-                setSelectedLanguages(
-                    stories?.publicStories.stories.map(
-                        (story) => story.languageName
-                    ) || []
-                );
+                setSelectedLanguages(languages || []);
             }
         } else {
             if (selectedLanguages.includes(value)) {
@@ -224,8 +220,11 @@ export default function page() {
                 </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredStories.map((story) => (
-                    <Card key={story.id} className="relative h-full flex flex-col">
+                {filteredStories.map((story) => (
+                    <Card
+                        key={story.id}
+                        className="relative h-full flex flex-col"
+                    >
                         <CardContent className="p-4 space-y-2 flex-grow">
                             <Link
                                 href={`/story/view/${story.id}`}
@@ -268,7 +267,7 @@ export default function page() {
                             </Link>
                         </CardContent>
                     </Card>
-                ))} 
+                ))}
             </div>
         </div>
     );
