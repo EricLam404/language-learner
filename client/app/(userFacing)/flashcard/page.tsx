@@ -24,7 +24,7 @@ import { useQuery } from "@apollo/client";
 import { GET_FLASHCARD_SETS } from "@app/_components/graphql/flashcards";
 import { GetFlashcardSetsQuery } from "@/__generated__/graphql";
 import { SearchIcon } from "@components/icons";
-import { DeleteFlashcardSet, FlashcardSetForm } from "@app/_components/forms/FlashcardSet";
+import { FlashcardSetMenu, FlashcardSetForm } from "@app/_components/forms/FlashcardSet";
 
 export type FlashcardSet = GetFlashcardSetsQuery["flashcardSets"][number];
 export default function page() {
@@ -167,8 +167,8 @@ export default function page() {
                                         {set.description}
                                     </CardDescription>
                                 </CardHeader>
-                                <CardFooter>
-                                    <DeleteFlashcardSet flashcardSet={set}/>
+                                <CardFooter className="justify-end">
+                                    <FlashcardSetMenu flashcardSet={set}/>
                                 </CardFooter>
                             </Card>
                         ))}

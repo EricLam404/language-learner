@@ -4,6 +4,7 @@ import {
     FormItem,
     FormControl,
     FormMessage,
+    FormLabel,
 } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -16,13 +17,14 @@ import { Input } from "@components/ui/input";
 import { Form } from "@/components/ui/form";
 import { z, infer as zInfer } from "zod";
 import Selections from "./Selections";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { toast } from "sonner";
 import {
     CREATE_FLASHCARD_SET,
     DELETE_FLASHCARD_SET,
     GET_FLASHCARD_SETS,
+    UPDATE_FLASHCARD_SET,
 } from "../graphql/flashcards";
 import {
     Dialog,
@@ -33,8 +35,14 @@ import {
     DialogTitle,
 } from "@components/ui/dialog";
 import { FlashcardSet } from "@app/(userFacing)/flashcard/page";
-import { useState } from "react";
-import { Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { MoreHorizontal, Trash2 } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@components/ui/dropdown-menu";
 
 export type FlashcardSetValues = zInfer<typeof formSchema>;
 const formSchema = z.object({
@@ -152,14 +160,21 @@ export function FlashcardSetForm() {
     );
 }
 
-interface DeleteFlashcardSetProps {
+interface FlashcardSetProps {
     flashcardSet: FlashcardSet;
 }
 
-export function DeleteFlashcardSet({
+interface DeleteFlashcardSetModalProps {
+    flashcardSet: FlashcardSet;
+    showDeleteModal: boolean;
+    setShowDeleteModal: (value: boolean) => void;
+}
+
+export function DeleteFlashcardSetModal({
     flashcardSet,
-}: DeleteFlashcardSetProps) {
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    showDeleteModal,
+    setShowDeleteModal,
+}: DeleteFlashcardSetModalProps) {
     const [deleteStory, { loading }] = useMutation(DELETE_FLASHCARD_SET, {
         refetchQueries: [{ query: GET_FLASHCARD_SETS }],
         awaitRefetchQueries: true,
@@ -183,37 +198,227 @@ export function DeleteFlashcardSet({
     }
 
     return (
-        <>
-            <Button
-                variant="destructive"
-                onClick={() => setShowDeleteModal(true)}
-            >
-                <Trash2 className="mr-2 h-4 w-4" /> Delete
-            </Button>
-            <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle className="font-bold text-xl sm:text-lg">
-                            Are you sure you?
-                        </DialogTitle>
-                        <DialogDescription>
-                            This action cannot be undone. This will permanently
-                            delete the set "{flashcardSet.name}" from your list.
-                        </DialogDescription>
-                        <Button
-                            type="submit"
-                            variant="destructive"
-                            onClick={onDelete}
-                            disabled={loading}
-                        >
-                            Delete
+        <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle className="font-bold text-xl sm:text-lg">
+                        Are you sure?
+                    </DialogTitle>
+                    <DialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete the set "{flashcardSet.name}" from your list.
+                    </DialogDescription>
+                    <Button
+                        type="submit"
+                        variant="destructive"
+                        onClick={onDelete}
+                        disabled={loading}
+                    >
+                        Delete
+                    </Button>
+                    <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                </DialogHeader>
+            </DialogContent>
+        </Dialog>
+    );
+}
+interface UpdateFlashcardSetModalProps {
+    flashcardSet: FlashcardSet;
+    showUpdateModal: boolean;
+    setShowUpdateModal: (value: boolean) => void;
+}
+
+export function UpdateFlashcardSetModal({
+    flashcardSet,
+    showUpdateModal,
+    setShowUpdateModal,
+}: UpdateFlashcardSetModalProps) {
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            name: flashcardSet.name,
+            description: flashcardSet.description || "",
+            languageName: flashcardSet.languageName,
+        },
+    });
+
+    useEffect(() => {
+        form.reset({
+            name: flashcardSet.name,
+            description: flashcardSet.description || "",
+            languageName: flashcardSet.languageName,
+        });
+    }, [flashcardSet, form]);
+
+    const [updateFlashcardSet, { loading, error }] = useMutation(
+        UPDATE_FLASHCARD_SET,
+        {
+            refetchQueries: [{ query: GET_FLASHCARD_SETS }],
+            awaitRefetchQueries: true,
+        }
+    );
+
+    const handleClose = () => {
+        form.reset();
+        setShowUpdateModal(false);
+    };
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        try {
+            const response = await updateFlashcardSet({
+                variables: {
+                    ...values,
+                    updateFlashcardSetId: flashcardSet.id,
+                },
+            });
+
+            if (response.data) {
+                console.log(response.data.updateFlashcardSet);
+            } else {
+                console.error(
+                    "No data returned from updateFlashcardSet mutation"
+                );
+            }
+            toast.success("Flashcard Set has been successfully updated!");
+            handleClose();
+        } catch (e) {
+            console.log(e);
+            toast.error(
+                "An unknown error occurred while updating the vocabulary word. Please try again."
+            );
+        }
+    }
+
+    return (
+        <Dialog open={showUpdateModal} onOpenChange={handleClose}>
+            <DialogContent className="sm:max-w-[425px]">
+                <Form {...form}>
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="space-y-8"
+                    >
+                        <DialogHeader>
+                            <DialogTitle>Edit Flashcard Set</DialogTitle>
+                        </DialogHeader>
+                        <FormField
+                            control={form.control}
+                            name="languageName"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Language{" "}
+                                        <span className="ml-[-2px] text-red-500">
+                                            *
+                                        </span>
+                                    </FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a language" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <Selections />
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Name{" "}
+                                        <span className="ml-[-2px] text-red-500">
+                                            *
+                                        </span>
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="name..."
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="description"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Descripton</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="description..."
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <Button type="submit" disabled={loading}>
+                            Submit
                         </Button>
-                        <DialogClose asChild>
-                            <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                    </DialogHeader>
-                </DialogContent>
-            </Dialog>
+                    </form>
+                </Form>
+            </DialogContent>
+        </Dialog>
+    );
+}
+
+export function FlashcardSetMenu({ flashcardSet }: FlashcardSetProps) {
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    return (
+        <>
+            <DropdownMenu modal={false}>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                        onSelect={() => {
+                            setShowUpdateModal(true);
+                        }}
+                    >
+                        Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onSelect={(e) => {
+                            setShowDeleteModal(true);
+                        }}
+                    >
+                        <div className="flex items-center">
+                            <Trash2 className="mr-2 h-4 w-4" /> Delete
+                        </div>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DeleteFlashcardSetModal
+                flashcardSet={flashcardSet}
+                showDeleteModal={showDeleteModal}
+                setShowDeleteModal={setShowDeleteModal}
+            />
+            <UpdateFlashcardSetModal
+                flashcardSet={flashcardSet}
+                showUpdateModal={showUpdateModal}
+                setShowUpdateModal={setShowUpdateModal}
+            />
         </>
     );
 }

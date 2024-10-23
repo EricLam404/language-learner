@@ -28,3 +28,14 @@ export const DELETE_FLASHCARD_SET = gql(`
         deleteFlashcardSet(id: $deleteFlashcardSetId)
     }
 `);
+
+export const UPDATE_FLASHCARD_SET = gql(`
+    mutation UpdateFlashcardSet($updateFlashcardSetId: ID!, $languageName: String, $name: String, $description: String){
+        updateFlashcardSet(id: $updateFlashcardSetId, languageName: $languageName, name: $name, description: $description) {
+            id,
+            description,
+            name,
+            languageName
+        }
+    }
+`);

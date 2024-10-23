@@ -31,7 +31,7 @@ export const updateFlashcardSet: NonNullable<MutationResolvers['updateFlashcardS
             where: { id: Number(_arg.id) },
             data: {
                 ...(!!_arg.name && { name: _arg.name }),
-                ...(!!_arg.description && { meaning: _arg.description }),
+                ...(!!_arg.description && { description: _arg.description }),
                 ...(!!_arg.languageName && { languageName: _arg.languageName }),
             },
         });
