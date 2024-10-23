@@ -1,12 +1,13 @@
 import { gql } from "@/__generated__";
 
-export const CREATE_USER = gql(`
-    mutation CreateUser($username: String!, $languages: [String!]!) {
-        createUser(username: $username, languages: $languages) {
-            username
-            languages {
-                name
-            }
+export const GET_VOCABULARY = gql(`
+    query GetVocabularies {
+        vocabularies {
+            id
+            languageName
+            word
+            meaning
+            example
         }
     }
 `);
@@ -60,3 +61,4 @@ export const DELETE_VOCABULARY = gql(`
         deleteVocabulary(id: $id)
     }
 `);
+

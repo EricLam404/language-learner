@@ -20,9 +20,9 @@ import Link from "next/link";
 import { difficultyLevels, levels } from "@app/_components/difficultyLevels";
 import { DeleteStoryForm } from "@app/_components/forms/StoryForms";
 import { Dialog, DialogContent } from "@components/ui/dialog";
-import { Get_StoriesQuery } from "@/__generated__/graphql";
+import { GetStoriesQuery } from "@/__generated__/graphql";
 
-export type Story = Get_StoriesQuery["stories"][number];
+export type Story = GetStoriesQuery["stories"][number];
 
 export default function page() {
     const { data: languages, isLoading, isError } = useLanguages();

@@ -1,7 +1,7 @@
 import { gql } from "@/__generated__";
 
 export const GET_STORIES = gql(`
-    query GET_STORIES {
+    query GetStories {
         stories {
             completedAt
             description
@@ -27,7 +27,7 @@ export const GET_STORIES = gql(`
 `);
 
 export const CREATE_STORY = gql(`
-    mutation CREATE_STORY($input: CreateStoryInput!) {
+    mutation CreateStory($input: CreateStoryInput!) {
         createStory(input: $input) {
             completedAt
             description
@@ -48,7 +48,7 @@ export const CREATE_STORY = gql(`
 `);
 
 export const UPDATE_STORY = gql(`
-    mutation UPDATE_STORY($updateStoryId: ID!, $input: UpdateStoryInput!) {
+    mutation UpdateStory($updateStoryId: ID!, $input: UpdateStoryInput!) {
         updateStory(id: $updateStoryId, input: $input) {
             completedAt
             description
@@ -69,13 +69,13 @@ export const UPDATE_STORY = gql(`
 `);
 
 export const DELETE_STORY = gql(`
-    mutation DELETE_STORY($id: ID!) {
+    mutation DeleteStory($id: ID!) {
         deleteStory(id: $id)
     }
 `);
 
 export const GET_PUBLIC_STORIES = gql(`
-    query GET_PUBLIC_STORIES($page: Int, $pageSize: Int, $filters: StoryFilters) {
+    query GetPublicStories($page: Int, $pageSize: Int, $filters: StoryFilters) {
         publicStories(page: $page, pageSize: $pageSize, filters: $filters) {
             hasNextPage
             stories {
@@ -97,7 +97,7 @@ export const GET_PUBLIC_STORIES = gql(`
 `);
 
 export const GET_STORY = gql(`
-    query GET_STORY($storyId: ID!) {
+    query GetStory($storyId: ID!) {
         story(id: $storyId) {
             title,
             translatedTitle

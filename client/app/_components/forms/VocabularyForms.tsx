@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@apollo/client";
-import { CREATE_VOCABULARY, DELETE_VOCABULARY, UPDATE_VOCABULARY } from "../graphql/mutations";
+import { GET_VOCABULARY, CREATE_VOCABULARY, DELETE_VOCABULARY, UPDATE_VOCABULARY } from "../graphql/vocabularies";
 import { DialogClose, DialogHeader } from "@components/ui/dialog";
 import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import { toast } from "sonner";
@@ -23,7 +23,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@components/ui/select";
-import { GET_VOCABULARY } from "../graphql/queries";
 import Selections from "./Selections";
 
 const formSchema = z.object({

@@ -22,7 +22,7 @@ import {
     SelectContent,
 } from "@/components/ui/select";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { GET_VOCABULARY } from "@app/_components/graphql/queries";
+import { GET_VOCABULARY } from "@app/_components/graphql/vocabularies";
 import { useQuery } from "@apollo/client";
 import Skeleton from "react-loading-skeleton";
 import {
