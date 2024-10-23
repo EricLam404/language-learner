@@ -11,7 +11,7 @@ type ChatSession {
     user: User!
     language: Language!
     flashcardSet: FlashcardSet
-    messages: [ChatMessage!]
+    chatMessages: [ChatMessage!]
 }
 
 type ChatMessage {

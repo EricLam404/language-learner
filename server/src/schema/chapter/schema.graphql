@@ -9,7 +9,7 @@ type Chapter {
     createdAt: DateTime!
     updatedAt: DateTime!
 
-    story: Story!
+    story: Story
     chapterProgresses: [ChapterProgress!]
     comprehensionQuestions: [ComprehensionQuestion!]
 }

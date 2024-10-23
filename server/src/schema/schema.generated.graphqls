@@ -1,10 +1,70 @@
+type Chapter {
+  audioUrl: String
+  chapterProgresses: [ChapterProgress!]
+  comprehensionQuestions: [ComprehensionQuestion!]
+  content: String!
+  createdAt: DateTime!
+  estimatedReadingTime: Int
+  id: ID!
+  orderIndex: Int!
+  story: Story
+  storyId: ID!
+  title: String!
+  updatedAt: DateTime!
+}
+
+type ChapterProgress {
+  chapter: Chapter!
+  chapterId: ID!
+  completedAt: DateTime
+  currentPosition: JSON
+  id: ID!
+  lastReadAt: DateTime
+  progress: Float!
+  readingProgress: ReadingProgress!
+  readingProgressId: ID!
+  startedAt: DateTime
+}
+
+type ChatMessage {
+  content: String!
+  id: ID!
+  role: String!
+  session: ChatSession!
+  sessionId: ID!
+  timestamp: DateTime!
+}
+
+type ChatSession {
+  chatMessages: [ChatMessage!]
+  createdAt: DateTime!
+  flashcardSet: FlashcardSet
+  flashcardSetId: ID
+  id: ID!
+  language: Language!
+  languageName: String!
+  messages: [JSON!]
+  updatedAt: DateTime!
+  user: User!
+  userId: ID!
+}
+
 type ComprehensionQuestion {
   answer: Int!
+  chapter: Chapter!
+  chapterId: ID!
   id: ID!
-  options: [String!]
+  options: [ComprehensionQuestionOption!]!
   question: String!
-  story: Story!
-  storyId: ID!
+}
+
+type ComprehensionQuestionOption {
+  content: String!
+  id: ID!
+  isCorrect: Boolean!
+  order: Int!
+  question: ComprehensionQuestion!
+  questionId: ID!
 }
 
 input CreateStoryInput {
@@ -25,7 +85,74 @@ input CreateWorksheetInput {
 
 scalar DateTime
 
+type Exercise {
+  content: JSON!
+  id: ID!
+  order: Int!
+  submissions: [Submission!]
+  type: ExerciseType!
+  worksheet: Worksheet!
+  worksheetId: ID!
+}
+
+enum ExerciseType {
+  FILL_IN_BLANK
+  MATCHING
+  MULTIPLE_CHOICE
+  SENTENCE_CONSTRUCTION
+  TRANSLATION
+}
+
+enum FaceType {
+  BACK
+  CHARACTER
+  FRONT
+  OTHER
+  PINYIN
+  TRANSLATION
+}
+
+type Flashcard {
+  createdAt: DateTime!
+  easeFactor: Float
+  faces: [FlashcardFace!]
+  id: ID!
+  interval: Int
+  nextReviewAt: DateTime
+  repetitions: Int
+  set: FlashcardSet
+  setId: ID!
+  updatedAt: DateTime!
+}
+
+type FlashcardFace {
+  audioUrl: String
+  content: String!
+  flashcard: Flashcard!
+  flashcardId: Int!
+  id: ID!
+  imageUrl: String
+  order: Int!
+  type: FaceType!
+}
+
+type FlashcardSet {
+  cards: [Flashcard!]
+  chatSessions: [ChatSession!]
+  description: String
+  id: ID!
+  language: Language
+  languageName: String!
+  name: String!
+  user: User
+  userId: ID!
+  vocabularies: [Vocabulary!]
+}
+
+scalar JSON
+
 type Language {
+  chatSession: [ChatSession!]
   code: String!
   id: ID!
   name: String!
@@ -36,18 +163,21 @@ type Language {
 }
 
 type Mutation {
+  createFlashcardSet(description: String, languageName: String!, name: String!): FlashcardSet!
   createLanguage(code: String!, name: String!): Language!
   createStory(input: CreateStoryInput!): Story!
   createTag(name: String!): Tag!
   createUser(languages: [String!]!, username: String!): User!
   createVocabulary(example: String, languageName: String!, meaning: String!, word: String!): Vocabulary!
   createWorksheet(input: CreateWorksheetInput!): Worksheet
+  deleteFlashcardSet(id: ID!): Boolean!
   deleteLanguage(id: ID!): Boolean!
   deleteStory(id: ID!): Boolean!
   deleteTag(id: ID!): Boolean!
   deleteUser(id: ID!): Boolean!
   deleteVocabulary(id: ID!): Boolean!
   deleteWorksheet(id: Int!): Boolean!
+  updateFlashcardSet(description: String, id: ID!, languageName: String, name: String): FlashcardSet!
   updateLanguage(code: String, id: ID!, name: String): Language!
   updateStory(id: ID!, input: UpdateStoryInput!): Story!
   updateTag(id: ID!, name: String!): Tag!
@@ -63,6 +193,9 @@ type PaginatedStoriesResponse {
 }
 
 type Query {
+  flashcardSet(id: ID!): FlashcardSet
+  flashcardSets: [FlashcardSet!]!
+  flashcardSetsByLanguage(languageName: String!): [FlashcardSet!]!
   language(id: ID!): Language
   languageByName(name: String!): Language
   languages: [Language!]!
@@ -80,12 +213,19 @@ type Query {
 }
 
 type ReadingProgress {
+  addedToLibraryAt: DateTime
+  chapterProgresses: [ChapterProgress!]
   completedAt: DateTime
+  createdAt: DateTime!
+  currentPosition: JSON
   id: ID!
   lastReadAt: DateTime
-  startedAt: DateTime!
+  progress: Float!
+  rating: Int
+  startedAt: DateTime
   story: Story
   storyId: ID!
+  updatedAt: DateTime!
   user: User
   userId: ID!
 }
@@ -93,6 +233,7 @@ type ReadingProgress {
 type Story {
   audioUrl: String
   averageRating: Float
+  chapters: [Chapter!]
   completedAt: DateTime
   comprehensionQuestions: [ComprehensionQuestion!]
   content: String!
@@ -103,6 +244,7 @@ type Story {
   imageUrl: String
   isPublished: Boolean!
   isReviewed: Boolean!
+  language: Language
   languageName: String!
   readCount: Int!
   readingProgress: [ReadingProgress!]
@@ -111,6 +253,7 @@ type Story {
   translatedTitle: String!
   updatedAt: DateTime!
   user: User
+  userId: ID!
   vocabularies: [Vocabulary!]
 }
 
@@ -119,6 +262,17 @@ input StoryFilters {
   languageName: String
   searchTerm: String
   tags: [String!]
+}
+
+type Submission {
+  answer: JSON!
+  createdAt: DateTime!
+  exercise: Exercise
+  exerciseId: ID!
+  id: ID!
+  isCorrect: Boolean!
+  user: User
+  userId: ID!
 }
 
 type Tag {
@@ -146,10 +300,14 @@ input UpdateWorksheetInput {
 }
 
 type User {
+  chatSession: [ChatSession!]
   createdAt: DateTime!
   email: String!
+  flashcardSet: [FlashcardSet!]
   languages: [Language!]
+  readingProgress: [ReadingProgress!]
   stories: [Story!]
+  submission: [Submission!]
   updatedAt: DateTime!
   userId: ID!
   username: String!
@@ -160,21 +318,30 @@ type User {
 type Vocabulary {
   createdAt: DateTime!
   example: String
+  flashcardSet: FlashcardSet
+  flashcardSetId: Int
   id: ID!
+  language: Language
   languageName: String!
   meaning: String!
+  stories: [Story!]
   story: Story
   updatedAt: DateTime!
   user: User
+  userId: ID!
   word: String!
 }
 
 type Worksheet {
   completedAt: DateTime
-  content: String!
   createdAt: DateTime!
+  description: String!
+  exercises: [Exercise]
   id: ID!
-  language: Language!
+  language: Language
+  languageName: String!
+  title: String!
   updatedAt: DateTime!
-  user: User!
+  user: User
+  userId: ID!
 }

@@ -2,11 +2,10 @@ type Submission {
     id: ID!
     userId: ID!
     exerciseId: ID!
-    userId: ID!
     answer: JSON!
     isCorrect: Boolean!
     createdAt: DateTime!
 
     user: User
-    exercise: Exercise!
+    exercise: Exercise
 }

@@ -18,9 +18,9 @@ type Story {
     updatedAt: DateTime!
 
     vocabularies: [Vocabulary!]
-    user: User!
+    user: User
     tags: [Tag!]
-    language: Language!
+    language: Language
     readingProgress: [ReadingProgress!]
     comprehensionQuestions: [ComprehensionQuestion!]
     chapters: [Chapter!]
@@ -38,9 +38,6 @@ type PaginatedStoriesResponse {
     totalCount: Int!
     hasNextPage: Boolean!
 }
-
-scalar DateTime
-
 
 input CreateStoryInput {
     title: String!

@@ -8,8 +8,8 @@ type Worksheet {
   createdAt: DateTime!
   updatedAt: DateTime!
 
-  user: User!
-  language: Language!
+  user: User
+  language: Language
   exercises:    [Exercise]
 }
 

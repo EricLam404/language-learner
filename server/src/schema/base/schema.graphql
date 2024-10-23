@@ -1,2 +1,5 @@
 type Query
 type Mutation
+
+scalar JSON
+scalar DateTime
