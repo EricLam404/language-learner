@@ -12,4 +12,12 @@ export const Story: StoryResolvers = {
             },
         });
     },
+
+    chapters: async (_parent, _arg, _ctx, _info) => {
+        return await _ctx.dataSources.prisma.chapter.findMany({
+            where: {
+                storyId: Number(_parent.id),
+            },
+        });
+    },
 };
