@@ -96,6 +96,14 @@ export type ComprehensionQuestionOption = {
   questionId: Scalars['ID']['output'];
 };
 
+export type CreateFlashcardFaceInput = {
+  audioUrl?: InputMaybe<Scalars['String']['input']>;
+  content: Scalars['String']['input'];
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  order: Scalars['Int']['input'];
+  type: FaceType;
+};
+
 export type CreateStoryInput = {
   content: Scalars['String']['input'];
   description: Scalars['String']['input'];
@@ -156,7 +164,7 @@ export type FlashcardFace = {
   __typename?: 'FlashcardFace';
   audioUrl?: Maybe<Scalars['String']['output']>;
   content: Scalars['String']['output'];
-  flashcard: Flashcard;
+  flashcard?: Maybe<Flashcard>;
   flashcardId: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
   imageUrl?: Maybe<Scalars['String']['output']>;
@@ -192,6 +200,7 @@ export type Language = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createFlashcard: Flashcard;
   createFlashcardSet: FlashcardSet;
   createLanguage: Language;
   createStory: Story;
@@ -199,6 +208,7 @@ export type Mutation = {
   createUser: User;
   createVocabulary: Vocabulary;
   createWorksheet?: Maybe<Worksheet>;
+  deleteFlashcard: Scalars['Boolean']['output'];
   deleteFlashcardSet: Scalars['Boolean']['output'];
   deleteLanguage: Scalars['Boolean']['output'];
   deleteStory: Scalars['Boolean']['output'];
@@ -213,6 +223,12 @@ export type Mutation = {
   updateUser: User;
   updateVocabulary: Vocabulary;
   updateWorksheet?: Maybe<Worksheet>;
+};
+
+
+export type MutationcreateFlashcardArgs = {
+  faces: Array<CreateFlashcardFaceInput>;
+  setId: Scalars['ID']['input'];
 };
 
 
@@ -255,6 +271,11 @@ export type MutationcreateVocabularyArgs = {
 
 export type MutationcreateWorksheetArgs = {
   input: CreateWorksheetInput;
+};
+
+
+export type MutationdeleteFlashcardArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -646,6 +667,7 @@ export type ResolversTypes = ResolversObject<{
   ComprehensionQuestion: ResolverTypeWrapper<Omit<ComprehensionQuestion, 'chapter' | 'options'> & { chapter: ResolversTypes['Chapter'], options: Array<ResolversTypes['ComprehensionQuestionOption']> }>;
   ComprehensionQuestionOption: ResolverTypeWrapper<Omit<ComprehensionQuestionOption, 'question'> & { question: ResolversTypes['ComprehensionQuestion'] }>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CreateFlashcardFaceInput: CreateFlashcardFaceInput;
   CreateStoryInput: CreateStoryInput;
   CreateWorksheetInput: CreateWorksheetInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
@@ -653,7 +675,7 @@ export type ResolversTypes = ResolversObject<{
   ExerciseType: ResolverTypeWrapper<'MULTIPLE_CHOICE' | 'FILL_IN_BLANK' | 'MATCHING' | 'SENTENCE_CONSTRUCTION' | 'TRANSLATION'>;
   FaceType: ResolverTypeWrapper<'FRONT' | 'BACK' | 'PINYIN' | 'CHARACTER' | 'TRANSLATION' | 'OTHER'>;
   Flashcard: ResolverTypeWrapper<Omit<Flashcard, 'faces' | 'set'> & { faces?: Maybe<Array<ResolversTypes['FlashcardFace']>>, set?: Maybe<ResolversTypes['FlashcardSet']> }>;
-  FlashcardFace: ResolverTypeWrapper<Omit<FlashcardFace, 'flashcard' | 'type'> & { flashcard: ResolversTypes['Flashcard'], type: ResolversTypes['FaceType'] }>;
+  FlashcardFace: ResolverTypeWrapper<Omit<FlashcardFace, 'flashcard' | 'type'> & { flashcard?: Maybe<ResolversTypes['Flashcard']>, type: ResolversTypes['FaceType'] }>;
   FlashcardSet: ResolverTypeWrapper<Omit<FlashcardSet, 'cards' | 'chatSessions' | 'language' | 'user' | 'vocabularies'> & { cards?: Maybe<Array<ResolversTypes['Flashcard']>>, chatSessions?: Maybe<Array<ResolversTypes['ChatSession']>>, language?: Maybe<ResolversTypes['Language']>, user?: Maybe<ResolversTypes['User']>, vocabularies?: Maybe<Array<ResolversTypes['Vocabulary']>> }>;
   JSON: ResolverTypeWrapper<Scalars['JSON']['output']>;
   Language: ResolverTypeWrapper<Omit<Language, 'chatSession' | 'stories' | 'users' | 'vocabularies' | 'worksheets'> & { chatSession?: Maybe<Array<ResolversTypes['ChatSession']>>, stories?: Maybe<Array<ResolversTypes['Story']>>, users?: Maybe<Array<ResolversTypes['User']>>, vocabularies?: Maybe<Array<ResolversTypes['Vocabulary']>>, worksheets?: Maybe<Array<ResolversTypes['Worksheet']>> }>;
@@ -685,12 +707,13 @@ export type ResolversParentTypes = ResolversObject<{
   ComprehensionQuestion: Omit<ComprehensionQuestion, 'chapter' | 'options'> & { chapter: ResolversParentTypes['Chapter'], options: Array<ResolversParentTypes['ComprehensionQuestionOption']> };
   ComprehensionQuestionOption: Omit<ComprehensionQuestionOption, 'question'> & { question: ResolversParentTypes['ComprehensionQuestion'] };
   Boolean: Scalars['Boolean']['output'];
+  CreateFlashcardFaceInput: CreateFlashcardFaceInput;
   CreateStoryInput: CreateStoryInput;
   CreateWorksheetInput: CreateWorksheetInput;
   DateTime: Scalars['DateTime']['output'];
   Exercise: Omit<Exercise, 'submissions' | 'worksheet'> & { submissions?: Maybe<Array<ResolversParentTypes['Submission']>>, worksheet: ResolversParentTypes['Worksheet'] };
   Flashcard: Omit<Flashcard, 'faces' | 'set'> & { faces?: Maybe<Array<ResolversParentTypes['FlashcardFace']>>, set?: Maybe<ResolversParentTypes['FlashcardSet']> };
-  FlashcardFace: Omit<FlashcardFace, 'flashcard'> & { flashcard: ResolversParentTypes['Flashcard'] };
+  FlashcardFace: Omit<FlashcardFace, 'flashcard'> & { flashcard?: Maybe<ResolversParentTypes['Flashcard']> };
   FlashcardSet: Omit<FlashcardSet, 'cards' | 'chatSessions' | 'language' | 'user' | 'vocabularies'> & { cards?: Maybe<Array<ResolversParentTypes['Flashcard']>>, chatSessions?: Maybe<Array<ResolversParentTypes['ChatSession']>>, language?: Maybe<ResolversParentTypes['Language']>, user?: Maybe<ResolversParentTypes['User']>, vocabularies?: Maybe<Array<ResolversParentTypes['Vocabulary']>> };
   JSON: Scalars['JSON']['output'];
   Language: Omit<Language, 'chatSession' | 'stories' | 'users' | 'vocabularies' | 'worksheets'> & { chatSession?: Maybe<Array<ResolversParentTypes['ChatSession']>>, stories?: Maybe<Array<ResolversParentTypes['Story']>>, users?: Maybe<Array<ResolversParentTypes['User']>>, vocabularies?: Maybe<Array<ResolversParentTypes['Vocabulary']>>, worksheets?: Maybe<Array<ResolversParentTypes['Worksheet']>> };
@@ -820,7 +843,7 @@ export type FlashcardResolvers<ContextType = MyContext, ParentType extends Resol
 export type FlashcardFaceResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['FlashcardFace'] = ResolversParentTypes['FlashcardFace']> = ResolversObject<{
   audioUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  flashcard?: Resolver<ResolversTypes['Flashcard'], ParentType, ContextType>;
+  flashcard?: Resolver<Maybe<ResolversTypes['Flashcard']>, ParentType, ContextType>;
   flashcardId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -860,6 +883,7 @@ export type LanguageResolvers<ContextType = MyContext, ParentType extends Resolv
 }>;
 
 export type MutationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  createFlashcard?: Resolver<ResolversTypes['Flashcard'], ParentType, ContextType, RequireFields<MutationcreateFlashcardArgs, 'faces' | 'setId'>>;
   createFlashcardSet?: Resolver<ResolversTypes['FlashcardSet'], ParentType, ContextType, RequireFields<MutationcreateFlashcardSetArgs, 'languageName' | 'name'>>;
   createLanguage?: Resolver<ResolversTypes['Language'], ParentType, ContextType, RequireFields<MutationcreateLanguageArgs, 'code' | 'name'>>;
   createStory?: Resolver<ResolversTypes['Story'], ParentType, ContextType, RequireFields<MutationcreateStoryArgs, 'input'>>;
@@ -867,6 +891,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationcreateUserArgs, 'languages' | 'username'>>;
   createVocabulary?: Resolver<ResolversTypes['Vocabulary'], ParentType, ContextType, RequireFields<MutationcreateVocabularyArgs, 'languageName' | 'meaning' | 'word'>>;
   createWorksheet?: Resolver<Maybe<ResolversTypes['Worksheet']>, ParentType, ContextType, RequireFields<MutationcreateWorksheetArgs, 'input'>>;
+  deleteFlashcard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteFlashcardArgs, 'id'>>;
   deleteFlashcardSet?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteFlashcardSetArgs, 'id'>>;
   deleteLanguage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteLanguageArgs, 'id'>>;
   deleteStory?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteStoryArgs, 'id'>>;

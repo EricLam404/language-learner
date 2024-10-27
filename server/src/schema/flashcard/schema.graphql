@@ -35,7 +35,7 @@ type FlashcardFace {
     audioUrl: String
     imageUrl: String
     
-    flashcard: Flashcard!
+    flashcard: Flashcard
 }
 
 enum FaceType {
@@ -45,6 +45,14 @@ enum FaceType {
   CHARACTER
   TRANSLATION
   OTHER
+}
+
+input CreateFlashcardFaceInput {
+  content: String!
+  type: FaceType!
+  order: Int!
+  audioUrl: String
+  imageUrl: String
 }
 
 extend type Query {
@@ -57,4 +65,8 @@ extend type Mutation {
   createFlashcardSet(languageName: String!, name: String!, description: String): FlashcardSet!
   updateFlashcardSet(id: ID!, languageName: String, name: String, description: String): FlashcardSet!
   deleteFlashcardSet(id: ID!): Boolean!
+
+  createFlashcard(setId: ID!, faces: [CreateFlashcardFaceInput!]!): Flashcard!
+  # updateFlashcard(id: ID!, nextReviewAt: DateTime, easeFactor: Float, interval: Int, repetitions: Int): Flashcard!
+  deleteFlashcard(id: ID!): Boolean!
 }

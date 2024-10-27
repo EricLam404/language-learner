@@ -39,3 +39,23 @@ export const UPDATE_FLASHCARD_SET = gql(`
         }
     }
 `);
+
+export const CREATE_FLASHCARD = gql(`
+    mutation CreateFlashcard($setId: ID!, $faces: [CreateFlashcardFaceInput!]!){
+        createFlashcard(setId: $setId, faces: $faces) {
+            setId
+            nextReviewAt
+            faces {
+                id
+                type
+                content
+            }
+        }
+    }
+`);
+
+export const DELETE_FLASHCARD = gql(`
+    mutation DeleteFlashcard($deleteFlashcardId: ID!) {
+        deleteFlashcard(id: $deleteFlashcardId)
+    }
+`);
