@@ -22,15 +22,14 @@ import {
 import { useLanguages } from "@/lib/hooks/useLanguages";
 import { useQuery } from "@apollo/client";
 import { GET_FLASHCARD_SETS } from "@app/_components/graphql/flashcards";
-import { GetFlashcardSetsQuery } from "@/__generated__/graphql";
 import { SearchIcon } from "@components/icons";
 import {
     FlashcardSetMenu,
     FlashcardSetForm,
 } from "@app/_components/forms/FlashcardSet";
 import Link from "next/link";
+import { type FlashcardSet } from "@/lib/types";
 
-export type FlashcardSet = GetFlashcardSetsQuery["flashcardSets"][number];
 export default function Page() {
     const { data: languages, isLoading, isError } = useLanguages();
     const {

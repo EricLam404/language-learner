@@ -34,7 +34,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@components/ui/dialog";
-import { FlashcardSet } from "@app/(userFacing)/flashcard/page";
+import { type FlashcardSet } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { MoreHorizontal, Trash2 } from "lucide-react";
 import {

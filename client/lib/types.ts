@@ -1,3 +1,5 @@
+import { GetFlashcardSetsQuery } from "@/__generated__/graphql";
+
 export interface Flashcard {
     id: number;
     front: string;
@@ -6,3 +8,5 @@ export interface Flashcard {
     character: string;
     example: string;
 }
+
+export type FlashcardSet = GetFlashcardSetsQuery["flashcardSets"][number];
