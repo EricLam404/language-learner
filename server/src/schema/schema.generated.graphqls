@@ -67,6 +67,14 @@ type ComprehensionQuestionOption {
   questionId: ID!
 }
 
+input CreateFlashcardFaceInput {
+  audioUrl: String
+  content: String!
+  imageUrl: String
+  order: Int!
+  type: FaceType!
+}
+
 input CreateStoryInput {
   content: String!
   description: String!
@@ -128,7 +136,7 @@ type Flashcard {
 type FlashcardFace {
   audioUrl: String
   content: String!
-  flashcard: Flashcard!
+  flashcard: Flashcard
   flashcardId: Int!
   id: ID!
   imageUrl: String
@@ -163,6 +171,7 @@ type Language {
 }
 
 type Mutation {
+  createFlashcard(faces: [CreateFlashcardFaceInput!]!, setId: ID!): Flashcard!
   createFlashcardSet(description: String, languageName: String!, name: String!): FlashcardSet!
   createLanguage(code: String!, name: String!): Language!
   createStory(input: CreateStoryInput!): Story!
@@ -170,6 +179,7 @@ type Mutation {
   createUser(languages: [String!]!, username: String!): User!
   createVocabulary(example: String, languageName: String!, meaning: String!, word: String!): Vocabulary!
   createWorksheet(input: CreateWorksheetInput!): Worksheet
+  deleteFlashcard(id: ID!): Boolean!
   deleteFlashcardSet(id: ID!): Boolean!
   deleteLanguage(id: ID!): Boolean!
   deleteStory(id: ID!): Boolean!
