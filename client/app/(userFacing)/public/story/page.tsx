@@ -13,10 +13,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
-import { useLanguages } from "@/lib/hooks/useLanguage";
+import { useLanguages } from "@/lib/hooks/useLanguages";
 import { useQuery } from "@apollo/client";
 import { GET_PUBLIC_STORIES } from "@app/_components/graphql/stories";
-import { difficultyLevels, levels } from "@app/_components/difficultyLevels";
+import { difficultyLevels, levels } from "@/lib/difficultyLevels";
 import Link from "next/link";
 
 export interface Story {

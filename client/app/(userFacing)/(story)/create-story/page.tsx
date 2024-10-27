@@ -4,7 +4,7 @@ import { useMutation } from "@apollo/client";
 import { StoryForm, Values } from "@app/_components/forms/StoryForms";
 import { toast } from "sonner";
 import { CREATE_STORY, GET_STORIES } from "@app/_components/graphql/stories";
-import { DifficultyToNumber } from "@app/_components/difficultyLevels";
+import { DifficultyToNumber } from "@/lib/difficultyLevels";
 import { useRouter } from "next/navigation";
 
 

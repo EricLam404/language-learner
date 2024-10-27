@@ -19,15 +19,19 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
-import { useLanguages } from "@/lib/hooks/useLanguage";
+import { useLanguages } from "@/lib/hooks/useLanguages";
 import { useQuery } from "@apollo/client";
 import { GET_FLASHCARD_SETS } from "@app/_components/graphql/flashcards";
 import { GetFlashcardSetsQuery } from "@/__generated__/graphql";
 import { SearchIcon } from "@components/icons";
-import { FlashcardSetMenu, FlashcardSetForm } from "@app/_components/forms/FlashcardSet";
+import {
+    FlashcardSetMenu,
+    FlashcardSetForm,
+} from "@app/_components/forms/FlashcardSet";
+import Link from "next/link";
 
 export type FlashcardSet = GetFlashcardSetsQuery["flashcardSets"][number];
-export default function page() {
+export default function Page() {
     const { data: languages, isLoading, isError } = useLanguages();
     const {
         data: flashcardSets,
@@ -161,14 +165,19 @@ export default function page() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredSets.map((set) => (
                             <Card key={set.id} className="flex flex-col">
-                                <CardHeader className="flex-grow">
-                                    <CardTitle>{set.name}</CardTitle>
-                                    <CardDescription>
-                                        {set.description}
-                                    </CardDescription>
-                                </CardHeader>
+                                <Link
+                                    href={`/flashcard/${set.id}`}
+                                    className="block h-full"
+                                >
+                                    <CardHeader className="flex-grow">
+                                        <CardTitle>{set.name}</CardTitle>
+                                        <CardDescription>
+                                            {set.description}
+                                        </CardDescription>
+                                    </CardHeader>
+                                </Link>
                                 <CardFooter className="justify-end">
-                                    <FlashcardSetMenu flashcardSet={set}/>
+                                    <FlashcardSetMenu flashcardSet={set} />
                                 </CardFooter>
                             </Card>
                         ))}

@@ -22,7 +22,7 @@ import {
     SelectValue,
 } from "@components/ui/select";
 import Selections from "./Selections";
-import { difficultyLevels, levels } from "@app/_components/difficultyLevels";
+import { difficultyLevels, levels } from "@/lib/difficultyLevels";
 import { Textarea } from "@components/ui/textarea";
 import { Story } from "@app/(userFacing)/(story)/story/page";
 import { useMutation } from "@apollo/client";

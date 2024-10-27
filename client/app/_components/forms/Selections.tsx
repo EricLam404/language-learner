@@ -1,4 +1,4 @@
-import { useLanguages } from "@/lib/hooks/useLanguage";
+import { useLanguages } from "@/lib/hooks/useLanguages";
 import { SelectItem } from "@components/ui/select";
 import React from "react";
 
