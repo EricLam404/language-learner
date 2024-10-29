@@ -40,7 +40,7 @@ export function FlashcardDialog({
       back: editCard?.faces!.find((face) => face.type === FaceType.Back)?.content || "",
       pinyin: editCard?.faces!.find((face) => face.type === FaceType.Pinyin)?.content  || "",
       character: editCard?.faces!.find((face) => face.type === FaceType.Character)?.content || "",
-      example: editCard?.faces!.find((face) => face.type === FaceType.Other)?.content  || ""
+      other: editCard?.faces!.find((face) => face.type === FaceType.Other)?.content  || ""
     }
   });
 
@@ -125,10 +125,10 @@ export function FlashcardDialog({
 
                 <FormField
                   control={form.control}
-                  name="example"
+                  name="other"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Example</FormLabel>
+                      <FormLabel>Other (e.g. Example)</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>

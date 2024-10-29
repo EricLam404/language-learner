@@ -15,8 +15,8 @@ export const flashcardSchema = z.object({
     .max(100, "Character must be less than 100 characters")
     .optional()
     .default(""),
-  example: z.string()
-    .max(500, "Example must be less than 500 characters")
+  other: z.string()
+    .max(500, "Other must be less than 500 characters")
     .optional()
     .default("")
 });

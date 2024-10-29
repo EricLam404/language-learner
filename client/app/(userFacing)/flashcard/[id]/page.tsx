@@ -10,11 +10,16 @@ import { CardContent } from "@/components/ui/card";
 import FlashcardContainer from "@/app/_components/flashcards/FlashcardContainer";
 import { GET_FLASHCARD_SET } from "@app/_components/graphql/flashcards";
 import { useQuery } from "@apollo/client";
+import { LoadingState } from "@app/_components/LoadingState";
 
 export default function Page({ params }: { params: { id: string } }) {
     const { data, loading, error } = useQuery(GET_FLASHCARD_SET, {
         variables: { flashcardSetId: params.id },
     });
+
+    if (loading) {
+        return <LoadingState />;
+    }
 
     if (!data || !data.flashcardSet) {
         return <div>Error 404: Not found</div>;
