@@ -91,7 +91,7 @@ export default function Component() {
                     <h1 className="text-3xl font-bold">Vocabulary List</h1>
                     <div className="flex items-center gap-4">
                         {/* TODO: Implement import csv functionality */}
-                        <Button disabled>
+                        {/* <Button disabled>
                             <UploadIcon className="mr-2 h-4 w-4" />
                             Import CSV
                         </Button>
@@ -101,7 +101,7 @@ export default function Component() {
                         >
                             <PlusIcon className="mr-2 h-4 w-4" />
                             Add Word
-                        </Button>
+                        </Button> */}
 
                         <Select
                             value={selectedLanguage}
