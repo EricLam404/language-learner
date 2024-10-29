@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -17,11 +16,12 @@ import {
 import RequiredText from "@/components/RequiredText";
 import { Flashcard } from "@/lib/types";
 import { flashcardSchema, type FlashcardFormValues } from "@/lib/schemas/flashcard";
+import { FaceType } from "@/__generated__/graphql";
 
 interface FlashcardDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (card: Omit<Flashcard, "id">) => void;
+  onSubmit: (card: FlashcardFormValues) => void;
   editCard?: Flashcard;
 }
 
@@ -36,11 +36,11 @@ export function FlashcardDialog({
   const form = useForm<FlashcardFormValues>({
     resolver: zodResolver(flashcardSchema),
     defaultValues: {
-      front: editCard?.front || "",
-      back: editCard?.back || "",
-      pinyin: editCard?.pinyin || "",
-      character: editCard?.character || "",
-      example: editCard?.example || ""
+      front: editCard?.faces!.find((face) => face.type === FaceType.Front)?.content || "",
+      back: editCard?.faces!.find((face) => face.type === FaceType.Back)?.content || "",
+      pinyin: editCard?.faces!.find((face) => face.type === FaceType.Pinyin)?.content  || "",
+      character: editCard?.faces!.find((face) => face.type === FaceType.Character)?.content || "",
+      example: editCard?.faces!.find((face) => face.type === FaceType.Other)?.content  || ""
     }
   });
 

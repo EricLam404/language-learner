@@ -5,17 +5,18 @@ import { FlashcardSearch } from "./FlashcardSearch";
 import { FlashcardGrid } from "./FlashcardGrid";
 import { StudyMode } from "./StudyMode";
 import { useFlashcards } from "@/lib/hooks/useFlashcards";
-import { Flashcard } from "@/lib/types";
+import { type FlashcardSet, type Flashcard } from "@/lib/types";
 import { FlashcardDialog } from "@/app/_components/flashcards/FlashcardDialog";
 import { ErrorBoundary } from "@/app/_components/ErrorBoundary";
 import { LoadingState } from "@/app/_components/LoadingState";
+import { FlashcardFormValues } from "@/lib/schemas/flashcard";
 
 interface FlashcardContainerProps {
-    initialCards: Flashcard[];
+    flashcardSet: FlashcardSet;
 }
 
 export default function FlashcardContainer({
-    initialCards,
+    flashcardSet,
 }: FlashcardContainerProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [currentEditCard, setCurrentEditCard] = useState<
@@ -32,7 +33,7 @@ export default function FlashcardContainer({
         addCard,
         editCard,
         deleteCard,
-    } = useFlashcards(initialCards);
+    } = useFlashcards(flashcardSet);
 
     if (isStudyMode) {
         return (
@@ -52,12 +53,12 @@ export default function FlashcardContainer({
         setIsDialogOpen(true);
     };
 
-    const handleCardSubmit = (cardData: Omit<Flashcard, "id">) => {
-        if (currentEditCard) {
-            editCard({ ...cardData, id: currentEditCard.id });
-        } else {
-            addCard(cardData);
-        }
+    const handleCardSubmit = (cardData: FlashcardFormValues) => {
+        // if (currentEditCard) {
+        //     editCard({ ...cardData, id: currentEditCard.id });
+        // } else {
+        //     addCard(cardData);
+        // }
     };
 
     return (

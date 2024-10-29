@@ -15,13 +15,14 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Edit, Volume2 } from "lucide-react";
-import { Flashcard } from "@/lib/types";
+import { type Flashcard } from "@/lib/types";
+import { FaceType } from "@/__generated__/graphql";
 
 interface FlashcardGridProps {
     cards: Flashcard[];
     isGridView: boolean;
     onEdit: (card: Flashcard) => void;
-    onDelete: (id: number) => void;
+    onDelete: (id: string) => void;
 }
 
 export function FlashcardGrid({
@@ -42,7 +43,7 @@ export function FlashcardGrid({
                 <Card key={card.id} className="flex flex-col">
                     <CardHeader>
                         <CardTitle className="flex justify-between items-center">
-                            <span>{card.front}</span>
+                        <span>{card.faces!.find((face) => face.type === FaceType.Front)?.content}</span>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
@@ -62,25 +63,23 @@ export function FlashcardGrid({
                                         Edit
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
-                                        onClick={() => onDelete(card.id)}
+                                        onClick={() => onDelete(card.id.toString())}
                                     >
                                         Delete
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </CardTitle>
-                        <CardDescription>{card.back}</CardDescription>
+                        <CardDescription>{card.faces!.find((face) => face.type === FaceType.Back)?.content}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p>
-                            <strong>Pinyin:</strong> {card.pinyin}
-                        </p>
-                        <p>
-                            <strong>Character:</strong> {card.character}
-                        </p>
-                        <p>
-                            <strong>Example:</strong> {card.example}
-                        </p>
+                    {card.faces!
+                        .filter((face) => face.type !== FaceType.Front && face.type !== FaceType.Back)
+                        .map((face) => (
+                            <div key={face.type} className="mb-2">
+                                <strong>{face.type}:</strong> {face.content}
+                            </div>
+                        ))}
                     </CardContent>
                     <CardFooter className="mt-auto">
                         <Button variant="outline" className="w-full">

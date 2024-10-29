@@ -17,7 +17,7 @@ import { Input } from "@components/ui/input";
 import { Form } from "@/components/ui/form";
 import { z, infer as zInfer } from "zod";
 import Selections from "./Selections";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { toast } from "sonner";
 import {
@@ -160,12 +160,8 @@ export function FlashcardSetForm() {
     );
 }
 
-interface FlashcardSetProps {
-    flashcardSet: FlashcardSet;
-}
-
 interface DeleteFlashcardSetModalProps {
-    flashcardSet: FlashcardSet;
+    flashcardSet: NonNullable<FlashcardSet>;
     showDeleteModal: boolean;
     setShowDeleteModal: (value: boolean) => void;
 }
@@ -184,7 +180,7 @@ export function DeleteFlashcardSetModal({
         try {
             const response = await deleteStory({
                 variables: {
-                    deleteFlashcardSetId: flashcardSet.id,
+                    deleteFlashcardSetId: flashcardSet.id!,
                 },
             });
 
@@ -225,7 +221,7 @@ export function DeleteFlashcardSetModal({
     );
 }
 interface UpdateFlashcardSetModalProps {
-    flashcardSet: FlashcardSet;
+    flashcardSet: NonNullable<FlashcardSet>;
     showUpdateModal: boolean;
     setShowUpdateModal: (value: boolean) => void;
 }
@@ -375,6 +371,10 @@ export function UpdateFlashcardSetModal({
             </DialogContent>
         </Dialog>
     );
+}
+
+interface FlashcardSetProps {
+    flashcardSet: NonNullable<FlashcardSet>;
 }
 
 export function FlashcardSetMenu({ flashcardSet }: FlashcardSetProps) {

@@ -1,27 +1,26 @@
 "use client";
 import { useState } from "react";
-import { Flashcard } from "../types";
+import { type Flashcard, type FlashcardSet } from "../types";
 
-export const useFlashcards = (initialCards: Flashcard[]) => {
-    const [flashcards, setFlashcards] = useState(initialCards);
+export const useFlashcards = (set: FlashcardSet) => {
+    const [flashcards, setFlashcards] = useState(set.cards || []);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortBy, setSortBy] = useState("recent");
 
     const filteredCards = flashcards.filter(
         (card) =>
-            card.front.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            card.back.toLowerCase().includes(searchTerm.toLowerCase())
+            card.faces!.some(face => face.content.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     const sortedCards = [...filteredCards].sort((a, b) => {
-        if (sortBy === "recent") return b.id - a.id;
+        if (sortBy === "recent") return Number(b.id) - Number(a.id);
         return 0;
     });
 
     const addCard = (newCard: Omit<Flashcard, "id">) => {
         setFlashcards([
             ...flashcards,
-            { id: flashcards.length + 1, ...newCard },
+            { id: (flashcards.length + 1).toString(), ...newCard },
         ]);
     };
 
@@ -33,7 +32,7 @@ export const useFlashcards = (initialCards: Flashcard[]) => {
         );
     };
 
-    const deleteCard = (id: number) => {
+    const deleteCard = (id: string) => {
         setFlashcards(flashcards.filter((card) => card.id !== id));
     };
 

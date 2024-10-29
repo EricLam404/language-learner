@@ -12,6 +12,28 @@ export const GET_FLASHCARD_SETS = gql(`
     }
 `);
 
+export const GET_FLASHCARD_SET = gql(`
+    query FlashcardSet($flashcardSetId: ID!) {
+        flashcardSet(id: $flashcardSetId) {
+            name
+            languageName
+            id
+            description
+            cards {
+                id
+                nextReviewAt
+                interval
+                faces {
+                    id
+                    order
+                    type
+                    content
+                }
+            }
+        }
+    }
+`);
+
 export const CREATE_FLASHCARD_SET = gql(`
     mutation CreateFlashcardSet($languageName: String!, $name: String!, $description: String) {
         createFlashcardSet(languageName: $languageName, name: $name, description: $description) {
@@ -36,6 +58,19 @@ export const UPDATE_FLASHCARD_SET = gql(`
             description,
             name,
             languageName
+        }
+    }
+`);
+
+export const GET_FLASHCARD = gql(`
+    query GetFlashcard($flashcardId: ID!) {
+        flashcard(id: $flashcardId) {
+            id
+            faces {
+                id
+                type
+                content
+            }
         }
     }
 `);

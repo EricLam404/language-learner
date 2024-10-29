@@ -1,12 +1,4 @@
-import { GetFlashcardSetsQuery } from "@/__generated__/graphql";
+import { FlashcardSetQuery } from "@/__generated__/graphql";
 
-export interface Flashcard {
-    id: number;
-    front: string;
-    back: string;
-    pinyin: string;
-    character: string;
-    example: string;
-}
-
-export type FlashcardSet = GetFlashcardSetsQuery["flashcardSets"][number];
+export type FlashcardSet = NonNullable<FlashcardSetQuery["flashcardSet"]>;
+export type Flashcard = NonNullable<FlashcardSet["cards"]>[number];
