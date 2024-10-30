@@ -1,6 +1,7 @@
 /* This file was automatically generated. DO NOT UPDATE MANUALLY. */
     import type   { Resolvers } from './types.generated';
-    import    { flashcardSet as Query_flashcardSet } from './flashcard/resolvers/Query/flashcardSet';
+    import    { flashcard as Query_flashcard } from './flashcard/resolvers/Query/flashcard';
+import    { flashcardSet as Query_flashcardSet } from './flashcard/resolvers/Query/flashcardSet';
 import    { flashcardSets as Query_flashcardSets } from './flashcard/resolvers/Query/flashcardSets';
 import    { flashcardSetsByLanguage as Query_flashcardSetsByLanguage } from './flashcard/resolvers/Query/flashcardSetsByLanguage';
 import    { language as Query_language } from './language/resolvers/Query/language';
@@ -33,6 +34,7 @@ import    { deleteTag as Mutation_deleteTag } from './tag/resolvers/Mutation/del
 import    { deleteUser as Mutation_deleteUser } from './user/resolvers/Mutation/deleteUser';
 import    { deleteVocabulary as Mutation_deleteVocabulary } from './vocabulary/resolvers/Mutation/deleteVocabulary';
 import    { deleteWorksheet as Mutation_deleteWorksheet } from './worksheet/resolvers/Mutation/deleteWorksheet';
+import    { updateFlashcard as Mutation_updateFlashcard } from './flashcard/resolvers/Mutation/updateFlashcard';
 import    { updateFlashcardSet as Mutation_updateFlashcardSet } from './flashcard/resolvers/Mutation/updateFlashcardSet';
 import    { updateLanguage as Mutation_updateLanguage } from './language/resolvers/Mutation/updateLanguage';
 import    { updateStory as Mutation_updateStory } from './story/resolvers/Mutation/updateStory';
@@ -61,8 +63,8 @@ import    { Vocabulary } from './vocabulary/resolvers/Vocabulary';
 import    { Worksheet } from './worksheet/resolvers/Worksheet';
 import    { DateTimeResolver,JSONResolver } from 'graphql-scalars';
     export const resolvers: Resolvers = {
-      Query: { flashcardSet: Query_flashcardSet,flashcardSets: Query_flashcardSets,flashcardSetsByLanguage: Query_flashcardSetsByLanguage,language: Query_language,languageByName: Query_languageByName,languages: Query_languages,publicStories: Query_publicStories,stories: Query_stories,story: Query_story,tag: Query_tag,tags: Query_tags,user: Query_user,users: Query_users,vocabularies: Query_vocabularies,vocabulary: Query_vocabulary,worksheet: Query_worksheet,worksheets: Query_worksheets },
-      Mutation: { createFlashcard: Mutation_createFlashcard,createFlashcardSet: Mutation_createFlashcardSet,createLanguage: Mutation_createLanguage,createStory: Mutation_createStory,createTag: Mutation_createTag,createUser: Mutation_createUser,createVocabulary: Mutation_createVocabulary,createWorksheet: Mutation_createWorksheet,deleteFlashcard: Mutation_deleteFlashcard,deleteFlashcardSet: Mutation_deleteFlashcardSet,deleteLanguage: Mutation_deleteLanguage,deleteStory: Mutation_deleteStory,deleteTag: Mutation_deleteTag,deleteUser: Mutation_deleteUser,deleteVocabulary: Mutation_deleteVocabulary,deleteWorksheet: Mutation_deleteWorksheet,updateFlashcardSet: Mutation_updateFlashcardSet,updateLanguage: Mutation_updateLanguage,updateStory: Mutation_updateStory,updateTag: Mutation_updateTag,updateUser: Mutation_updateUser,updateVocabulary: Mutation_updateVocabulary,updateWorksheet: Mutation_updateWorksheet },
+      Query: { flashcard: Query_flashcard,flashcardSet: Query_flashcardSet,flashcardSets: Query_flashcardSets,flashcardSetsByLanguage: Query_flashcardSetsByLanguage,language: Query_language,languageByName: Query_languageByName,languages: Query_languages,publicStories: Query_publicStories,stories: Query_stories,story: Query_story,tag: Query_tag,tags: Query_tags,user: Query_user,users: Query_users,vocabularies: Query_vocabularies,vocabulary: Query_vocabulary,worksheet: Query_worksheet,worksheets: Query_worksheets },
+      Mutation: { createFlashcard: Mutation_createFlashcard,createFlashcardSet: Mutation_createFlashcardSet,createLanguage: Mutation_createLanguage,createStory: Mutation_createStory,createTag: Mutation_createTag,createUser: Mutation_createUser,createVocabulary: Mutation_createVocabulary,createWorksheet: Mutation_createWorksheet,deleteFlashcard: Mutation_deleteFlashcard,deleteFlashcardSet: Mutation_deleteFlashcardSet,deleteLanguage: Mutation_deleteLanguage,deleteStory: Mutation_deleteStory,deleteTag: Mutation_deleteTag,deleteUser: Mutation_deleteUser,deleteVocabulary: Mutation_deleteVocabulary,deleteWorksheet: Mutation_deleteWorksheet,updateFlashcard: Mutation_updateFlashcard,updateFlashcardSet: Mutation_updateFlashcardSet,updateLanguage: Mutation_updateLanguage,updateStory: Mutation_updateStory,updateTag: Mutation_updateTag,updateUser: Mutation_updateUser,updateVocabulary: Mutation_updateVocabulary,updateWorksheet: Mutation_updateWorksheet },
       
       Chapter: Chapter,
 ChapterProgress: ChapterProgress,

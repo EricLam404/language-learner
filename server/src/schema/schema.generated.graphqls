@@ -67,14 +67,6 @@ type ComprehensionQuestionOption {
   questionId: ID!
 }
 
-input CreateFlashcardFaceInput {
-  audioUrl: String
-  content: String!
-  imageUrl: String
-  order: Int!
-  type: FaceType!
-}
-
 input CreateStoryInput {
   content: String!
   description: String!
@@ -144,6 +136,14 @@ type FlashcardFace {
   type: FaceType!
 }
 
+input FlashcardFaceInput {
+  audioUrl: String
+  content: String!
+  imageUrl: String
+  order: Int!
+  type: FaceType!
+}
+
 type FlashcardSet {
   cards: [Flashcard!]
   chatSessions: [ChatSession!]
@@ -171,7 +171,7 @@ type Language {
 }
 
 type Mutation {
-  createFlashcard(faces: [CreateFlashcardFaceInput!]!, setId: ID!): Flashcard!
+  createFlashcard(faces: [FlashcardFaceInput!]!, setId: ID!): Flashcard!
   createFlashcardSet(description: String, languageName: String!, name: String!): FlashcardSet!
   createLanguage(code: String!, name: String!): Language!
   createStory(input: CreateStoryInput!): Story!
@@ -187,6 +187,7 @@ type Mutation {
   deleteUser(id: ID!): Boolean!
   deleteVocabulary(id: ID!): Boolean!
   deleteWorksheet(id: Int!): Boolean!
+  updateFlashcard(faces: [FlashcardFaceInput!]!, id: ID!): Flashcard!
   updateFlashcardSet(description: String, id: ID!, languageName: String, name: String): FlashcardSet!
   updateLanguage(code: String, id: ID!, name: String): Language!
   updateStory(id: ID!, input: UpdateStoryInput!): Story!
@@ -203,6 +204,7 @@ type PaginatedStoriesResponse {
 }
 
 type Query {
+  flashcard(id: ID!): Flashcard
   flashcardSet(id: ID!): FlashcardSet
   flashcardSets: [FlashcardSet!]!
   flashcardSetsByLanguage(languageName: String!): [FlashcardSet!]!

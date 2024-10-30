@@ -234,6 +234,8 @@ model FlashcardFace {
   order       Int
   audioUrl    String?
   imageUrl    String?
+
+  @@unique([flashcardId, type])
 }
 
 enum FaceType {

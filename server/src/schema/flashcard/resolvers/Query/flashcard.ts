@@ -1,20 +1,16 @@
 import { GraphQLError } from "graphql";
 import type { QueryResolvers } from "./../../../types.generated";
-export const flashcardSet: NonNullable<QueryResolvers['flashcardSet']> = async (
+export const flashcard: NonNullable<QueryResolvers['flashcard']> = async (
     _parent,
     _arg,
     _ctx
 ) => {
-    /* Implement Query.flashcardSet resolver logic here */
+    /* Implement Query.flashcard resolver logic here */
     try {
-        return await _ctx.dataSources.prisma.flashcardSet.findUnique({
+        return await _ctx.dataSources.prisma.flashcard.findUnique({
             where: { id: Number(_arg.id) },
             include: {
-                cards: {
-                    include: {
-                        faces: true,
-                    },
-                },
+                faces: true,
             },
         });
     } catch (error) {

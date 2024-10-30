@@ -32,14 +32,14 @@ export default function Page({ params }: { params: { id: string } }) {
                     <div className="flex justify-between items-center">
                         <div>
                             <CardTitle className="text-3xl font-bold">
-                                Basic Chinese Phrases
+                                {data.flashcardSet.name}
                             </CardTitle>
                             <CardDescription>
-                                Essential phrases for everyday conversations
+                                {data.flashcardSet.description}
                             </CardDescription>
                         </div>
                         <div className="text-lg font-semibold">
-                            Language: Chinese
+                            Language: {data.flashcardSet.languageName}
                         </div>
                     </div>
                 </CardHeader>

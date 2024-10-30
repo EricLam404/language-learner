@@ -76,10 +76,23 @@ export const GET_FLASHCARD = gql(`
 `);
 
 export const CREATE_FLASHCARD = gql(`
-    mutation CreateFlashcard($setId: ID!, $faces: [CreateFlashcardFaceInput!]!){
+    mutation CreateFlashcard($setId: ID!, $faces: [FlashcardFaceInput!]!){
         createFlashcard(setId: $setId, faces: $faces) {
             setId
             nextReviewAt
+            faces {
+                id
+                type
+                content
+            }
+        }
+    }
+`);
+
+export const UPDATE_FLASHCARD = gql(`
+    mutation UpdateFlashcard($updateFlashcardId: ID!, $faces: [FlashcardFaceInput!]!){
+        updateFlashcard(id: $updateFlashcardId, faces: $faces) {
+            id
             faces {
                 id
                 type

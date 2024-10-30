@@ -2,7 +2,12 @@
 import { useEffect, useState } from "react";
 import { type Flashcard, type FlashcardSet } from "../types";
 import { useMutation } from "@apollo/client";
-import { CREATE_FLASHCARD, DELETE_FLASHCARD, GET_FLASHCARD_SET } from "@app/_components/graphql/flashcards";
+import {
+    CREATE_FLASHCARD,
+    DELETE_FLASHCARD,
+    GET_FLASHCARD_SET,
+    UPDATE_FLASHCARD,
+} from "@app/_components/graphql/flashcards";
 import { toast } from "sonner";
 import { FlashcardFormValues } from "../schemas/flashcard";
 import { FaceType } from "@/__generated__/graphql";
@@ -16,9 +21,10 @@ export const useFlashcards = (set: FlashcardSet) => {
         setFlashcards(set.cards || []);
     }, [set.cards]);
 
-    const filteredCards = flashcards.filter(
-        (card) =>
-            card.faces!.some(face => face.content.toLowerCase().includes(searchTerm.toLowerCase()))
+    const filteredCards = flashcards.filter((card) =>
+        card.faces!.some((face) =>
+            face.content.toLowerCase().includes(searchTerm.toLowerCase())
+        )
     );
 
     const sortedCards = [...filteredCards].sort((a, b) => {
@@ -26,36 +32,43 @@ export const useFlashcards = (set: FlashcardSet) => {
         return 0;
     });
 
-    const [createFlashcard, { loading }] = useMutation(
-        CREATE_FLASHCARD,
-        {
-            refetchQueries: [{ query: GET_FLASHCARD_SET, variables: { flashcardSetId: set.id } }],
-            awaitRefetchQueries: true,
-        }
-    );
+    const [createFlashcard, { loading }] = useMutation(CREATE_FLASHCARD, {
+        refetchQueries: [
+            { query: GET_FLASHCARD_SET, variables: { flashcardSetId: set.id } },
+        ],
+        awaitRefetchQueries: true,
+    });
 
-    const [deleteFlashcard] = useMutation(
-        DELETE_FLASHCARD,
-        {
-            refetchQueries: [{ query: GET_FLASHCARD_SET, variables: { flashcardSetId: set.id } }],
-            awaitRefetchQueries: true,
-        }
-    );
+    const [updateFlashcard] = useMutation(UPDATE_FLASHCARD, {
+        refetchQueries: [
+            { query: GET_FLASHCARD_SET, variables: { flashcardSetId: set.id } },
+        ],
+        awaitRefetchQueries: true,
+    });
+
+    const [deleteFlashcard] = useMutation(DELETE_FLASHCARD, {
+        refetchQueries: [
+            { query: GET_FLASHCARD_SET, variables: { flashcardSetId: set.id } },
+        ],
+        awaitRefetchQueries: true,
+    });
 
     const addCard = async (newCard: FlashcardFormValues) => {
         try {
             const faces = Object.keys(newCard)
-            .filter((key) => newCard[key as keyof FlashcardFormValues] !== "")
-            .map((key, index) => ({
-                type: key.toUpperCase() as FaceType,
-                content: newCard[key as keyof FlashcardFormValues],
-                order: index
-            }));
+                .filter(
+                    (key) => newCard[key as keyof FlashcardFormValues] !== ""
+                )
+                .map((key, index) => ({
+                    type: key.toUpperCase() as FaceType,
+                    content: newCard[key as keyof FlashcardFormValues],
+                    order: index,
+                }));
 
             let response = await createFlashcard({
                 variables: {
                     setId: set.id,
-                    faces: faces
+                    faces: faces,
                 },
             });
             if (response.data && response.data.createFlashcard) {
@@ -74,20 +87,45 @@ export const useFlashcards = (set: FlashcardSet) => {
         }
     };
 
-    const editCard = (updatedCard: Flashcard) => {
-        setFlashcards(
-            flashcards.map((card) =>
-                card.id === updatedCard.id ? updatedCard : card
-            )
-        );
+    const editCard = async (updatedCard: FlashcardFormValues, id: string) => {
+        try {
+            const faces = Object.keys(updatedCard)
+                .filter(
+                    (key) => updatedCard[key as keyof FlashcardFormValues] !== ""
+                )
+                .map((key, index) => ({
+                    type: key.toUpperCase() as FaceType,
+                    content: updatedCard[key as keyof FlashcardFormValues],
+                    order: index,
+                }));
+
+            let response = await updateFlashcard({
+                variables: {
+                    updateFlashcardId: id,
+                    faces: faces,
+                },
+            });
+            if (response.data && response.data.updateFlashcard) {
+                console.log(response.data.updateFlashcard);
+            } else {
+                console.error(
+                    "No data returned from update flashcard mutation"
+                );
+            }
+            toast.success("Flashcard has been successfully created!");
+        } catch (e) {
+            console.log(e);
+            toast.error(
+                "An unknown error occurred while updating the flashcard. Please try again."
+            );
+        }
     };
 
     const deleteCard = async (id: string) => {
         try {
-
             let response = await deleteFlashcard({
                 variables: {
-                    deleteFlashcardId: id
+                    deleteFlashcardId: id,
                 },
             });
             toast.success("Flashcard has been successfully deleted!");

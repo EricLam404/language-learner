@@ -17,6 +17,7 @@ import {
 import { Edit, Volume2 } from "lucide-react";
 import { type Flashcard } from "@/lib/types";
 import { FaceType } from "@/__generated__/graphql";
+import { capitalizeFirstLetter } from "@/lib/stringUtils";
 
 interface FlashcardGridProps {
     cards: Flashcard[];
@@ -71,9 +72,7 @@ export function FlashcardGrid({
                                             Edit
                                         </DropdownMenuItem>
                                         <DropdownMenuItem
-                                            onClick={() =>
-                                                onDelete(card)
-                                            }
+                                            onClick={() => onDelete(card)}
                                         >
                                             Delete
                                         </DropdownMenuItem>
@@ -100,13 +99,19 @@ export function FlashcardGrid({
                                         key={`${card.id}-${face.type}`}
                                         className="mb-2"
                                     >
-                                        <strong>{face.type}:</strong>{" "}
+                                        <strong>
+                                            {capitalizeFirstLetter(face.type)}:
+                                        </strong>{" "}
                                         {face.content}
                                     </div>
                                 ))}
                         </CardContent>
                         <CardFooter className="mt-auto">
-                            <Button variant="outline" className="w-full">
+                            <Button
+                                variant="outline"
+                                className="w-full"
+                                disabled
+                            >
                                 <Volume2 className="w-4 h-4 mr-2" />
                                 Listen
                             </Button>

@@ -34,39 +34,51 @@ type FlashcardFace {
     order: Int!
     audioUrl: String
     imageUrl: String
-    
+
     flashcard: Flashcard
 }
 
 enum FaceType {
-  FRONT
-  BACK
-  PINYIN
-  CHARACTER
-  TRANSLATION
-  OTHER
+    FRONT
+    BACK
+    PINYIN
+    CHARACTER
+    TRANSLATION
+    OTHER
 }
 
-input CreateFlashcardFaceInput {
-  content: String!
-  type: FaceType!
-  order: Int!
-  audioUrl: String
-  imageUrl: String
+input FlashcardFaceInput {
+    content: String!
+    type: FaceType!
+    order: Int!
+    audioUrl: String
+    imageUrl: String
 }
 
 extend type Query {
-  flashcardSets: [FlashcardSet!]!
-  flashcardSetsByLanguage(languageName: String!): [FlashcardSet!]!
-  flashcardSet(id: ID!): FlashcardSet
+    flashcardSets: [FlashcardSet!]!
+    flashcardSetsByLanguage(languageName: String!): [FlashcardSet!]!
+    flashcardSet(id: ID!): FlashcardSet
+
+    flashcard(id: ID!): Flashcard
 }
 
 extend type Mutation {
-  createFlashcardSet(languageName: String!, name: String!, description: String): FlashcardSet!
-  updateFlashcardSet(id: ID!, languageName: String, name: String, description: String): FlashcardSet!
-  deleteFlashcardSet(id: ID!): Boolean!
+    createFlashcardSet(
+        languageName: String!
+        name: String!
+        description: String
+    ): FlashcardSet!
+    updateFlashcardSet(
+        id: ID!
+        languageName: String
+        name: String
+        description: String
+    ): FlashcardSet!
+    deleteFlashcardSet(id: ID!): Boolean!
 
-  createFlashcard(setId: ID!, faces: [CreateFlashcardFaceInput!]!): Flashcard!
-  # updateFlashcard(id: ID!, nextReviewAt: DateTime, easeFactor: Float, interval: Int, repetitions: Int): Flashcard!
-  deleteFlashcard(id: ID!): Boolean!
+    createFlashcard(setId: ID!, faces: [FlashcardFaceInput!]!): Flashcard!
+    updateFlashcard(id: ID!, faces: [FlashcardFaceInput!]!): Flashcard!
+    # updateStudiedFlashcard(id: ID!, nextReviewAt: DateTime, easeFactor: Float, interval: Int, repetitions: Int): Flashcard!
+    deleteFlashcard(id: ID!): Boolean!
 }

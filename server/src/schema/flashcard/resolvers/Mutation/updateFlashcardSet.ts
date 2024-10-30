@@ -10,7 +10,7 @@ export const updateFlashcardSet: NonNullable<MutationResolvers['updateFlashcardS
 
         if (!flashcardSet) {
             throw new GraphQLError(
-                `Vocabulary with ID "${_arg.id}" not found`,
+                `Flashcard Set with ID "${_arg.id}" not found`,
                 {
                     extensions: { code: "BAD_USER_INPUT" },
                 }
@@ -19,14 +19,13 @@ export const updateFlashcardSet: NonNullable<MutationResolvers['updateFlashcardS
 
         if (flashcardSet.userId !== _ctx.user.id) {
             throw new GraphQLError(
-                "You are not authorized to update this vocabulary",
+                "You are not authorized to update this Flashcard Set",
                 {
                     extensions: { code: "UNAUTHORIZED" },
                 }
             );
         }
-
-        // Update the vocabulary entry with new data
+        
         return await _ctx.dataSources.prisma.flashcardSet.update({
             where: { id: Number(_arg.id) },
             data: {
