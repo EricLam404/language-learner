@@ -239,7 +239,6 @@ export default function Component() {
                     <DialogContent className="sm:max-w-[425px]">
                         <UpdateVocabularyForm
                             handleClose={handleClose}
-                            language={selectedLanguage || ""}
                             vocab={selectedVocab}
                         />
                     </DialogContent>

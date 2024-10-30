@@ -28,19 +28,19 @@ import {
 } from "@/lib/schemas/flashcard";
 import { FaceType } from "@/__generated__/graphql";
 
-interface FlashcardDialogProps {
+interface FlashcardFormProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onSubmit: (card: FlashcardFormValues) => void;
     editCard?: Flashcard;
 }
 
-export function FlashcardDialog({
+export function FlashcardForm({
     open,
     onOpenChange,
     onSubmit,
     editCard,
-}: FlashcardDialogProps) {
+}: FlashcardFormProps) {
     const [showOptionalFields, setShowOptionalFields] = useState(!!editCard);
 
     const defaultValues = {

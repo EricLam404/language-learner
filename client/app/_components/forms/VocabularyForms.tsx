@@ -12,7 +12,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@apollo/client";
-import { GET_VOCABULARY, CREATE_VOCABULARY, DELETE_VOCABULARY, UPDATE_VOCABULARY } from "../graphql/vocabularies";
+import {
+    GET_VOCABULARY,
+    CREATE_VOCABULARY,
+    DELETE_VOCABULARY,
+    UPDATE_VOCABULARY,
+} from "../graphql/vocabularies";
 import { DialogClose, DialogHeader } from "@components/ui/dialog";
 import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import { toast } from "sonner";
@@ -24,12 +29,10 @@ import {
     SelectValue,
 } from "@components/ui/select";
 import Selections from "./Selections";
-
-const formSchema = z.object({
-    word: z.string().min(1, { message: "Word is required" }),
-    meaning: z.string().min(1, { message: "Meaning is required" }),
-    example: z.string().optional(),
-});
+import {
+    VocabularyFormValues,
+    vocabularySchema,
+} from "@/lib/schemas/vocabulary";
 
 interface CreateVocabularyFormProps {
     handleClose: (type: string) => void;
@@ -40,8 +43,8 @@ export function CreateVocabularyForm({
     handleClose,
     defaultLanguage,
 }: CreateVocabularyFormProps) {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<VocabularyFormValues>({
+        resolver: zodResolver(vocabularySchema),
         defaultValues: {
             word: "",
             meaning: "",
@@ -58,7 +61,7 @@ export function CreateVocabularyForm({
     );
     const [selectedLanguage, setSelectedLanguage] = useState(defaultLanguage);
 
-    async function onSubmit(values: z.infer<typeof formSchema>) {
+    async function onSubmit(values: VocabularyFormValues) {
         try {
             const response = await createVocabulary({
                 variables: {
@@ -94,22 +97,35 @@ export function CreateVocabularyForm({
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <DialogHeader>
                     <DialogTitle>Add New Word</DialogTitle>
-                    <DialogDescription>
-                        <span className="mt-4">
+                </DialogHeader>
+                <FormField
+                    control={form.control}
+                    name="languageName"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Language{" "}
+                                <span className="ml-[-2px] text-red-500">
+                                    *
+                                </span>
+                            </FormLabel>
                             <Select
-                                value={selectedLanguage}
-                                onValueChange={setSelectedLanguage}
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
                             >
-                                <SelectTrigger className="w-48">
-                                    <SelectValue placeholder="Select Language" />
-                                </SelectTrigger>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a language" />
+                                    </SelectTrigger>
+                                </FormControl>
                                 <SelectContent>
                                     <Selections />
                                 </SelectContent>
                             </Select>
-                        </span>
-                    </DialogDescription>
-                </DialogHeader>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <FormField
                     control={form.control}
                     name="word"
@@ -172,7 +188,6 @@ export function CreateVocabularyForm({
 
 interface UpdateVocabularyFormProps {
     handleClose: (type: string) => void;
-    language: string;
     vocab: {
         __typename?: "Vocabulary";
         id: string;
@@ -185,11 +200,10 @@ interface UpdateVocabularyFormProps {
 
 export function UpdateVocabularyForm({
     handleClose,
-    language,
     vocab,
 }: UpdateVocabularyFormProps) {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<VocabularyFormValues>({
+        resolver: zodResolver(vocabularySchema),
         defaultValues: {
             word: vocab.word,
             meaning: vocab.meaning,
@@ -204,14 +218,12 @@ export function UpdateVocabularyForm({
             awaitRefetchQueries: true,
         }
     );
-    const [selectedLanguage, setSelectedLanguage] = useState(language);
 
-    async function onSubmit(values: z.infer<typeof formSchema>) {
+    async function onSubmit(values: VocabularyFormValues) {
         try {
             const response = await updateVocabulary({
                 variables: {
                     ...values,
-                    languageName: selectedLanguage,
                     id: vocab.id,
                 },
             });
@@ -243,22 +255,35 @@ export function UpdateVocabularyForm({
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <DialogHeader>
                     <DialogTitle>Update Word</DialogTitle>
-                    <DialogDescription>
-                        <span className="mt-4">
+                </DialogHeader>
+                <FormField
+                    control={form.control}
+                    name="languageName"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Language{" "}
+                                <span className="ml-[-2px] text-red-500">
+                                    *
+                                </span>
+                            </FormLabel>
                             <Select
-                                value={selectedLanguage}
-                                onValueChange={setSelectedLanguage}
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
                             >
-                                <SelectTrigger className="w-48">
-                                    <SelectValue placeholder="Select Language" />
-                                </SelectTrigger>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a language" />
+                                    </SelectTrigger>
+                                </FormControl>
                                 <SelectContent>
                                     <Selections />
                                 </SelectContent>
                             </Select>
-                        </span>
-                    </DialogDescription>
-                </DialogHeader>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <FormField
                     control={form.control}
                     name="word"
@@ -331,7 +356,10 @@ interface DeleteVocabularyFormProps {
     };
 }
 
-export function DeleteVocabularyForm({ handleClose, vocab }: DeleteVocabularyFormProps) {
+export function DeleteVocabularyForm({
+    handleClose,
+    vocab,
+}: DeleteVocabularyFormProps) {
     const [deleteVocabulary, { loading, error }] = useMutation(
         DELETE_VOCABULARY,
         {
@@ -344,7 +372,7 @@ export function DeleteVocabularyForm({ handleClose, vocab }: DeleteVocabularyFor
         try {
             const response = await deleteVocabulary({
                 variables: {
-                    id: vocab.id
+                    id: vocab.id,
                 },
             });
 
@@ -368,7 +396,12 @@ export function DeleteVocabularyForm({ handleClose, vocab }: DeleteVocabularyFor
                     This action cannot be undone. This will permanently delete
                     the vocabulary word "{vocab.word}" from your list.
                 </DialogDescription>
-                <Button type="submit" variant="destructive" onClick={onDelete} disabled={loading}>
+                <Button
+                    type="submit"
+                    variant="destructive"
+                    onClick={onDelete}
+                    disabled={loading}
+                >
                     Delete
                 </Button>
                 <DialogClose asChild>

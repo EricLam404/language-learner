@@ -29,22 +29,10 @@ import { useMutation } from "@apollo/client";
 import { DELETE_STORY, GET_STORIES } from "../graphql/stories";
 import { toast } from "sonner";
 import { DialogClose, DialogDescription, DialogHeader, DialogTitle } from "@components/ui/dialog";
-
-const formSchema = z.object({
-    languageName: z.string().min(1, { message: "Language is required" }),
-    title: z.string().min(1, { message: "Title is required" }),
-    translatedTitle: z.string().min(1, { message: "Translated Title is required" }),
-    description: z.string().optional(),
-    content: z.string().min(1, { message: "Content is required" }),
-    difficulty: z.enum(levels as [string, ...string[]]),
-    isPublished: z.string(),
-    tags: z.string().optional(),
-});
-
-export type Values = zInfer<typeof formSchema>;
+import { StoryFormValues, storySchema } from "@/lib/schemas/story";
 
 interface StoryFormProps {
-    onSubmit: (values: Values) => void;
+    onSubmit: (values: StoryFormValues) => void;
     story?: Story;
 }
 
@@ -71,8 +59,8 @@ export function StoryForm({ onSubmit, story }: StoryFormProps) {
             tags: story.tags ? story.tags.map((tag) => tag.name).join(", ") : "",
         };
     }
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<StoryFormValues>({
+        resolver: zodResolver(storySchema),
         defaultValues,
     });
 
