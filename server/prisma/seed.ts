@@ -9,6 +9,45 @@ async function main() {
     'c3062562-77dd-4a53-900c-0ac2be8796dd',
   ]
 
+  const defaultLanguageConfigs = {
+    chinese: {
+      required: ['FRONT', 'CHARACTER', 'PINYIN', 'TRANSLATION'],
+      optional: ['EXAMPLE_SENTENCE', 'EXAMPLE_TRANSLATION', 'CONTEXT_NOTES', 'MNEMONIC', 'AUDIO_NATIVE'],
+      typeMetadata: {
+        FRONT: { label: 'Word/Phrase', inputType: 'text' },
+        CHARACTER: { label: 'Chinese Characters', inputType: 'text' },
+        PINYIN: { label: 'Pinyin', inputType: 'text' },
+        TRANSLATION: { label: 'English Translation', inputType: 'text' },
+        EXAMPLE_SENTENCE: { label: 'Example Sentence', inputType: 'textarea' },
+        EXAMPLE_TRANSLATION: { label: 'Sentence Translation', inputType: 'textarea' },
+        CONTEXT_NOTES: { label: 'Usage Notes', inputType: 'textarea' },
+        MNEMONIC: { label: 'Memory Aid', inputType: 'textarea' },
+        AUDIO_NATIVE: { label: 'Native Audio', inputType: 'audio' }
+      }
+    },
+    japanese: {
+      required: ['FRONT', 'HIRAGANA', 'ROMAJI', 'TRANSLATION'],
+      optional: ['KATAKANA', 'EXAMPLE_SENTENCE', 'EXAMPLE_TRANSLATION', 'CONTEXT_NOTES', 'AUDIO_NATIVE'],
+      typeMetadata: {
+        FRONT: { label: 'Word/Phrase', inputType: 'text' },
+        HIRAGANA: { label: 'Hiragana', inputType: 'text' },
+        ROMAJI: { label: 'Romaji', inputType: 'text' },
+        KATAKANA: { label: 'Katakana', inputType: 'text' },
+        TRANSLATION: { label: 'English Translation', inputType: 'text' }
+      }
+    },
+    spanish: {
+      required: ['FRONT', 'TRANSLATION'],
+      optional: ['GENDER', 'CONJUGATION', 'EXAMPLE_SENTENCE', 'EXAMPLE_TRANSLATION', 'AUDIO_NATIVE'],
+      typeMetadata: {
+        FRONT: { label: 'Spanish Word/Phrase', inputType: 'text' },
+        TRANSLATION: { label: 'English Translation', inputType: 'text' },
+        GENDER: { label: 'Grammatical Gender', inputType: 'select', options: ['masculine', 'feminine', 'neutral'] },
+        CONJUGATION: { label: 'Verb Conjugation', inputType: 'textarea' }
+      }
+    }
+  }
+
   // Create Users
   const users = await Promise.all(
     userIds.map((userId, index) =>
@@ -67,6 +106,17 @@ async function main() {
       })
     )
   )
+
+  for (const [langName, config] of Object.entries(defaultLanguageConfigs)) {
+    await prisma.languageFaceConfig.upsert({
+      where: { languageName: langName },
+      update: { config },
+      create: {
+        languageName: langName,
+        config
+      }
+    })
+  }
 
   // Connect Users to Languages
   await Promise.all(

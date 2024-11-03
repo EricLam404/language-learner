@@ -25,15 +25,16 @@ model User {
 }
 
 model Language {
-  id           Int            @id @default(autoincrement())
-  name         String         @unique
-  code         String         @unique
+  id           Int                 @id @default(autoincrement())
+  name         String              @unique
+  code         String              @unique
   vocabularies Vocabulary[]
   stories      Story[]
   worksheets   Worksheet[]
   users        User[]
   chatSession  ChatSession[]
   FlashcardSet FlashcardSet[]
+  faceConfig   LanguageFaceConfig?
 }
 
 model Vocabulary {
@@ -234,8 +235,21 @@ model FlashcardFace {
   order       Int
   audioUrl    String?
   imageUrl    String?
+  metadata    Json?    
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(3)
 
   @@unique([flashcardId, type])
+  @@index([type])
+}
+
+model LanguageFaceConfig {
+  id           Int      @id @default(autoincrement())
+  languageName String   @unique
+  language     Language @relation(fields: [languageName], references: [name])
+  config       Json // Stores required and optional face types for each language
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
 }
 
 enum FaceType {
@@ -243,7 +257,25 @@ enum FaceType {
   BACK
   PINYIN
   CHARACTER
+  ROMAJI
+  HIRAGANA
+  KATAKANA
+  TRANSLITERATION
   TRANSLATION
+  DEFINITION
+  EXAMPLE_SENTENCE
+  EXAMPLE_TRANSLATION
+  CONTEXT_NOTES
+  MNEMONIC
+  PART_OF_SPEECH
+  CONJUGATION
+  GENDER
+  PLURAL_FORM
+  AUDIO_NATIVE
+  AUDIO_SLOW
+  IMAGE
+  VIDEO
+  NOTES
   OTHER
 }
 
