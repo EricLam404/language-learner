@@ -104,12 +104,30 @@ enum ExerciseType {
 }
 
 enum FaceType {
+  AUDIO_NATIVE
+  AUDIO_SLOW
   BACK
   CHARACTER
+  CONJUGATION
+  CONTEXT_NOTES
+  DEFINITION
+  EXAMPLE_SENTENCE
+  EXAMPLE_TRANSLATION
   FRONT
+  GENDER
+  HIRAGANA
+  IMAGE
+  KATAKANA
+  MNEMONIC
+  NOTES
   OTHER
+  PART_OF_SPEECH
   PINYIN
+  PLURAL_FORM
+  ROMAJI
   TRANSLATION
+  TRANSLITERATION
+  VIDEO
 }
 
 type Flashcard {
@@ -128,12 +146,14 @@ type Flashcard {
 type FlashcardFace {
   audioUrl: String
   content: String!
+  createdAt: DateTime!
   flashcard: Flashcard
   flashcardId: Int!
   id: ID!
   imageUrl: String
   order: Int!
   type: FaceType!
+  updatedAt: DateTime!
 }
 
 input FlashcardFaceInput {
@@ -162,12 +182,23 @@ scalar JSON
 type Language {
   chatSession: [ChatSession!]
   code: String!
+  flashcardSets: [FlashcardSet!]
   id: ID!
+  languageFaceConfig: LanguageFaceConfig
   name: String!
   stories: [Story!]
   users: [User!]
   vocabularies: [Vocabulary!]
   worksheets: [Worksheet!]
+}
+
+type LanguageFaceConfig {
+  config: JSON!
+  createdAt: DateTime!
+  id: ID!
+  language: Language
+  languageName: String!
+  updatedAt: DateTime!
 }
 
 type Mutation {

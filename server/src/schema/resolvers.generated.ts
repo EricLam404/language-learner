@@ -53,6 +53,7 @@ import    { Flashcard } from './flashcard/resolvers/Flashcard';
 import    { FlashcardFace } from './flashcard/resolvers/FlashcardFace';
 import    { FlashcardSet } from './flashcard/resolvers/FlashcardSet';
 import    { Language } from './language/resolvers/Language';
+import    { LanguageFaceConfig } from './language/resolvers/LanguageFaceConfig';
 import    { PaginatedStoriesResponse } from './story/resolvers/PaginatedStoriesResponse';
 import    { ReadingProgress } from './readingProgress/resolvers/ReadingProgress';
 import    { Story } from './story/resolvers/Story';
@@ -77,6 +78,7 @@ Flashcard: Flashcard,
 FlashcardFace: FlashcardFace,
 FlashcardSet: FlashcardSet,
 Language: Language,
+LanguageFaceConfig: LanguageFaceConfig,
 PaginatedStoriesResponse: PaginatedStoriesResponse,
 ReadingProgress: ReadingProgress,
 Story: Story,

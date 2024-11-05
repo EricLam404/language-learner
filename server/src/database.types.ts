@@ -432,29 +432,38 @@ export type Database = {
         Row: {
           audioUrl: string | null
           content: string
+          createdAt: string
           flashcardId: number
           id: number
           imageUrl: string | null
+          metadata: Json | null
           order: number
           type: Database["public"]["Enums"]["FaceType"]
+          updatedAt: string
         }
         Insert: {
           audioUrl?: string | null
           content: string
+          createdAt?: string
           flashcardId: number
           id?: number
           imageUrl?: string | null
+          metadata?: Json | null
           order: number
           type: Database["public"]["Enums"]["FaceType"]
+          updatedAt: string
         }
         Update: {
           audioUrl?: string | null
           content?: string
+          createdAt?: string
           flashcardId?: number
           id?: number
           imageUrl?: string | null
+          metadata?: Json | null
           order?: number
           type?: Database["public"]["Enums"]["FaceType"]
+          updatedAt?: string
         }
         Relationships: [
           {
@@ -470,22 +479,32 @@ export type Database = {
         Row: {
           description: string | null
           id: number
+          languageName: string
           name: string
           userId: string
         }
         Insert: {
           description?: string | null
           id?: number
+          languageName: string
           name: string
           userId: string
         }
         Update: {
           description?: string | null
           id?: number
+          languageName?: string
           name?: string
           userId?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "FlashcardSet_languageName_fkey"
+            columns: ["languageName"]
+            isOneToOne: false
+            referencedRelation: "Language"
+            referencedColumns: ["name"]
+          },
           {
             foreignKeyName: "FlashcardSet_userId_fkey"
             columns: ["userId"]
@@ -512,6 +531,38 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      LanguageFaceConfig: {
+        Row: {
+          config: Json
+          createdAt: string
+          id: number
+          languageName: string
+          updatedAt: string
+        }
+        Insert: {
+          config: Json
+          createdAt?: string
+          id?: number
+          languageName: string
+          updatedAt: string
+        }
+        Update: {
+          config?: Json
+          createdAt?: string
+          id?: number
+          languageName?: string
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "LanguageFaceConfig_languageName_fkey"
+            columns: ["languageName"]
+            isOneToOne: false
+            referencedRelation: "Language"
+            referencedColumns: ["name"]
+          },
+        ]
       }
       ReadingProgress: {
         Row: {
@@ -857,7 +908,25 @@ export type Database = {
         | "BACK"
         | "PINYIN"
         | "CHARACTER"
+        | "ROMAJI"
+        | "HIRAGANA"
+        | "KATAKANA"
+        | "TRANSLITERATION"
         | "TRANSLATION"
+        | "DEFINITION"
+        | "EXAMPLE_SENTENCE"
+        | "EXAMPLE_TRANSLATION"
+        | "CONTEXT_NOTES"
+        | "MNEMONIC"
+        | "PART_OF_SPEECH"
+        | "CONJUGATION"
+        | "GENDER"
+        | "PLURAL_FORM"
+        | "AUDIO_NATIVE"
+        | "AUDIO_SLOW"
+        | "IMAGE"
+        | "VIDEO"
+        | "NOTES"
         | "OTHER"
     }
     CompositeTypes: {
@@ -946,5 +1015,20 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
