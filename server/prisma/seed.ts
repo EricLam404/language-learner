@@ -1,82 +1,174 @@
-import { PrismaClient, ExerciseType, FaceType } from '@prisma/client'
+import { PrismaClient, ExerciseType, FaceType, Story } from '@prisma/client'
+import { faker } from '@faker-js/faker'
 
 const prisma = new PrismaClient()
 
-async function main() {
-  const userIds = [
-    'a1062562-99dd-4a53-900c-0ac2be8796db',
-    'b2062562-88dd-4a53-900c-0ac2be8796dc',
-    'c3062562-77dd-4a53-900c-0ac2be8796dd',
-  ]
+// Types for our seed data
+interface SeedUser {
+  userId: string
+  email: string
+  username: string
+}
 
-  const defaultLanguageConfigs = {
-    chinese: {
-      required: ['FRONT', 'CHARACTER', 'PINYIN', 'TRANSLATION'],
-      optional: ['EXAMPLE_SENTENCE', 'EXAMPLE_TRANSLATION', 'CONTEXT_NOTES', 'MNEMONIC', 'AUDIO_NATIVE'],
-      typeMetadata: {
-        FRONT: { label: 'Word/Phrase', inputType: 'text' },
-        CHARACTER: { label: 'Chinese Characters', inputType: 'text' },
-        PINYIN: { label: 'Pinyin', inputType: 'text' },
-        TRANSLATION: { label: 'English Translation', inputType: 'text' },
-        EXAMPLE_SENTENCE: { label: 'Example Sentence', inputType: 'textarea' },
-        EXAMPLE_TRANSLATION: { label: 'Sentence Translation', inputType: 'textarea' },
-        CONTEXT_NOTES: { label: 'Usage Notes', inputType: 'textarea' },
-        MNEMONIC: { label: 'Memory Aid', inputType: 'textarea' },
-        AUDIO_NATIVE: { label: 'Native Audio', inputType: 'audio' }
-      }
-    },
-    japanese: {
-      required: ['FRONT', 'HIRAGANA', 'ROMAJI', 'TRANSLATION'],
-      optional: ['KATAKANA', 'EXAMPLE_SENTENCE', 'EXAMPLE_TRANSLATION', 'CONTEXT_NOTES', 'AUDIO_NATIVE'],
-      typeMetadata: {
-        FRONT: { label: 'Word/Phrase', inputType: 'text' },
-        HIRAGANA: { label: 'Hiragana', inputType: 'text' },
-        ROMAJI: { label: 'Romaji', inputType: 'text' },
-        KATAKANA: { label: 'Katakana', inputType: 'text' },
-        TRANSLATION: { label: 'English Translation', inputType: 'text' }
-      }
-    },
-    spanish: {
-      required: ['FRONT', 'TRANSLATION'],
-      optional: ['GENDER', 'CONJUGATION', 'EXAMPLE_SENTENCE', 'EXAMPLE_TRANSLATION', 'AUDIO_NATIVE'],
-      typeMetadata: {
-        FRONT: { label: 'Spanish Word/Phrase', inputType: 'text' },
-        TRANSLATION: { label: 'English Translation', inputType: 'text' },
-        GENDER: { label: 'Grammatical Gender', inputType: 'select', options: ['masculine', 'feminine', 'neutral'] },
-        CONJUGATION: { label: 'Verb Conjugation', inputType: 'textarea' }
-      }
+interface LanguageConfig {
+  required: FaceType[]
+  optional: FaceType[]
+  typeMetadata: {
+    [key: string]: {
+      label: string
+      inputType: string
+      options?: string[]
     }
   }
+}
 
-  // Create Users
-  const users = await Promise.all(
-    userIds.map((userId, index) =>
+// Constants
+const USERS: SeedUser[] = [
+  {
+    userId: 'a1062562-99dd-4a53-900c-0ac2be8796db',
+    email: 'sarah.johnson@example.com',
+    username: 'sarahj',
+  },
+  {
+    userId: 'b2062562-88dd-4a53-900c-0ac2be8796dc',
+    email: 'mark.wilson@example.com',
+    username: 'markw',
+  },
+  {
+    userId: 'c3062562-77dd-4a53-900c-0ac2be8796dd',
+    email: 'emily.chen@example.com',
+    username: 'emilyc',
+  },
+]
+
+const LANGUAGES = [
+  { name: 'English', code: 'en' },
+  { name: 'Spanish', code: 'es' },
+  { name: 'French', code: 'fr' },
+  { name: 'German', code: 'de' },
+  { name: 'Chinese', code: 'zh' },
+  { name: 'Japanese', code: 'ja' },
+  { name: 'Korean', code: 'ko' },
+  { name: 'Italian', code: 'it' },
+  { name: 'Portuguese', code: 'pt' },
+  { name: 'Russian', code: 'ru' },
+]
+
+const TAGS = [
+  'beginner',
+  'intermediate',
+  'advanced',
+  'fairy tale',
+  'history',
+  'culture',
+  'business',
+  'travel',
+  'food',
+  'music',
+  'daily life',
+  'literature',
+  'technology',
+  'science',
+  'nature',
+]
+
+const LANGUAGE_CONFIGS: Record<string, LanguageConfig> = {
+  Chinese: {
+    required: [FaceType.FRONT, FaceType.CHARACTER, FaceType.TRANSLATION],
+    optional: [
+      FaceType.PINYIN,
+      FaceType.EXAMPLE_SENTENCE,
+      FaceType.EXAMPLE_TRANSLATION,
+      FaceType.CONTEXT_NOTES,
+      FaceType.MNEMONIC,
+      FaceType.AUDIO_NATIVE,
+    ],
+    typeMetadata: {
+      FRONT: { label: 'Word/Phrase', inputType: 'text' },
+      CHARACTER: { label: 'Chinese Characters', inputType: 'text' },
+      PINYIN: { label: 'Pinyin', inputType: 'text' },
+      TRANSLATION: { label: 'English Translation', inputType: 'text' },
+      EXAMPLE_SENTENCE: { label: 'Example Sentence', inputType: 'textarea' },
+      EXAMPLE_TRANSLATION: { label: 'Sentence Translation', inputType: 'textarea' },
+      CONTEXT_NOTES: { label: 'Usage Notes', inputType: 'textarea' },
+      MNEMONIC: { label: 'Memory Aid', inputType: 'textarea' },
+      AUDIO_NATIVE: { label: 'Native Audio', inputType: 'audio' },
+    },
+  },
+  Japanese: {
+    required: [FaceType.FRONT, FaceType.HIRAGANA, FaceType.ROMAJI, FaceType.TRANSLATION],
+    optional: [
+      FaceType.KATAKANA,
+      FaceType.EXAMPLE_SENTENCE,
+      FaceType.EXAMPLE_TRANSLATION,
+      FaceType.CONTEXT_NOTES,
+      FaceType.AUDIO_NATIVE,
+    ],
+    typeMetadata: {
+      FRONT: { label: 'Word/Phrase', inputType: 'text' },
+      HIRAGANA: { label: 'Hiragana', inputType: 'text' },
+      ROMAJI: { label: 'Romaji', inputType: 'text' },
+      KATAKANA: { label: 'Katakana', inputType: 'text' },
+      TRANSLATION: { label: 'English Translation', inputType: 'text' },
+    },
+  },
+  Spanish: {
+    required: [FaceType.FRONT, FaceType.TRANSLATION],
+    optional: [
+      FaceType.GENDER,
+      FaceType.CONJUGATION,
+      FaceType.EXAMPLE_SENTENCE,
+      FaceType.EXAMPLE_TRANSLATION,
+      FaceType.AUDIO_NATIVE,
+    ],
+    typeMetadata: {
+      FRONT: { label: 'Spanish Word/Phrase', inputType: 'text' },
+      TRANSLATION: { label: 'English Translation', inputType: 'text' },
+      GENDER: {
+        label: 'Grammatical Gender',
+        inputType: 'select',
+        options: ['masculine', 'feminine', 'neutral'],
+      },
+      CONJUGATION: { label: 'Verb Conjugation', inputType: 'textarea' },
+    },
+  },
+}
+
+// Seed data generators
+const generateStoryContent = (language: string): string => {
+  return Array(5)
+    .fill(null)
+    .map(() => faker.lorem.paragraph())
+    .join('\n\n')
+}
+
+const generateChapters = (numChapters: number) => {
+  return Array(numChapters)
+    .fill(null)
+    .map((_, index) => ({
+      title: `Chapter ${index + 1}: ${faker.lorem.words(3)}`,
+      content: generateStoryContent('en'),
+      orderIndex: index,
+      estimatedReadingTime: faker.number.int({ min: 5, max: 15 }),
+    }))
+}
+
+// Main seed functions
+async function seedUsers() {
+  return Promise.all(
+    USERS.map((user) =>
       prisma.user.upsert({
-        where: { userId },
+        where: { userId: user.userId },
         update: {},
-        create: {
-          userId,
-          email: `user${index + 1}@example.com`,
-          username: `user${index + 1}`,
-        },
+        create: user,
       })
     )
   )
+}
 
-  // Create Languages
-  const languages = await Promise.all(
-    [
-      { name: 'English', code: 'en' },
-      { name: 'Spanish', code: 'es' },
-      { name: 'French', code: 'fr' },
-      { name: 'German', code: 'de' },
-      { name: 'Chinese', code: 'zh' },
-      { name: 'Japanese', code: 'ja' },
-      { name: 'Korean', code: 'ko' },
-      { name: 'Italian', code: 'it' },
-      { name: 'Portuguese', code: 'pt' },
-      { name: 'Russian', code: 'ru' },
-    ].map(language =>
+async function seedLanguages() {
+  return Promise.all(
+    LANGUAGES.map((language) =>
       prisma.language.upsert({
         where: { name: language.name },
         update: {},
@@ -84,359 +176,129 @@ async function main() {
       })
     )
   )
+}
 
-  // Create Tags
-  const tags = await Promise.all(
-    [
-      'beginner',
-      'intermediate',
-      'advanced',
-      'fairy tale',
-      'history',
-      'culture',
-      'business',
-      'travel',
-      'food',
-      'music',
-    ].map(tagName =>
+async function seedTags() {
+  return Promise.all(
+    TAGS.map((name) =>
       prisma.tag.upsert({
-        where: { name: tagName },
+        where: { name },
         update: {},
-        create: { name: tagName },
+        create: { name },
       })
     )
   )
+}
 
-  for (const [langName, config] of Object.entries(defaultLanguageConfigs)) {
-    await prisma.languageFaceConfig.upsert({
-      where: { languageName: langName },
-      update: { config },
-      create: {
-        languageName: langName,
-        config
-      }
-    })
+async function seedLanguageConfigs() {
+  return Promise.all(
+    Object.entries(LANGUAGE_CONFIGS).map(([langName, config]) =>
+      prisma.languageFaceConfig.upsert({
+        where: { languageName: langName },
+        update: { config: JSON.parse(JSON.stringify(config)) },
+        create: {
+          languageName: langName,
+          config: JSON.parse(JSON.stringify(config)),
+        },
+      })
+    )
+  )
+}
+
+async function seedStories(users: SeedUser[]): Promise<Story[]> {
+  const createdStories: Story[] = []
+  
+  for (const user of users) {
+    const numStories = faker.number.int({ min: 2, max: 5 })
+    
+    for (let i = 0; i < numStories; i++) {
+      const language = faker.helpers.arrayElement(LANGUAGES)
+      const story = await prisma.story.create({
+        data: {
+          title: faker.lorem.words(3),
+          translatedTitle: faker.lorem.words(3),
+          description: faker.lorem.sentence(),
+          content: generateStoryContent(language.code),
+          difficulty: faker.number.int({ min: 1, max: 5 }),
+          readCount: 0,
+          audioUrl: null,
+          imageUrl: null,
+          averageRating: null,
+          isPublished: faker.datatype.boolean(),
+          isReviewed: faker.datatype.boolean(),
+          userId: user.userId,
+          languageName: language.name,
+          tags: {
+            connect: faker.helpers
+              .arrayElements(TAGS, { min: 1, max: 3 })
+              .map((name) => ({ name })),
+          },
+          chapters: {
+            create: generateChapters(faker.number.int({ min: 3, max: 8 })),
+          },
+        },
+      })
+      createdStories.push(story)
+    }
   }
+  
+  return createdStories
+}
 
-  // Connect Users to Languages
-  await Promise.all(
-    users.map(user =>
+async function connectUsersToLanguages(users: SeedUser[]) {
+  return Promise.all(
+    users.map((user) =>
       prisma.user.update({
         where: { userId: user.userId },
         data: {
           languages: {
-            connect: [
-              { name: 'English' },
-              { name: 'Spanish' },
-              { name: 'French' },
-            ],
+            connect: faker.helpers
+              .arrayElements(LANGUAGES, { min: 2, max: 4 })
+              .map((lang) => ({ name: lang.name })),
           },
         },
       })
     )
   )
+}
 
-  // Create Stories with Chapters
-  const stories = await Promise.all([
-    prisma.story.create({
-      data: {
-        title: 'The Magic Garden',
-        translatedTitle: 'El Jardín Mágico',
-        description: 'A magical tale about a secret garden',
-        content: 'Introduction to the magical garden...',
-        difficulty: 1,
-        user: { connect: { userId: userIds[0] } },
-        language: { connect: { name: 'English' } },
-        tags: {
-          connect: [
-            { name: 'beginner' },
-            { name: 'fairy tale' },
-          ],
-        },
-        isPublished: true,
-        chapters: {
-          create: [
-            {
-              title: 'Chapter 1: The Discovery',
-              content: 'Sarah found an old key...',
-              orderIndex: 0,
-              estimatedReadingTime: 5,
-            },
-            {
-              title: 'Chapter 2: The First Visit',
-              content: 'The garden was more beautiful than imagined...',
-              orderIndex: 1,
-              estimatedReadingTime: 7,
-            },
-          ],
-        },
-      },
-    }),
-    prisma.story.create({
-      data: {
-        title: 'Business in Paris',
-        translatedTitle: 'Les Affaires à Paris',
-        description: 'A story about international business',
-        content: 'Introduction to business culture...',
-        difficulty: 2,
-        user: { connect: { userId: userIds[1] } },
-        language: { connect: { name: 'French' } },
-        tags: {
-          connect: [
-            { name: 'intermediate' },
-            { name: 'business' },
-          ],
-        },
-        isPublished: true,
-        chapters: {
-          create: [
-            {
-              title: 'Chapter 1: First Meeting',
-              content: 'The meeting was scheduled for 9 AM...',
-              orderIndex: 0,
-              estimatedReadingTime: 6,
-            },
-          ],
-        },
-      },
-    }),
-    prisma.story.create({
-      data: {
-        title: 'Cocina Española',
-        translatedTitle: 'Spanish Cuisine',
-        description: 'Journey through Spanish gastronomy',
-        content: 'Introduction to Spanish cuisine...',
-        difficulty: 1,
-        user: { connect: { userId: userIds[2] } },
-        language: { connect: { name: 'Spanish' } },
-        tags: {
-          connect: [
-            { name: 'beginner' },
-            { name: 'food' },
-          ],
-        },
-        isPublished: true,
-        chapters: {
-          create: [
-            {
-              title: 'Capítulo 1: Paella Valenciana',
-              content: 'La paella es un plato tradicional...',
-              orderIndex: 0,
-              estimatedReadingTime: 8,
-            },
-          ],
-        },
-      },
-    }),
-  ])
+// Main seed function
+async function main() {
+  console.log('🌱 Starting seed...')
 
-  // Create Vocabularies
-  const vocabularies = await Promise.all([
-    ...Array(10).fill(null).map((_, i) =>
-      prisma.vocabulary.create({
-        data: {
-          word: ['hello', 'garden', 'magic', 'business', 'food', 'journey', 'culture', 'music', 'travel', 'world'][i],
-          meaning: `Meaning for word ${i + 1}`,
-          example: `Example sentence ${i + 1}`,
-          user: { connect: { userId: userIds[i % 3] } },
-          language: { connect: { name: 'English' } },
-        },
-      })
-    ),
-  ])
+  try {
+    const users = await seedUsers()
+    console.log('✅ Seeded users')
 
-  // Create Worksheets with Exercises
-  const worksheets = await Promise.all([
-    prisma.worksheet.create({
-      data: {
-        title: 'English Basics',
-        description: 'Basic English grammar exercises',
-        user: { connect: { userId: userIds[0] } },
-        language: { connect: { name: 'English' } },
-        exercises: {
-          create: [
-            {
-              type: ExerciseType.MULTIPLE_CHOICE,
-              content: {
-                question: 'Choose the correct article',
-                options: ['a', 'an', 'the'],
-                correctAnswer: 'an',
-              },
-              order: 0,
-            },
-            {
-              type: ExerciseType.FILL_IN_BLANK,
-              content: {
-                sentence: 'The cat ___ on the mat',
-                correctAnswer: 'sits',
-              },
-              order: 1,
-            },
-          ],
-        },
-      },
-    }),
-    prisma.worksheet.create({
-      data: {
-        title: 'French Verbs',
-        description: 'Practice French verb conjugations',
-        user: { connect: { userId: userIds[1] } },
-        language: { connect: { name: 'French' } },
-        exercises: {
-          create: [
-            {
-              type: ExerciseType.TRANSLATION,
-              content: {
-                sentence: 'I am going to the store',
-                correctAnswer: 'Je vais au magasin',
-              },
-              order: 0,
-            },
-          ],
-        },
-      },
-    }),
-  ])
+    const languages = await seedLanguages()
+    console.log('✅ Seeded languages')
 
-  // Create FlashcardSets with Flashcards
-  const flashcardSets = await Promise.all([
-    prisma.flashcardSet.create({
-      data: {
-        name: 'Basic English Vocabulary',
-        description: 'Essential English words for beginners',
-        language: { connect: { name: 'English' } },
-        user: { connect: { userId: userIds[0] } },
-        cards: {
-          create: [
-            {
-              nextReviewAt: new Date(),
-              faces: {
-                create: [
-                  {
-                    content: 'Hello',
-                    type: FaceType.FRONT,
-                    order: 0,
-                  },
-                  {
-                    content: 'A greeting',
-                    type: FaceType.BACK,
-                    order: 1,
-                  },
-                ],
-              },
-            },
-            {
-              nextReviewAt: new Date(),
-              faces: {
-                create: [
-                  {
-                    content: 'Goodbye',
-                    type: FaceType.FRONT,
-                    order: 0,
-                  },
-                  {
-                    content: 'A parting greeting',
-                    type: FaceType.BACK,
-                    order: 1,
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      },
-    }),
-    prisma.flashcardSet.create({
-      data: {
-        name: 'Chinese Characters',
-        language: { connect: { name: 'Chinese' } },
-        description: 'Common Chinese characters',
-        user: { connect: { userId: userIds[1] } },
-        cards: {
-          create: [
-            {
-              nextReviewAt: new Date(),
-              faces: {
-                create: [
-                  {
-                    content: '你好',
-                    type: FaceType.CHARACTER,
-                    order: 0,
-                  },
-                  {
-                    content: 'nǐ hǎo',
-                    type: FaceType.PINYIN,
-                    order: 1,
-                  },
-                  {
-                    content: 'Hello',
-                    type: FaceType.TRANSLATION,
-                    order: 2,
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      },
-    }),
-  ])
+    const tags = await seedTags()
+    console.log('✅ Seeded tags')
 
-  // Create Chat Sessions with Messages
-  const chatSessions = await Promise.all([
-    prisma.chatSession.create({
-      data: {
-        user: { connect: { userId: userIds[0] } },
-        language: { connect: { name: 'English' } },
-        flashcardSet: { connect: { id: flashcardSets[0].id } },
-        messages: {
-          create: [
-            {
-              role: 'user',
-              content: 'Hello! Can you help me practice English?',
-              timestamp: new Date(),
-            },
-            {
-              role: 'assistant',
-              content: 'Of course! Let\'s start with basic greetings.',
-              timestamp: new Date(),
-            },
-          ],
-        },
-      },
-    }),
-  ])
+    await seedLanguageConfigs()
+    console.log('✅ Seeded language configs')
 
-  // Create Reading Progress with Chapter Progress
-  await Promise.all(stories.map(async story => {
-    const chapters = await prisma.chapter.findMany({
-      where: { storyId: story.id },
-    });
-    return prisma.readingProgress.create({
-      data: {
-        user: { connect: { userId: userIds[0] } },
-        story: { connect: { id: story.id } },
-        progress: 0.5,
-        startedAt: new Date(),
-        lastReadAt: new Date(),
-        chapterProgresses: {
-          create: chapters.map(chapter => ({
-            chapter: { connect: { id: chapter.id } },
-            progress: 0.5,
-            startedAt: new Date(),
-            lastReadAt: new Date(),
-          })),
-        },
-      },
-    });
-  }))
+    await connectUsersToLanguages(users)
+    console.log('✅ Connected users to languages')
+
+    const stories = await seedStories(users)
+    console.log(`✅ Seeded ${stories.length} stories with chapters`)
+
+    // Additional seeding functions would go here...
+    
+    console.log('✅ Seed completed successfully')
+  } catch (error) {
+    console.error('❌ Seed failed:', error)
+    throw error
+  } finally {
+    await prisma.$disconnect()
+  }
 }
 
 main()
   .catch((e) => {
     console.error(e)
+    // @ts-ignore
     process.exit(1)
-  })
-  .finally(async () => {
-    await prisma.$disconnect()
   })
