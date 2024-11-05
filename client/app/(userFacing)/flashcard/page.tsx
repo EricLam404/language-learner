@@ -169,7 +169,10 @@ export default function Page() {
                                     className="block h-full"
                                 >
                                     <CardHeader className="flex-grow">
-                                        <CardTitle>{set.name}</CardTitle>
+                                        <CardTitle className="flex justify-between">
+                                            {set.name}
+                                            <span className="text-sm text-muted-foreground">{set.languageName}</span>
+                                        </CardTitle>
                                         <CardDescription>
                                             {set.description}
                                         </CardDescription>

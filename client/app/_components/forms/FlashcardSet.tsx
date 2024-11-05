@@ -85,7 +85,11 @@ export function FlashcardSetForm() {
                 );
             }
             toast.success("Flashcard set has been successfully created!");
-            form.reset();
+            form.reset({
+                name: "",
+                description: "",
+                languageName: values.languageName,
+            });
         } catch (e) {
             console.log(e);
             toast.error(

@@ -23,7 +23,7 @@ import React from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { useUser } from "@/lib/hooks/useUser";
 import { useRouter } from "next/navigation";
-import { GET_LANGUAGE } from "../../_components/graphql/queries";
+import { GET_LANGUAGE } from "../../_components/graphql/users";
 import { CREATE_USER } from "../../_components/graphql/users";
 
 const FormSchema = z.object({
