@@ -9,7 +9,7 @@ export const deleteLanguage: NonNullable<MutationResolvers['deleteLanguage']> = 
             },
         });
 
-        return result;
+        return result ? true : false;
     } catch (error) {
         console.log(error);
 

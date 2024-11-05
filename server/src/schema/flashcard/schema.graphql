@@ -34,6 +34,8 @@ type FlashcardFace {
     order: Int!
     audioUrl: String
     imageUrl: String
+    createdAt: DateTime!
+    updatedAt: DateTime!
 
     flashcard: Flashcard
 }
@@ -43,7 +45,25 @@ enum FaceType {
     BACK
     PINYIN
     CHARACTER
+    ROMAJI
+    HIRAGANA
+    KATAKANA
+    TRANSLITERATION
     TRANSLATION
+    DEFINITION
+    EXAMPLE_SENTENCE
+    EXAMPLE_TRANSLATION
+    CONTEXT_NOTES
+    MNEMONIC
+    PART_OF_SPEECH
+    CONJUGATION
+    GENDER
+    PLURAL_FORM
+    AUDIO_NATIVE
+    AUDIO_SLOW
+    IMAGE
+    VIDEO
+    NOTES
     OTHER
 }
 

@@ -3,11 +3,23 @@ type Language {
   name: String!
   code: String!
 
+  languageFaceConfig: LanguageFaceConfig
   vocabularies: [Vocabulary!]
   stories: [Story!]
   worksheets: [Worksheet!]
   users: [User!]
   chatSession:  [ChatSession!]
+  flashcardSets: [FlashcardSet!]
+}
+
+type LanguageFaceConfig {
+  id: ID!
+  languageName: String!
+  config: JSON!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  language: Language
 }
 
 
