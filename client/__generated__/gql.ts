@@ -22,13 +22,14 @@ const documents = {
     "\n    mutation CreateFlashcard($setId: ID!, $faces: [FlashcardFaceInput!]!){\n        createFlashcard(setId: $setId, faces: $faces) {\n            setId\n            nextReviewAt\n            faces {\n                id\n                type\n                content\n            }\n        }\n    }\n": types.CreateFlashcardDocument,
     "\n    mutation UpdateFlashcard($updateFlashcardId: ID!, $faces: [FlashcardFaceInput!]!){\n        updateFlashcard(id: $updateFlashcardId, faces: $faces) {\n            id\n            faces {\n                id\n                type\n                content\n            }\n        }\n    }\n": types.UpdateFlashcardDocument,
     "\n    mutation DeleteFlashcard($deleteFlashcardId: ID!) {\n        deleteFlashcard(id: $deleteFlashcardId)\n    }\n": types.DeleteFlashcardDocument,
+    "\n    query GetLanguages {\n        languages {\n            id\n            name\n        }\n    }\n": types.GetLanguagesDocument,
+    "\n    query LanaguageFaceConfig($languageName: String!) {\n        languageFaceConfig(languageName: $languageName) {\n            languageName,\n            config,\n        }\n    }\n": types.LanaguageFaceConfigDocument,
     "\n    query GetStories {\n        stories {\n            completedAt\n            description\n            id\n            content\n            difficulty\n            imageUrl\n            languageName\n            title\n            translatedTitle\n            isPublished\n            tags {\n                name\n                id\n            }\n            chapters {\n                title,\n                content\n            }\n        }\n    }\n\n": types.GetStoriesDocument,
     "\n    mutation CreateStory($input: CreateStoryInput!) {\n        createStory(input: $input) {\n            completedAt\n            description\n            content\n            id\n            difficulty\n            imageUrl\n            languageName\n            title\n            translatedTitle\n            isPublished\n            tags {\n                id\n                name\n            }\n        }\n    }\n": types.CreateStoryDocument,
     "\n    mutation UpdateStory($updateStoryId: ID!, $input: UpdateStoryInput!) {\n        updateStory(id: $updateStoryId, input: $input) {\n            completedAt\n            description\n            content\n            id\n            difficulty\n            imageUrl\n            languageName\n            title\n            translatedTitle\n            isPublished\n            tags {\n                id\n                name\n            }\n        }\n    }\n": types.UpdateStoryDocument,
     "\n    mutation DeleteStory($id: ID!) {\n        deleteStory(id: $id)\n    }\n": types.DeleteStoryDocument,
     "\n    query GetPublicStories($page: Int, $pageSize: Int, $filters: StoryFilters) {\n        publicStories(page: $page, pageSize: $pageSize, filters: $filters) {\n            hasNextPage\n            stories {\n                id\n                title\n                description\n                difficulty\n                languageName\n                user {\n                    username\n                }\n                tags {\n                    name\n                }\n            }\n            totalCount\n        }\n    }\n": types.GetPublicStoriesDocument,
     "\n    query GetStory($storyId: ID!) {\n        story(id: $storyId) {\n            title,\n            translatedTitle\n            content\n        }\n    }\n": types.GetStoryDocument,
-    "\n    query GetLanguages {\n        languages {\n            id\n            name\n        }\n    }\n": types.GetLanguagesDocument,
     "\n    mutation CreateUser($username: String!, $languages: [String!]!) {\n        createUser(username: $username, languages: $languages) {\n            username\n            languages {\n                name\n            }\n        }\n    }\n": types.CreateUserDocument,
     "\n    query GetVocabularies {\n        vocabularies {\n            id\n            languageName\n            word\n            meaning\n            example\n        }\n    }\n": types.GetVocabulariesDocument,
     "\n    mutation CreateVocabulary(\n        $word: String!\n        $meaning: String!\n        $example: String\n        $languageName: String!\n    ) {\n        createVocabulary(\n            word: $word\n            meaning: $meaning\n            example: $example\n            languageName: $languageName\n        ) {\n            example\n            id\n            meaning\n        }\n    }\n": types.CreateVocabularyDocument,
@@ -89,6 +90,14 @@ export function gql(source: "\n    mutation DeleteFlashcard($deleteFlashcardId: 
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n    query GetLanguages {\n        languages {\n            id\n            name\n        }\n    }\n"): (typeof documents)["\n    query GetLanguages {\n        languages {\n            id\n            name\n        }\n    }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    query LanaguageFaceConfig($languageName: String!) {\n        languageFaceConfig(languageName: $languageName) {\n            languageName,\n            config,\n        }\n    }\n"): (typeof documents)["\n    query LanaguageFaceConfig($languageName: String!) {\n        languageFaceConfig(languageName: $languageName) {\n            languageName,\n            config,\n        }\n    }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n    query GetStories {\n        stories {\n            completedAt\n            description\n            id\n            content\n            difficulty\n            imageUrl\n            languageName\n            title\n            translatedTitle\n            isPublished\n            tags {\n                name\n                id\n            }\n            chapters {\n                title,\n                content\n            }\n        }\n    }\n\n"): (typeof documents)["\n    query GetStories {\n        stories {\n            completedAt\n            description\n            id\n            content\n            difficulty\n            imageUrl\n            languageName\n            title\n            translatedTitle\n            isPublished\n            tags {\n                name\n                id\n            }\n            chapters {\n                title,\n                content\n            }\n        }\n    }\n\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -110,10 +119,6 @@ export function gql(source: "\n    query GetPublicStories($page: Int, $pageSize:
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n    query GetStory($storyId: ID!) {\n        story(id: $storyId) {\n            title,\n            translatedTitle\n            content\n        }\n    }\n"): (typeof documents)["\n    query GetStory($storyId: ID!) {\n        story(id: $storyId) {\n            title,\n            translatedTitle\n            content\n        }\n    }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n    query GetLanguages {\n        languages {\n            id\n            name\n        }\n    }\n"): (typeof documents)["\n    query GetLanguages {\n        languages {\n            id\n            name\n        }\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
