@@ -6,6 +6,7 @@ import { FlashcardGrid } from "./FlashcardGrid";
 import { StudyMode } from "./StudyMode";
 import { useFlashcards } from "@/lib/hooks/useFlashcards";
 import { type FlashcardSet, type Flashcard } from "@/lib/types";
+import { useLanguageFaceConfig } from "@/lib/hooks/useLanguageFaceConfig";
 import { FlashcardForm } from "@app/_components/flashcards/FlashcardForm";
 import { FlashcardFormValues } from "@/lib/schemas/flashcard";
 import FlashcardDeleteForm from "./FlashcardDeleteForm";
@@ -86,6 +87,7 @@ export default function FlashcardContainer({
                 onOpenChange={setIsDialogOpen}
                 onSubmit={handleCardSubmit}
                 editCard={currentEditCard}
+                languageName={flashcardSet.languageName}
             />
             <FlashcardDeleteForm open={!!deleteFlashcard} onOpenChange={(open) => !open && setDeleteFlashcard(null)} onDelete={deleteCard} card={deleteFlashcard!} />
         </>

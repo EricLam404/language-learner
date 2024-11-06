@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { type Flashcard, type FlashcardSet } from "../types";
+import { type FlashcardSet } from "../types";
 import { useMutation } from "@apollo/client";
 import {
     CREATE_FLASHCARD,
@@ -55,13 +55,14 @@ export const useFlashcards = (set: FlashcardSet) => {
 
     const addCard = async (newCard: FlashcardFormValues) => {
         try {
+            // Filter out empty fields and map to the correct format
             const faces = Object.keys(newCard)
                 .filter(
                     (key) => newCard[key as keyof FlashcardFormValues] !== ""
                 )
                 .map((key, index) => ({
                     type: key.toUpperCase() as FaceType,
-                    content: newCard[key as keyof FlashcardFormValues],
+                    content: newCard[key as keyof FlashcardFormValues] || "",
                     order: index,
                 }));
 
@@ -89,13 +90,14 @@ export const useFlashcards = (set: FlashcardSet) => {
 
     const editCard = async (updatedCard: FlashcardFormValues, id: string) => {
         try {
+            // Filter out empty fields and map to the correct format
             const faces = Object.keys(updatedCard)
                 .filter(
                     (key) => updatedCard[key as keyof FlashcardFormValues] !== ""
                 )
                 .map((key, index) => ({
                     type: key.toUpperCase() as FaceType,
-                    content: updatedCard[key as keyof FlashcardFormValues],
+                    content: updatedCard[key as keyof FlashcardFormValues] || "",
                     order: index,
                 }));
 

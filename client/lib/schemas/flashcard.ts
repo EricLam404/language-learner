@@ -1,4 +1,36 @@
 import { z } from "zod";
+import { LanguageConfig } from "../hooks/useLanguageFaceConfig";
+import { replaceUnderscoreAndCapitalize } from "../stringUtils";
+
+export const createFlashcardSchema = (config: LanguageConfig) => {
+    const requiredFaces = config.required.reduce((acc, face) => {
+        acc[face.toLowerCase()] = z
+            .string()
+            .min(1, `${replaceUnderscoreAndCapitalize(face)} is required`)
+            .max(200, `${face} must be less than 200 characters`)
+            .default("a");
+        return acc;
+    }, {} as { [key: string]: z.ZodDefault<z.ZodString> });
+    const optionalFaces = config.optional.reduce((acc, face) => {
+        acc[face.toLowerCase()] = z
+            .string()
+            .max(200, `${replaceUnderscoreAndCapitalize(face)} must be less than 200 characters`)
+            .default("b")
+            .optional();
+        return acc;
+    }, {} as { [key: string]: z.ZodOptional<z.ZodDefault<z.ZodString>> });
+    return z.object({
+        ...requiredFaces,
+        ...optionalFaces,
+    });
+};
+
+export type FlashcardFormValues = z.infer<
+    ReturnType<typeof createFlashcardSchema>
+>;
+
+/**
+ * import { z } from "zod";
 
 export const flashcardSchema = z.object({
   front: z.string()
@@ -22,3 +54,22 @@ export const flashcardSchema = z.object({
 });
 
 export type FlashcardFormValues = z.infer<typeof flashcardSchema>;
+ * const shared = z.object( {
+    firstName: z.string(),
+    lastName: z.string(),
+} )
+
+const schema = z.discriminatedUnion( 'schoolId', [
+    shared.extend( {
+        schoolId: z.literal( 'State U' ),
+        state: z.string(),
+        gpa: z.number(),
+    } ),
+    shared.extend( {
+        schoolId: z.literal( 'Ivy U' ),
+        gpa: z.number(),
+        isLegacy: z.boolean(),
+    } ),
+] )
+
+ *  */

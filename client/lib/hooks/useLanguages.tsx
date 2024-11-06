@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useUser } from "@/lib/hooks/useUser"; // Assuming this hook fetches the user data
+import { useUser } from "@/lib/hooks/useUser";
 import { User } from "@supabase/supabase-js";
 
 async function fetchLanguages(user: User | null | undefined): Promise<string[]> { 

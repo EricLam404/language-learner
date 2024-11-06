@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -23,16 +23,32 @@ import {
 import RequiredText from "@/components/RequiredText";
 import { Flashcard } from "@/lib/types";
 import {
-    flashcardSchema,
+    createFlashcardSchema,
     type FlashcardFormValues,
 } from "@/lib/schemas/flashcard";
-import { FaceType } from "@/__generated__/graphql";
+import { FaceType, LanaguageFaceConfigQuery } from "@/__generated__/graphql";
+import {
+    useLanguageFaceConfig,
+    type LanguageConfig,
+} from "@/lib/hooks/useLanguageFaceConfig";
+import Skeleton from "react-loading-skeleton";
+import { replaceUnderscoreAndCapitalize } from "@/lib/stringUtils";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@components/ui/select";
 
 interface FlashcardFormProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onSubmit: (card: FlashcardFormValues) => void;
     editCard?: Flashcard;
+    languageName: string;
 }
 
 export function FlashcardForm({
@@ -40,26 +56,36 @@ export function FlashcardForm({
     onOpenChange,
     onSubmit,
     editCard,
+    languageName,
 }: FlashcardFormProps) {
     const [showOptionalFields, setShowOptionalFields] = useState(!!editCard);
+    const [optionalFaces, setOptionalFaces] = useState([] as FaceType[]);
+    const { languageFaceConfig, loading, error } =
+        useLanguageFaceConfig(languageName);
+    const config: LanguageConfig = languageFaceConfig?.languageFaceConfig
+        ?.config ?? { required: [], optional: [], typeMetadata: {} };
 
-    const defaultValues = {
-        front:
-            editCard?.faces!.find((face) => face.type === FaceType.Front)
-                ?.content || "",
-        back:
-            editCard?.faces!.find((face) => face.type === FaceType.Back)
-                ?.content || "",
-        pinyin:
-            editCard?.faces!.find((face) => face.type === FaceType.Pinyin)
-                ?.content || "",
-        character:
-            editCard?.faces!.find((face) => face.type === FaceType.Character)
-                ?.content || "",
-        other:
-            editCard?.faces!.find((face) => face.type === FaceType.Other)
-                ?.content || "",
-    };
+    const flashcardSchema = createFlashcardSchema(config);
+
+    const defaultRequiredFaces = config.required.reduce((acc, face) => {
+        acc[face.toLowerCase()] =
+            editCard?.faces!.find((editFace) => editFace.type === face)
+                ?.content || "";
+        return acc;
+    }, {} as { [key: string]: string });
+    const defaultOptionalFaces = config.optional.reduce((acc, face) => {
+        acc[face.toLowerCase()] =
+            editCard?.faces!.find((editFace) => editFace.type === face)
+                ?.content || "";
+        return acc;
+    }, {} as { [key: string]: string });
+    const defaultValues = useMemo(
+        () => ({
+            ...defaultRequiredFaces,
+            ...defaultOptionalFaces,
+        }),
+        [config.required, config.optional]
+    );
 
     const form = useForm<FlashcardFormValues>({
         resolver: zodResolver(flashcardSchema),
@@ -68,17 +94,19 @@ export function FlashcardForm({
 
     useEffect(() => {
         form.reset(defaultValues);
-    }, [editCard]);
+    }, [editCard, defaultValues]);
 
     const handleSubmit = (values: FlashcardFormValues) => {
+        console.log(values);
         onSubmit(values);
         onOpenChange(false);
+        setOptionalFaces([]);
         form.reset();
     };
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>
                         {editCard ? "Edit Flashcard" : "Add New Flashcard"}
@@ -89,108 +117,114 @@ export function FlashcardForm({
                             : "Create a new flashcard for your set."}
                     </DialogDescription>
                 </DialogHeader>
-                <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(handleSubmit)}
-                        className="space-y-4"
-                    >
-                        <FormField
-                            control={form.control}
-                            name="front"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        <RequiredText>Front</RequiredText>
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+                {loading ? (
+                    <Skeleton count={5} />
+                ) : (
+                    <Form {...form}>
+                        <form
+                            onSubmit={form.handleSubmit(handleSubmit)}
+                            className="space-y-4"
+                        >
+                            <div className="overflow-y-scroll max-h-[50vh] px-4 pb-4 flex gap-2 flex-col">
+                                {config.required.map((faceType) => (
+                                    <FormField
+                                        key={faceType}
+                                        control={form.control}
+                                        name={faceType.toLowerCase()}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+                                                    <RequiredText>
+                                                        {replaceUnderscoreAndCapitalize(
+                                                            faceType
+                                                        )}
+                                                    </RequiredText>
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                ))}
+
+                                {optionalFaces.map((faceType) => (
+                                    <FormField
+                                        key={faceType}
+                                        control={form.control}
+                                        name={faceType.toLowerCase()}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+                                                    {replaceUnderscoreAndCapitalize(
+                                                        faceType
+                                                    )}
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                ))}
+                            </div>
+
+                            {config.optional.length - optionalFaces.length >
+                                0 && (
+                                <div className="flex items-center space-x-2 px-4">
+                                    <Select
+                                        onValueChange={(value) =>
+                                            setOptionalFaces([
+                                                ...optionalFaces,
+                                                value as FaceType,
+                                            ])
+                                        }
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Add more fields...">
+                                                Add more fields...
+                                            </SelectValue>
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>
+                                                    Optional fields
+                                                </SelectLabel>
+                                                {config.optional
+                                                    .filter(
+                                                        (faceType) =>
+                                                            !optionalFaces.includes(
+                                                                faceType
+                                                            )
+                                                    )
+                                                    .map((faceType) => (
+                                                        <SelectItem
+                                                            key={faceType}
+                                                            value={faceType}
+                                                        >
+                                                            {replaceUnderscoreAndCapitalize(
+                                                                faceType
+                                                            )}
+                                                        </SelectItem>
+                                                    ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             )}
-                        />
 
-                        <FormField
-                            control={form.control}
-                            name="back"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        <RequiredText>Back</RequiredText>
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {(showOptionalFields || editCard) && (
-                            <>
-                                <FormField
-                                    control={form.control}
-                                    name="pinyin"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Pinyin</FormLabel>
-                                            <FormControl>
-                                                <Input {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="character"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Character</FormLabel>
-                                            <FormControl>
-                                                <Input {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="other"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                Other (e.g. Example)
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </>
-                        )}
-
-                        {!showOptionalFields && !editCard && (
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setShowOptionalFields(true)}
-                            >
-                                Add Optional Fields
-                            </Button>
-                        )}
-
-                        <DialogFooter>
-                            <Button type="submit">
-                                {editCard ? "Save Changes" : "Add Flashcard"}
-                            </Button>
-                        </DialogFooter>
-                    </form>
-                </Form>
+                            <DialogFooter>
+                                <Button type="submit">
+                                    {editCard
+                                        ? "Save Changes"
+                                        : "Add Flashcard"}
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
+                )}
             </DialogContent>
         </Dialog>
     );
