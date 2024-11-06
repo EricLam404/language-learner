@@ -26,7 +26,7 @@ import {
     createFlashcardSchema,
     type FlashcardFormValues,
 } from "@/lib/schemas/flashcard";
-import { FaceType, LanaguageFaceConfigQuery } from "@/__generated__/graphql";
+import { FaceType } from "@/__generated__/graphql";
 import {
     useLanguageFaceConfig,
     type LanguageConfig,
@@ -58,12 +58,20 @@ export function FlashcardForm({
     editCard,
     languageName,
 }: FlashcardFormProps) {
-    const [showOptionalFields, setShowOptionalFields] = useState(!!editCard);
     const [optionalFaces, setOptionalFaces] = useState([] as FaceType[]);
     const { languageFaceConfig, loading, error } =
         useLanguageFaceConfig(languageName);
-    const config: LanguageConfig = languageFaceConfig?.languageFaceConfig
-        ?.config ?? { required: [], optional: [], typeMetadata: {} };
+    const config: LanguageConfig = useMemo(() => {
+        return languageFaceConfig?.languageFaceConfig?.config ?? {
+            required: [FaceType.Front, FaceType.Back],
+            optional: Object.values(FaceType).filter(
+                (face) => face !== FaceType.Front && face !== FaceType.Back
+            ),
+            typeMetadata: {},
+        };
+    }, [languageFaceConfig]);
+
+    console.log(config);
 
     const flashcardSchema = createFlashcardSchema(config);
 
@@ -84,8 +92,17 @@ export function FlashcardForm({
             ...defaultRequiredFaces,
             ...defaultOptionalFaces,
         }),
-        [config.required, config.optional]
+        [config, editCard]
     );
+
+    useEffect(() => {
+        if (editCard && editCard.faces) {
+            const optionalFieldsInEditCard = editCard.faces
+                .map((face) => face.type)
+                .filter((faceType) => !config.required.includes(faceType));
+            setOptionalFaces(optionalFieldsInEditCard);
+        }
+    }, [editCard]);
 
     const form = useForm<FlashcardFormValues>({
         resolver: zodResolver(flashcardSchema),

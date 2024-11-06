@@ -79,20 +79,18 @@ export function FlashcardGrid({
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </CardTitle>
-                            <CardDescription>
+                            {/* <CardDescription>
                                 {
                                     card.faces!.find(
                                         (face) => face.type === FaceType.Back
                                     )?.content
                                 }
-                            </CardDescription>
+                            </CardDescription> */}
                         </CardHeader>
                         <CardContent>
                             {card
                                 .faces!.filter(
-                                    (face) =>
-                                        face.type !== FaceType.Front &&
-                                        face.type !== FaceType.Back
+                                    (face) => face.type !== FaceType.Front
                                 )
                                 .map((face) => (
                                     <div
