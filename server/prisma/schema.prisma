@@ -22,6 +22,7 @@ model User {
   flashcardSet    FlashcardSet[]
   chatSession     ChatSession[]
   submission      Submission[]
+  // UserRole        UserRole[]
 }
 
 model Language {
@@ -235,7 +236,7 @@ model FlashcardFace {
   order       Int
   audioUrl    String?
   imageUrl    String?
-  metadata    Json?    
+  metadata    Json?
   createdAt   DateTime  @default(now()) @db.Timestamptz(3)
   updatedAt   DateTime  @updatedAt @db.Timestamptz(3)
 
@@ -309,3 +310,42 @@ model ChatMessage {
 
   @@index([sessionId, timestamp])
 }
+
+// enum AppPermission {
+//   FLASHCARDS_CREATE @map("flashcards.create")
+//   FLASHCARDS_EDIT   @map("flashcards.edit")
+//   FLASHCARDS_DELETE @map("flashcards.delete")
+//   LESSONS_CREATE    @map("lessons.create")
+//   LESSONS_EDIT      @map("lessons.edit")
+//   LESSONS_DELETE    @map("lessons.delete")
+//   QUIZZES_CREATE    @map("quizzes.create")
+//   QUIZZES_EDIT      @map("quizzes.edit")
+//   QUIZZES_DELETE    @map("quizzes.delete")
+//   USERS_MANAGE      @map("users.manage")
+
+//   @@map("app_permission")
+// }
+
+// enum AppRole {
+//   ADMIN @map("admin")
+//   USER  @map("user")
+
+//   @@map("app_role")
+// }
+
+// model UserRole {
+//   id     BigInt  @id @default(autoincrement())
+//   userId String  @map("user_id") @db.Uuid
+//   user   User    @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
+//   role   AppRole
+
+//   @@unique([userId, role])
+// }
+
+// model RolePermission {
+//   id         BigInt        @id @default(autoincrement())
+//   role       AppRole
+//   permission AppPermission
+
+//   @@unique([role, permission])
+// }
