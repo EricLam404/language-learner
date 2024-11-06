@@ -241,6 +241,7 @@ type Query {
   flashcardSetsByLanguage(languageName: String!): [FlashcardSet!]!
   language(id: ID!): Language
   languageByName(name: String!): Language
+  languageFaceConfig(languageName: String!): LanguageFaceConfig
   languages: [Language!]!
   publicStories(filters: StoryFilters, orderBy: String = "createdAt", orderDirection: String = "desc", page: Int = 1, pageSize: Int = 10): PaginatedStoriesResponse!
   stories: [Story!]!

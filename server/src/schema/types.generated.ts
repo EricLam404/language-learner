@@ -415,6 +415,7 @@ export type Query = {
   flashcardSetsByLanguage: Array<FlashcardSet>;
   language?: Maybe<Language>;
   languageByName?: Maybe<Language>;
+  languageFaceConfig?: Maybe<LanguageFaceConfig>;
   languages: Array<Language>;
   publicStories: PaginatedStoriesResponse;
   stories: Array<Story>;
@@ -452,6 +453,11 @@ export type QuerylanguageArgs = {
 
 export type QuerylanguageByNameArgs = {
   name: Scalars['String']['input'];
+};
+
+
+export type QuerylanguageFaceConfigArgs = {
+  languageName: Scalars['String']['input'];
 };
 
 
@@ -984,6 +990,7 @@ export type QueryResolvers<ContextType = MyContext, ParentType extends Resolvers
   flashcardSetsByLanguage?: Resolver<Array<ResolversTypes['FlashcardSet']>, ParentType, ContextType, RequireFields<QueryflashcardSetsByLanguageArgs, 'languageName'>>;
   language?: Resolver<Maybe<ResolversTypes['Language']>, ParentType, ContextType, RequireFields<QuerylanguageArgs, 'id'>>;
   languageByName?: Resolver<Maybe<ResolversTypes['Language']>, ParentType, ContextType, RequireFields<QuerylanguageByNameArgs, 'name'>>;
+  languageFaceConfig?: Resolver<Maybe<ResolversTypes['LanguageFaceConfig']>, ParentType, ContextType, RequireFields<QuerylanguageFaceConfigArgs, 'languageName'>>;
   languages?: Resolver<Array<ResolversTypes['Language']>, ParentType, ContextType>;
   publicStories?: Resolver<ResolversTypes['PaginatedStoriesResponse'], ParentType, ContextType, RequireFields<QuerypublicStoriesArgs, 'orderBy' | 'orderDirection' | 'page' | 'pageSize'>>;
   stories?: Resolver<Array<ResolversTypes['Story']>, ParentType, ContextType>;

@@ -6,6 +6,7 @@ import    { flashcardSets as Query_flashcardSets } from './flashcard/resolvers/Q
 import    { flashcardSetsByLanguage as Query_flashcardSetsByLanguage } from './flashcard/resolvers/Query/flashcardSetsByLanguage';
 import    { language as Query_language } from './language/resolvers/Query/language';
 import    { languageByName as Query_languageByName } from './language/resolvers/Query/languageByName';
+import    { languageFaceConfig as Query_languageFaceConfig } from './language/resolvers/Query/languageFaceConfig';
 import    { languages as Query_languages } from './language/resolvers/Query/languages';
 import    { publicStories as Query_publicStories } from './story/resolvers/Query/publicStories';
 import    { stories as Query_stories } from './story/resolvers/Query/stories';
@@ -64,7 +65,7 @@ import    { Vocabulary } from './vocabulary/resolvers/Vocabulary';
 import    { Worksheet } from './worksheet/resolvers/Worksheet';
 import    { DateTimeResolver,JSONResolver } from 'graphql-scalars';
     export const resolvers: Resolvers = {
-      Query: { flashcard: Query_flashcard,flashcardSet: Query_flashcardSet,flashcardSets: Query_flashcardSets,flashcardSetsByLanguage: Query_flashcardSetsByLanguage,language: Query_language,languageByName: Query_languageByName,languages: Query_languages,publicStories: Query_publicStories,stories: Query_stories,story: Query_story,tag: Query_tag,tags: Query_tags,user: Query_user,users: Query_users,vocabularies: Query_vocabularies,vocabulary: Query_vocabulary,worksheet: Query_worksheet,worksheets: Query_worksheets },
+      Query: { flashcard: Query_flashcard,flashcardSet: Query_flashcardSet,flashcardSets: Query_flashcardSets,flashcardSetsByLanguage: Query_flashcardSetsByLanguage,language: Query_language,languageByName: Query_languageByName,languageFaceConfig: Query_languageFaceConfig,languages: Query_languages,publicStories: Query_publicStories,stories: Query_stories,story: Query_story,tag: Query_tag,tags: Query_tags,user: Query_user,users: Query_users,vocabularies: Query_vocabularies,vocabulary: Query_vocabulary,worksheet: Query_worksheet,worksheets: Query_worksheets },
       Mutation: { createFlashcard: Mutation_createFlashcard,createFlashcardSet: Mutation_createFlashcardSet,createLanguage: Mutation_createLanguage,createStory: Mutation_createStory,createTag: Mutation_createTag,createUser: Mutation_createUser,createVocabulary: Mutation_createVocabulary,createWorksheet: Mutation_createWorksheet,deleteFlashcard: Mutation_deleteFlashcard,deleteFlashcardSet: Mutation_deleteFlashcardSet,deleteLanguage: Mutation_deleteLanguage,deleteStory: Mutation_deleteStory,deleteTag: Mutation_deleteTag,deleteUser: Mutation_deleteUser,deleteVocabulary: Mutation_deleteVocabulary,deleteWorksheet: Mutation_deleteWorksheet,updateFlashcard: Mutation_updateFlashcard,updateFlashcardSet: Mutation_updateFlashcardSet,updateLanguage: Mutation_updateLanguage,updateStory: Mutation_updateStory,updateTag: Mutation_updateTag,updateUser: Mutation_updateUser,updateVocabulary: Mutation_updateVocabulary,updateWorksheet: Mutation_updateWorksheet },
       
       Chapter: Chapter,

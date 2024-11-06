@@ -27,6 +27,7 @@ extend type Query {
   languages: [Language!]!
   language(id: ID!): Language
   languageByName(name: String!): Language
+  languageFaceConfig(languageName: String!): LanguageFaceConfig
 }
 
 extend type Mutation {
