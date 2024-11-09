@@ -23,3 +23,5 @@ export const server = {
     SERVER_HOSTNAME,
     SERVER_PORT
 };
+
+export const GEMINI_API_KEY = process.env.GEMINI_API_KEY as string;
