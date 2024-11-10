@@ -35,6 +35,7 @@ import    { deleteTag as Mutation_deleteTag } from './tag/resolvers/Mutation/del
 import    { deleteUser as Mutation_deleteUser } from './user/resolvers/Mutation/deleteUser';
 import    { deleteVocabulary as Mutation_deleteVocabulary } from './vocabulary/resolvers/Mutation/deleteVocabulary';
 import    { deleteWorksheet as Mutation_deleteWorksheet } from './worksheet/resolvers/Mutation/deleteWorksheet';
+import    { generateFlashcardFaces as Mutation_generateFlashcardFaces } from './flashcard/resolvers/Mutation/generateFlashcardFaces';
 import    { updateFlashcard as Mutation_updateFlashcard } from './flashcard/resolvers/Mutation/updateFlashcard';
 import    { updateFlashcardSet as Mutation_updateFlashcardSet } from './flashcard/resolvers/Mutation/updateFlashcardSet';
 import    { updateLanguage as Mutation_updateLanguage } from './language/resolvers/Mutation/updateLanguage';
@@ -63,10 +64,11 @@ import    { Tag } from './tag/resolvers/Tag';
 import    { User } from './user/resolvers/User';
 import    { Vocabulary } from './vocabulary/resolvers/Vocabulary';
 import    { Worksheet } from './worksheet/resolvers/Worksheet';
+import    { generateFlashcardFacesPayload } from './flashcard/resolvers/generateFlashcardFacesPayload';
 import    { DateTimeResolver,JSONResolver } from 'graphql-scalars';
     export const resolvers: Resolvers = {
       Query: { flashcard: Query_flashcard,flashcardSet: Query_flashcardSet,flashcardSets: Query_flashcardSets,flashcardSetsByLanguage: Query_flashcardSetsByLanguage,language: Query_language,languageByName: Query_languageByName,languageFaceConfig: Query_languageFaceConfig,languages: Query_languages,publicStories: Query_publicStories,stories: Query_stories,story: Query_story,tag: Query_tag,tags: Query_tags,user: Query_user,users: Query_users,vocabularies: Query_vocabularies,vocabulary: Query_vocabulary,worksheet: Query_worksheet,worksheets: Query_worksheets },
-      Mutation: { createFlashcard: Mutation_createFlashcard,createFlashcardSet: Mutation_createFlashcardSet,createLanguage: Mutation_createLanguage,createStory: Mutation_createStory,createTag: Mutation_createTag,createUser: Mutation_createUser,createVocabulary: Mutation_createVocabulary,createWorksheet: Mutation_createWorksheet,deleteFlashcard: Mutation_deleteFlashcard,deleteFlashcardSet: Mutation_deleteFlashcardSet,deleteLanguage: Mutation_deleteLanguage,deleteStory: Mutation_deleteStory,deleteTag: Mutation_deleteTag,deleteUser: Mutation_deleteUser,deleteVocabulary: Mutation_deleteVocabulary,deleteWorksheet: Mutation_deleteWorksheet,updateFlashcard: Mutation_updateFlashcard,updateFlashcardSet: Mutation_updateFlashcardSet,updateLanguage: Mutation_updateLanguage,updateStory: Mutation_updateStory,updateTag: Mutation_updateTag,updateUser: Mutation_updateUser,updateVocabulary: Mutation_updateVocabulary,updateWorksheet: Mutation_updateWorksheet },
+      Mutation: { createFlashcard: Mutation_createFlashcard,createFlashcardSet: Mutation_createFlashcardSet,createLanguage: Mutation_createLanguage,createStory: Mutation_createStory,createTag: Mutation_createTag,createUser: Mutation_createUser,createVocabulary: Mutation_createVocabulary,createWorksheet: Mutation_createWorksheet,deleteFlashcard: Mutation_deleteFlashcard,deleteFlashcardSet: Mutation_deleteFlashcardSet,deleteLanguage: Mutation_deleteLanguage,deleteStory: Mutation_deleteStory,deleteTag: Mutation_deleteTag,deleteUser: Mutation_deleteUser,deleteVocabulary: Mutation_deleteVocabulary,deleteWorksheet: Mutation_deleteWorksheet,generateFlashcardFaces: Mutation_generateFlashcardFaces,updateFlashcard: Mutation_updateFlashcard,updateFlashcardSet: Mutation_updateFlashcardSet,updateLanguage: Mutation_updateLanguage,updateStory: Mutation_updateStory,updateTag: Mutation_updateTag,updateUser: Mutation_updateUser,updateVocabulary: Mutation_updateVocabulary,updateWorksheet: Mutation_updateWorksheet },
       
       Chapter: Chapter,
 ChapterProgress: ChapterProgress,
@@ -88,6 +90,7 @@ Tag: Tag,
 User: User,
 Vocabulary: Vocabulary,
 Worksheet: Worksheet,
+generateFlashcardFacesPayload: generateFlashcardFacesPayload,
 DateTime: DateTimeResolver,
 JSON: JSONResolver
     }

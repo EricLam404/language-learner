@@ -22,6 +22,7 @@ const documents = {
     "\n    mutation CreateFlashcard($setId: ID!, $faces: [FlashcardFaceInput!]!){\n        createFlashcard(setId: $setId, faces: $faces) {\n            setId\n            nextReviewAt\n            faces {\n                id\n                type\n                content\n            }\n        }\n    }\n": types.CreateFlashcardDocument,
     "\n    mutation UpdateFlashcard($updateFlashcardId: ID!, $faces: [FlashcardFaceInput!]!){\n        updateFlashcard(id: $updateFlashcardId, faces: $faces) {\n            id\n            faces {\n                id\n                type\n                content\n            }\n        }\n    }\n": types.UpdateFlashcardDocument,
     "\n    mutation DeleteFlashcard($deleteFlashcardId: ID!) {\n        deleteFlashcard(id: $deleteFlashcardId)\n    }\n": types.DeleteFlashcardDocument,
+    "\n    mutation GenerateFlashcardFaces($input: generateFlashcardFacesInput!) {\n        generateFlashcardFaces(input: $input) {\n            content\n            faceType\n        }\n    }\n": types.GenerateFlashcardFacesDocument,
     "\n    query GetLanguages {\n        languages {\n            id\n            name\n        }\n    }\n": types.GetLanguagesDocument,
     "\n    query LanaguageFaceConfig($languageName: String!) {\n        languageFaceConfig(languageName: $languageName) {\n            languageName,\n            config,\n        }\n    }\n": types.LanaguageFaceConfigDocument,
     "\n    query GetStories {\n        stories {\n            completedAt\n            description\n            id\n            content\n            difficulty\n            imageUrl\n            languageName\n            title\n            translatedTitle\n            isPublished\n            tags {\n                name\n                id\n            }\n            chapters {\n                title,\n                content\n            }\n        }\n    }\n\n": types.GetStoriesDocument,
@@ -87,6 +88,10 @@ export function gql(source: "\n    mutation UpdateFlashcard($updateFlashcardId: 
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n    mutation DeleteFlashcard($deleteFlashcardId: ID!) {\n        deleteFlashcard(id: $deleteFlashcardId)\n    }\n"): (typeof documents)["\n    mutation DeleteFlashcard($deleteFlashcardId: ID!) {\n        deleteFlashcard(id: $deleteFlashcardId)\n    }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    mutation GenerateFlashcardFaces($input: generateFlashcardFacesInput!) {\n        generateFlashcardFaces(input: $input) {\n            content\n            faceType\n        }\n    }\n"): (typeof documents)["\n    mutation GenerateFlashcardFaces($input: generateFlashcardFacesInput!) {\n        generateFlashcardFaces(input: $input) {\n            content\n            faceType\n        }\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

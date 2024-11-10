@@ -75,6 +75,17 @@ input FlashcardFaceInput {
     imageUrl: String
 }
 
+input generateFlashcardFacesInput {
+    languageName: String!
+    faces: [FaceType!]!
+    word: String!
+}
+
+type generateFlashcardFacesPayload {
+    faceType: String!
+    content: String!
+}
+
 extend type Query {
     flashcardSets: [FlashcardSet!]!
     flashcardSetsByLanguage(languageName: String!): [FlashcardSet!]!
@@ -101,4 +112,8 @@ extend type Mutation {
     updateFlashcard(id: ID!, faces: [FlashcardFaceInput!]!): Flashcard!
     # updateStudiedFlashcard(id: ID!, nextReviewAt: DateTime, easeFactor: Float, interval: Int, repetitions: Int): Flashcard!
     deleteFlashcard(id: ID!): Boolean!
+
+    generateFlashcardFaces(
+        input: generateFlashcardFacesInput!
+    ): [generateFlashcardFacesPayload!]!
 }

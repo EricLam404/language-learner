@@ -248,6 +248,7 @@ export type Mutation = {
   deleteUser: Scalars['Boolean']['output'];
   deleteVocabulary: Scalars['Boolean']['output'];
   deleteWorksheet: Scalars['Boolean']['output'];
+  generateFlashcardFaces: Array<generateFlashcardFacesPayload>;
   updateFlashcard: Flashcard;
   updateFlashcardSet: FlashcardSet;
   updateLanguage: Language;
@@ -344,6 +345,11 @@ export type MutationdeleteVocabularyArgs = {
 
 export type MutationdeleteWorksheetArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationgenerateFlashcardFacesArgs = {
+  input: generateFlashcardFacesInput;
 };
 
 
@@ -635,6 +641,18 @@ export type Worksheet = {
   userId: Scalars['ID']['output'];
 };
 
+export type generateFlashcardFacesInput = {
+  faces: Array<FaceType>;
+  languageName: Scalars['String']['input'];
+  word: Scalars['String']['input'];
+};
+
+export type generateFlashcardFacesPayload = {
+  __typename?: 'generateFlashcardFacesPayload';
+  content: Scalars['String']['output'];
+  faceType: Scalars['String']['output'];
+};
+
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
 
@@ -744,6 +762,8 @@ export type ResolversTypes = ResolversObject<{
   User: ResolverTypeWrapper<Omit<User, 'chatSession' | 'flashcardSet' | 'languages' | 'readingProgress' | 'stories' | 'submission' | 'vocabularies' | 'worksheets'> & { chatSession?: Maybe<Array<ResolversTypes['ChatSession']>>, flashcardSet?: Maybe<Array<ResolversTypes['FlashcardSet']>>, languages?: Maybe<Array<ResolversTypes['Language']>>, readingProgress?: Maybe<Array<ResolversTypes['ReadingProgress']>>, stories?: Maybe<Array<ResolversTypes['Story']>>, submission?: Maybe<Array<ResolversTypes['Submission']>>, vocabularies?: Maybe<Array<ResolversTypes['Vocabulary']>>, worksheets?: Maybe<Array<ResolversTypes['Worksheet']>> }>;
   Vocabulary: ResolverTypeWrapper<Omit<Vocabulary, 'flashcardSet' | 'language' | 'stories' | 'story' | 'user'> & { flashcardSet?: Maybe<ResolversTypes['FlashcardSet']>, language?: Maybe<ResolversTypes['Language']>, stories?: Maybe<Array<ResolversTypes['Story']>>, story?: Maybe<ResolversTypes['Story']>, user?: Maybe<ResolversTypes['User']> }>;
   Worksheet: ResolverTypeWrapper<Omit<Worksheet, 'exercises' | 'language' | 'user'> & { exercises?: Maybe<Array<Maybe<ResolversTypes['Exercise']>>>, language?: Maybe<ResolversTypes['Language']>, user?: Maybe<ResolversTypes['User']> }>;
+  generateFlashcardFacesInput: generateFlashcardFacesInput;
+  generateFlashcardFacesPayload: ResolverTypeWrapper<generateFlashcardFacesPayload>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -783,6 +803,8 @@ export type ResolversParentTypes = ResolversObject<{
   User: Omit<User, 'chatSession' | 'flashcardSet' | 'languages' | 'readingProgress' | 'stories' | 'submission' | 'vocabularies' | 'worksheets'> & { chatSession?: Maybe<Array<ResolversParentTypes['ChatSession']>>, flashcardSet?: Maybe<Array<ResolversParentTypes['FlashcardSet']>>, languages?: Maybe<Array<ResolversParentTypes['Language']>>, readingProgress?: Maybe<Array<ResolversParentTypes['ReadingProgress']>>, stories?: Maybe<Array<ResolversParentTypes['Story']>>, submission?: Maybe<Array<ResolversParentTypes['Submission']>>, vocabularies?: Maybe<Array<ResolversParentTypes['Vocabulary']>>, worksheets?: Maybe<Array<ResolversParentTypes['Worksheet']>> };
   Vocabulary: Omit<Vocabulary, 'flashcardSet' | 'language' | 'stories' | 'story' | 'user'> & { flashcardSet?: Maybe<ResolversParentTypes['FlashcardSet']>, language?: Maybe<ResolversParentTypes['Language']>, stories?: Maybe<Array<ResolversParentTypes['Story']>>, story?: Maybe<ResolversParentTypes['Story']>, user?: Maybe<ResolversParentTypes['User']> };
   Worksheet: Omit<Worksheet, 'exercises' | 'language' | 'user'> & { exercises?: Maybe<Array<Maybe<ResolversParentTypes['Exercise']>>>, language?: Maybe<ResolversParentTypes['Language']>, user?: Maybe<ResolversParentTypes['User']> };
+  generateFlashcardFacesInput: generateFlashcardFacesInput;
+  generateFlashcardFacesPayload: generateFlashcardFacesPayload;
 }>;
 
 export type ChapterResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Chapter'] = ResolversParentTypes['Chapter']> = ResolversObject<{
@@ -966,6 +988,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
   deleteUser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteUserArgs, 'id'>>;
   deleteVocabulary?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteVocabularyArgs, 'id'>>;
   deleteWorksheet?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteWorksheetArgs, 'id'>>;
+  generateFlashcardFaces?: Resolver<Array<ResolversTypes['generateFlashcardFacesPayload']>, ParentType, ContextType, RequireFields<MutationgenerateFlashcardFacesArgs, 'input'>>;
   updateFlashcard?: Resolver<ResolversTypes['Flashcard'], ParentType, ContextType, RequireFields<MutationupdateFlashcardArgs, 'faces' | 'id'>>;
   updateFlashcardSet?: Resolver<ResolversTypes['FlashcardSet'], ParentType, ContextType, RequireFields<MutationupdateFlashcardSetArgs, 'id'>>;
   updateLanguage?: Resolver<ResolversTypes['Language'], ParentType, ContextType, RequireFields<MutationupdateLanguageArgs, 'id'>>;
@@ -1123,6 +1146,12 @@ export type WorksheetResolvers<ContextType = MyContext, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type generateFlashcardFacesPayloadResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['generateFlashcardFacesPayload'] = ResolversParentTypes['generateFlashcardFacesPayload']> = ResolversObject<{
+  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  faceType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type Resolvers<ContextType = MyContext> = ResolversObject<{
   Chapter?: ChapterResolvers<ContextType>;
   ChapterProgress?: ChapterProgressResolvers<ContextType>;
@@ -1150,5 +1179,6 @@ export type Resolvers<ContextType = MyContext> = ResolversObject<{
   User?: UserResolvers<ContextType>;
   Vocabulary?: VocabularyResolvers<ContextType>;
   Worksheet?: WorksheetResolvers<ContextType>;
+  generateFlashcardFacesPayload?: generateFlashcardFacesPayloadResolvers<ContextType>;
 }>;
 

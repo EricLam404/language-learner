@@ -107,3 +107,12 @@ export const DELETE_FLASHCARD = gql(`
         deleteFlashcard(id: $deleteFlashcardId)
     }
 `);
+
+export const GENERATE_FLASHCARD_FACE = gql(`
+    mutation GenerateFlashcardFaces($input: generateFlashcardFacesInput!) {
+        generateFlashcardFaces(input: $input) {
+            content
+            faceType
+        }
+    }
+`);

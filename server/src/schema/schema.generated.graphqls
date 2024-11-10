@@ -218,6 +218,7 @@ type Mutation {
   deleteUser(id: ID!): Boolean!
   deleteVocabulary(id: ID!): Boolean!
   deleteWorksheet(id: Int!): Boolean!
+  generateFlashcardFaces(input: generateFlashcardFacesInput!): [generateFlashcardFacesPayload!]!
   updateFlashcard(faces: [FlashcardFaceInput!]!, id: ID!): Flashcard!
   updateFlashcardSet(description: String, id: ID!, languageName: String, name: String): FlashcardSet!
   updateLanguage(code: String, id: ID!, name: String): Language!
@@ -388,4 +389,15 @@ type Worksheet {
   updatedAt: DateTime!
   user: User
   userId: ID!
+}
+
+input generateFlashcardFacesInput {
+  faces: [FaceType!]!
+  languageName: String!
+  word: String!
+}
+
+type generateFlashcardFacesPayload {
+  content: String!
+  faceType: String!
 }
