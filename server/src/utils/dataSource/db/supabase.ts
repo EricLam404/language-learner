@@ -1,6 +1,6 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "../../database.types";
-import { supabaseUrl, supabaseServiceRoleKey } from "../config/config";
+import { Database } from "../../../database.types";
+import { supabaseUrl, supabaseServiceRoleKey } from "../../config/config";
 
 declare global {
     var supabaseServiceClient: SupabaseClient | undefined;
