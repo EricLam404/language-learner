@@ -14,7 +14,12 @@ export const createFlashcardSchema = (config: LanguageConfig) => {
     const optionalFaces = config.optional.reduce((acc, face) => {
         acc[face.toLowerCase()] = z
             .string()
-            .max(200, `${replaceUnderscoreAndCapitalize(face)} must be less than 200 characters`)
+            .max(
+                200,
+                `${replaceUnderscoreAndCapitalize(
+                    face
+                )} must be less than 200 characters`
+            )
             .default("b")
             .optional();
         return acc;
@@ -27,6 +32,14 @@ export const createFlashcardSchema = (config: LanguageConfig) => {
 
 export type FlashcardFormValues = z.infer<
     ReturnType<typeof createFlashcardSchema>
+>;
+
+export const generateFlashcardFacesSchema = z.object({
+    wordToGenerate: z.string().min(1, { message: "Word is required" }),
+});
+
+export type GenerateFlashcardFacesFormValues = z.infer<
+    typeof generateFlashcardFacesSchema
 >;
 
 /**

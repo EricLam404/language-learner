@@ -24,6 +24,8 @@ import RequiredText from "@/components/RequiredText";
 import { Flashcard } from "@/lib/types";
 import {
     createFlashcardSchema,
+    GenerateFlashcardFacesFormValues,
+    generateFlashcardFacesSchema,
     type FlashcardFormValues,
 } from "@/lib/schemas/flashcard";
 import { FaceType } from "@/__generated__/graphql";
@@ -42,6 +44,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@components/ui/select";
+import { Loader2, Wand2 } from "lucide-react";
+import { z } from "zod";
+import { useMutation } from "@apollo/client";
+import { GENERATE_FLASHCARD_FACE } from "../graphql/flashcards";
 
 interface FlashcardFormProps {
     open: boolean;
@@ -59,19 +65,22 @@ export function FlashcardForm({
     languageName,
 }: FlashcardFormProps) {
     const [optionalFaces, setOptionalFaces] = useState([] as FaceType[]);
-    const { languageFaceConfig, loading, error } =
-        useLanguageFaceConfig(languageName);
+    const {
+        languageFaceConfig,
+        loading: configLoading,
+        error: configError,
+    } = useLanguageFaceConfig(languageName);
     const config: LanguageConfig = useMemo(() => {
-        return languageFaceConfig?.languageFaceConfig?.config ?? {
-            required: [FaceType.Front, FaceType.Back],
-            optional: Object.values(FaceType).filter(
-                (face) => face !== FaceType.Front && face !== FaceType.Back
-            ),
-            typeMetadata: {},
-        };
+        return (
+            languageFaceConfig?.languageFaceConfig?.config ?? {
+                required: [FaceType.Front, FaceType.Back],
+                optional: Object.values(FaceType).filter(
+                    (face) => face !== FaceType.Front && face !== FaceType.Back
+                ),
+                typeMetadata: {},
+            }
+        );
     }, [languageFaceConfig]);
-
-    console.log(config);
 
     const flashcardSchema = createFlashcardSchema(config);
 
@@ -95,6 +104,40 @@ export function FlashcardForm({
         [config, editCard]
     );
 
+    const [
+        generateFlashcardFaces,
+        {
+            data: generateFaceData,
+            loading: generateFaceLoading,
+            error: generateFaceError,
+        },
+    ] = useMutation(GENERATE_FLASHCARD_FACE);
+
+    const form = useForm<FlashcardFormValues>({
+        resolver: zodResolver(flashcardSchema),
+        defaultValues,
+    });
+
+    const generateForm = useForm<z.infer<typeof generateFlashcardFacesSchema>>({
+        resolver: zodResolver(generateFlashcardFacesSchema),
+        defaultValues: {
+            wordToGenerate: "",
+        },
+    });
+
+    useEffect(() => {
+        form.reset(defaultValues);
+    }, [editCard, defaultValues]);
+
+    useEffect(() => {
+        if (generateFaceData) {
+            const faces = generateFaceData.generateFlashcardFaces;
+            faces.forEach((face) => {
+                form.setValue(face.faceType.toLowerCase(), face.content);
+            });
+        }
+    }, [generateFaceData]);
+
     useEffect(() => {
         if (editCard && editCard.faces) {
             const optionalFieldsInEditCard = editCard.faces
@@ -104,21 +147,26 @@ export function FlashcardForm({
         }
     }, [editCard]);
 
-    const form = useForm<FlashcardFormValues>({
-        resolver: zodResolver(flashcardSchema),
-        defaultValues,
-    });
-
-    useEffect(() => {
-        form.reset(defaultValues);
-    }, [editCard, defaultValues]);
-
     const handleSubmit = (values: FlashcardFormValues) => {
         console.log(values);
         onSubmit(values);
         onOpenChange(false);
         setOptionalFaces([]);
         form.reset();
+    };
+
+    const generateFaces = async ({
+        wordToGenerate,
+    }: GenerateFlashcardFacesFormValues) => {
+        generateFlashcardFaces({
+            variables: {
+                input: {
+                    languageName,
+                    word: wordToGenerate,
+                    faces: config.required.concat(optionalFaces),
+                },
+            },
+        });
     };
 
     return (
@@ -134,113 +182,172 @@ export function FlashcardForm({
                             : "Create a new flashcard for your set."}
                     </DialogDescription>
                 </DialogHeader>
-                {loading ? (
+                {configLoading ? (
                     <Skeleton count={5} />
                 ) : (
-                    <Form {...form}>
-                        <form
-                            onSubmit={form.handleSubmit(handleSubmit)}
-                            className="space-y-4"
-                        >
-                            <div className="overflow-y-scroll max-h-[50vh] px-4 pb-4 flex gap-2 flex-col">
-                                {config.required.map((faceType) => (
-                                    <FormField
-                                        key={faceType}
-                                        control={form.control}
-                                        name={faceType.toLowerCase()}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>
-                                                    <RequiredText>
-                                                        {replaceUnderscoreAndCapitalize(
-                                                            faceType
-                                                        )}
-                                                    </RequiredText>
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                ))}
-
-                                {optionalFaces.map((faceType) => (
-                                    <FormField
-                                        key={faceType}
-                                        control={form.control}
-                                        name={faceType.toLowerCase()}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>
-                                                    {replaceUnderscoreAndCapitalize(
-                                                        faceType
-                                                    )}
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                ))}
-                            </div>
-
-                            {config.optional.length - optionalFaces.length >
-                                0 && (
-                                <div className="flex items-center space-x-2 px-4">
-                                    <Select
-                                        onValueChange={(value) =>
-                                            setOptionalFaces([
-                                                ...optionalFaces,
-                                                value as FaceType,
-                                            ])
-                                        }
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Add more fields...">
-                                                Add more fields...
-                                            </SelectValue>
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectLabel>
-                                                    Optional fields
-                                                </SelectLabel>
-                                                {config.optional
-                                                    .filter(
-                                                        (faceType) =>
-                                                            !optionalFaces.includes(
-                                                                faceType
-                                                            )
-                                                    )
-                                                    .map((faceType) => (
-                                                        <SelectItem
-                                                            key={faceType}
-                                                            value={faceType}
+                    <>
+                        {!editCard && (
+                            <Form {...generateForm}>
+                                <form
+                                    onSubmit={generateForm.handleSubmit(
+                                        generateFaces
+                                    )}
+                                    className="space-y-4"
+                                >
+                                    <div className="px-4 flex items-center">
+                                        <FormField
+                                            control={generateForm.control}
+                                            name="wordToGenerate"
+                                            render={({ field }) => (
+                                                <FormItem className="flex-grow">
+                                                    <FormLabel>
+                                                        Generate Fields
+                                                    </FormLabel>
+                                                    <div className="flex">
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="Add word to generate fields"
+                                                            />
+                                                        </FormControl>
+                                                        <Button
+                                                            type="submit"
+                                                            variant="outline"
+                                                            className="ml-2"
+                                                            disabled={
+                                                                generateFaceLoading
+                                                            }
                                                         >
+                                                            {generateFaceLoading ? (
+                                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                                            ) : (
+                                                                <Wand2 className="h-4 w-4" />
+                                                            )}
+                                                        </Button>
+                                                    </div>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                </form>
+                            </Form>
+                        )}
+                        <Form {...form}>
+                            <form
+                                onSubmit={form.handleSubmit(handleSubmit)}
+                                className="space-y-4"
+                            >
+                                <div className="overflow-y-scroll max-h-[50vh] px-4 pb-4 flex gap-2 flex-col">
+                                    {config.required.map((faceType) => (
+                                        <FormField
+                                            key={faceType}
+                                            control={form.control}
+                                            name={faceType.toLowerCase()}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>
+                                                        <RequiredText>
                                                             {replaceUnderscoreAndCapitalize(
                                                                 faceType
                                                             )}
-                                                        </SelectItem>
-                                                    ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            )}
+                                                        </RequiredText>
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            disabled={
+                                                                generateFaceLoading
+                                                            }
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    ))}
 
-                            <DialogFooter>
-                                <Button type="submit">
-                                    {editCard
-                                        ? "Save Changes"
-                                        : "Add Flashcard"}
-                                </Button>
-                            </DialogFooter>
-                        </form>
-                    </Form>
+                                    {optionalFaces.map((faceType) => (
+                                        <FormField
+                                            key={faceType}
+                                            control={form.control}
+                                            name={faceType.toLowerCase()}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>
+                                                        {replaceUnderscoreAndCapitalize(
+                                                            faceType
+                                                        )}
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            disabled={
+                                                                generateFaceLoading
+                                                            }
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    ))}
+                                </div>
+
+                                {config.optional.length - optionalFaces.length >
+                                    0 && (
+                                    <div className="flex items-center space-x-2 px-4">
+                                        <Select
+                                            onValueChange={(value) =>
+                                                setOptionalFaces([
+                                                    ...optionalFaces,
+                                                    value as FaceType,
+                                                ])
+                                            }
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Add more fields...">
+                                                    Add more fields...
+                                                </SelectValue>
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>
+                                                        Optional fields
+                                                    </SelectLabel>
+                                                    {config.optional
+                                                        .filter(
+                                                            (faceType) =>
+                                                                !optionalFaces.includes(
+                                                                    faceType
+                                                                )
+                                                        )
+                                                        .map((faceType) => (
+                                                            <SelectItem
+                                                                key={faceType}
+                                                                value={faceType}
+                                                            >
+                                                                {replaceUnderscoreAndCapitalize(
+                                                                    faceType
+                                                                )}
+                                                            </SelectItem>
+                                                        ))}
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                )}
+
+                                <DialogFooter>
+                                    <Button type="submit">
+                                        {editCard
+                                            ? "Save Changes"
+                                            : "Add Flashcard"}
+                                    </Button>
+                                </DialogFooter>
+                            </form>
+                        </Form>
+                    </>
                 )}
             </DialogContent>
         </Dialog>
