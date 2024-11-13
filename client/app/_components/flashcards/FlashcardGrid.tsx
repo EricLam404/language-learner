@@ -17,7 +17,7 @@ import {
 import { Edit, Volume2 } from "lucide-react";
 import { type Flashcard } from "@/lib/types";
 import { FaceType } from "@/__generated__/graphql";
-import { capitalizeFirstLetter } from "@/lib/stringUtils";
+import { capitalizeFirstLetter, replaceUnderscoreAndCapitalize } from "@/lib/stringUtils";
 
 interface FlashcardGridProps {
     cards: Flashcard[];
@@ -98,7 +98,7 @@ export function FlashcardGrid({
                                         className="mb-2"
                                     >
                                         <strong>
-                                            {capitalizeFirstLetter(face.type)}:
+                                            {replaceUnderscoreAndCapitalize(face.type)}:
                                         </strong>{" "}
                                         {face.content}
                                     </div>
