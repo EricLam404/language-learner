@@ -34,6 +34,7 @@ type FlashcardFace {
     order: Int!
     audioUrl: String
     imageUrl: String
+    isFront: Boolean!
     createdAt: DateTime!
     updatedAt: DateTime!
 
@@ -41,18 +42,17 @@ type FlashcardFace {
 }
 
 enum FaceType {
-    FRONT
-    BACK
+    WORD
+    TRANSLATION
+    EXAMPLE_SENTENCE
+    EXAMPLE_SENTENCE_TRANSLATION
     PINYIN
     CHARACTER
     ROMAJI
     HIRAGANA
     KATAKANA
     TRANSLITERATION
-    TRANSLATION
     DEFINITION
-    EXAMPLE_SENTENCE
-    EXAMPLE_TRANSLATION
     CONTEXT_NOTES
     MNEMONIC
     PART_OF_SPEECH
@@ -73,6 +73,7 @@ input FlashcardFaceInput {
     order: Int!
     audioUrl: String
     imageUrl: String
+    isFront: Boolean!
 }
 
 input generateFlashcardFacesInput {

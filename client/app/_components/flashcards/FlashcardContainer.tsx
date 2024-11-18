@@ -6,7 +6,6 @@ import { FlashcardGrid } from "./FlashcardGrid";
 import { StudyMode } from "./StudyMode";
 import { useFlashcards } from "@/lib/hooks/useFlashcards";
 import { type FlashcardSet, type Flashcard } from "@/lib/types";
-import { useLanguageFaceConfig } from "@/lib/hooks/useLanguageFaceConfig";
 import { FlashcardForm } from "@app/_components/flashcards/FlashcardForm";
 import { FlashcardFormValues } from "@/lib/schemas/flashcard";
 import FlashcardDeleteForm from "./FlashcardDeleteForm";

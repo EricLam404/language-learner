@@ -29,9 +29,7 @@ export default function FlashcardDeleteForm({
         onOpenChange(false);
     };
 
-    const frontContent = card?.faces?.find(
-        (face) => face.type === FaceType.Front
-    )?.content;
+    const frontContent = card?.faces?.find((face) => face.isFront)?.content;
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -39,8 +37,8 @@ export default function FlashcardDeleteForm({
                 <DialogHeader>
                     <DialogTitle>Delete Flashcard</DialogTitle>
                     <DialogDescription>
-                        This action cannot be undone. This will permanently delete
-                        the flashcard "{frontContent}" from your list.
+                        This action cannot be undone. This will permanently
+                        delete the flashcard "{frontContent}" from your list.
                     </DialogDescription>
                 </DialogHeader>
 

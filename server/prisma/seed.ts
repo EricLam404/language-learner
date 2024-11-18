@@ -184,7 +184,7 @@ async function seedLanguages() {
                 data: {
                     name: language.name,
                     code: language.code,
-                    config: {
+                    faceConfig: {
                         create: {}
                     },
                 },

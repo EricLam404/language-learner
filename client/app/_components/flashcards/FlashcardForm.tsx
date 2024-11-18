@@ -73,9 +73,10 @@ export function FlashcardForm({
     const config: LanguageConfig = useMemo(() => {
         return (
             languageFaceConfig?.languageFaceConfig?.config ?? {
-                required: [FaceType.Front, FaceType.Back],
+                required: [FaceType.Word, FaceType.Translation],
                 optional: Object.values(FaceType).filter(
-                    (face) => face !== FaceType.Front && face !== FaceType.Back
+                    (face) =>
+                        face !== FaceType.Word && face !== FaceType.Translation
                 ),
                 typeMetadata: {},
             }
@@ -98,6 +99,7 @@ export function FlashcardForm({
     }, {} as { [key: string]: string });
     const defaultValues = useMemo(
         () => ({
+            frontFace: editCard?.faces!.find((face) => face.isFront)?.type.toLowerCase() || "",
             ...defaultRequiredFaces,
             ...defaultOptionalFaces,
         }),
@@ -133,7 +135,7 @@ export function FlashcardForm({
         if (generateFaceData) {
             const faces = generateFaceData.generateFlashcardFaces;
             faces.forEach((face) => {
-                form.setValue(face.faceType.toLowerCase(), face.content);
+                form.setValue(face.faceType.toLowerCase() as keyof FlashcardFormValues, face.content);
             });
         }
     }, [generateFaceData]);
@@ -148,11 +150,11 @@ export function FlashcardForm({
     }, [editCard]);
 
     const handleSubmit = (values: FlashcardFormValues) => {
-        console.log(values);
         onSubmit(values);
         onOpenChange(false);
         setOptionalFaces([]);
         form.reset();
+        generateForm.reset();
     };
 
     const generateFaces = async ({
@@ -239,11 +241,49 @@ export function FlashcardForm({
                                 className="space-y-4"
                             >
                                 <div className="overflow-y-scroll max-h-[50vh] px-4 pb-4 flex gap-2 flex-col">
+                                    <FormField
+                                        control={form.control}
+                                        name="frontFace"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+                                                    Front Face
+                                                </FormLabel>
+                                                <Select
+                                                    onValueChange={
+                                                        field.onChange
+                                                    }
+                                                    defaultValue={field.value}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a front face" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {config.required.map(
+                                                            (face) => (
+                                                                <SelectItem
+                                                                    key={face.toLowerCase()}
+                                                                    value={face.toLowerCase()}
+                                                                >
+                                                                    {replaceUnderscoreAndCapitalize(
+                                                                        face
+                                                                    )}
+                                                                </SelectItem>
+                                                            )
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                     {config.required.map((faceType) => (
                                         <FormField
                                             key={faceType}
                                             control={form.control}
-                                            name={faceType.toLowerCase()}
+                                            name={faceType.toLowerCase() as keyof FlashcardFormValues}
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>
@@ -271,7 +311,7 @@ export function FlashcardForm({
                                         <FormField
                                             key={faceType}
                                             control={form.control}
-                                            name={faceType.toLowerCase()}
+                                            name={faceType.toLowerCase() as keyof FlashcardFormValues}
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>

@@ -28,6 +28,7 @@ export const GET_FLASHCARD_SET = gql(`
                     order
                     type
                     content
+                    isFront
                 }
             }
         }

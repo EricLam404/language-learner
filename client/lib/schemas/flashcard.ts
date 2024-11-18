@@ -25,6 +25,7 @@ export const createFlashcardSchema = (config: LanguageConfig) => {
         return acc;
     }, {} as { [key: string]: z.ZodOptional<z.ZodDefault<z.ZodString>> });
     return z.object({
+        frontFace: z.string().min(1, "Front face is required"),
         ...requiredFaces,
         ...optionalFaces,
     });

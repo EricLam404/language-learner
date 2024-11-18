@@ -133,14 +133,12 @@ export type ExerciseType =
 export type FaceType =
   | 'AUDIO_NATIVE'
   | 'AUDIO_SLOW'
-  | 'BACK'
   | 'CHARACTER'
   | 'CONJUGATION'
   | 'CONTEXT_NOTES'
   | 'DEFINITION'
   | 'EXAMPLE_SENTENCE'
-  | 'EXAMPLE_TRANSLATION'
-  | 'FRONT'
+  | 'EXAMPLE_SENTENCE_TRANSLATION'
   | 'GENDER'
   | 'HIRAGANA'
   | 'IMAGE'
@@ -154,7 +152,8 @@ export type FaceType =
   | 'ROMAJI'
   | 'TRANSLATION'
   | 'TRANSLITERATION'
-  | 'VIDEO';
+  | 'VIDEO'
+  | 'WORD';
 
 export type Flashcard = {
   __typename?: 'Flashcard';
@@ -179,6 +178,7 @@ export type FlashcardFace = {
   flashcardId: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
   imageUrl?: Maybe<Scalars['String']['output']>;
+  isFront: Scalars['Boolean']['output'];
   order: Scalars['Int']['output'];
   type: FaceType;
   updatedAt: Scalars['DateTime']['output'];
@@ -188,6 +188,7 @@ export type FlashcardFaceInput = {
   audioUrl?: InputMaybe<Scalars['String']['input']>;
   content: Scalars['String']['input'];
   imageUrl?: InputMaybe<Scalars['String']['input']>;
+  isFront: Scalars['Boolean']['input'];
   order: Scalars['Int']['input'];
   type: FaceType;
 };
@@ -741,7 +742,7 @@ export type ResolversTypes = ResolversObject<{
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   Exercise: ResolverTypeWrapper<Omit<Exercise, 'submissions' | 'type' | 'worksheet'> & { submissions?: Maybe<Array<ResolversTypes['Submission']>>, type: ResolversTypes['ExerciseType'], worksheet: ResolversTypes['Worksheet'] }>;
   ExerciseType: ResolverTypeWrapper<'MULTIPLE_CHOICE' | 'FILL_IN_BLANK' | 'MATCHING' | 'SENTENCE_CONSTRUCTION' | 'TRANSLATION'>;
-  FaceType: ResolverTypeWrapper<'FRONT' | 'BACK' | 'PINYIN' | 'CHARACTER' | 'ROMAJI' | 'HIRAGANA' | 'KATAKANA' | 'TRANSLITERATION' | 'TRANSLATION' | 'DEFINITION' | 'EXAMPLE_SENTENCE' | 'EXAMPLE_TRANSLATION' | 'CONTEXT_NOTES' | 'MNEMONIC' | 'PART_OF_SPEECH' | 'CONJUGATION' | 'GENDER' | 'PLURAL_FORM' | 'AUDIO_NATIVE' | 'AUDIO_SLOW' | 'IMAGE' | 'VIDEO' | 'NOTES' | 'OTHER'>;
+  FaceType: ResolverTypeWrapper<'WORD' | 'TRANSLATION' | 'EXAMPLE_SENTENCE' | 'EXAMPLE_SENTENCE_TRANSLATION' | 'PINYIN' | 'CHARACTER' | 'ROMAJI' | 'HIRAGANA' | 'KATAKANA' | 'TRANSLITERATION' | 'DEFINITION' | 'CONTEXT_NOTES' | 'MNEMONIC' | 'PART_OF_SPEECH' | 'CONJUGATION' | 'GENDER' | 'PLURAL_FORM' | 'AUDIO_NATIVE' | 'AUDIO_SLOW' | 'IMAGE' | 'VIDEO' | 'NOTES' | 'OTHER'>;
   Flashcard: ResolverTypeWrapper<Omit<Flashcard, 'faces' | 'set'> & { faces?: Maybe<Array<ResolversTypes['FlashcardFace']>>, set?: Maybe<ResolversTypes['FlashcardSet']> }>;
   FlashcardFace: ResolverTypeWrapper<Omit<FlashcardFace, 'flashcard' | 'type'> & { flashcard?: Maybe<ResolversTypes['Flashcard']>, type: ResolversTypes['FaceType'] }>;
   FlashcardFaceInput: FlashcardFaceInput;
@@ -899,7 +900,7 @@ export type ExerciseResolvers<ContextType = MyContext, ParentType extends Resolv
 
 export type ExerciseTypeResolvers = EnumResolverSignature<{ FILL_IN_BLANK?: any, MATCHING?: any, MULTIPLE_CHOICE?: any, SENTENCE_CONSTRUCTION?: any, TRANSLATION?: any }, ResolversTypes['ExerciseType']>;
 
-export type FaceTypeResolvers = EnumResolverSignature<{ AUDIO_NATIVE?: any, AUDIO_SLOW?: any, BACK?: any, CHARACTER?: any, CONJUGATION?: any, CONTEXT_NOTES?: any, DEFINITION?: any, EXAMPLE_SENTENCE?: any, EXAMPLE_TRANSLATION?: any, FRONT?: any, GENDER?: any, HIRAGANA?: any, IMAGE?: any, KATAKANA?: any, MNEMONIC?: any, NOTES?: any, OTHER?: any, PART_OF_SPEECH?: any, PINYIN?: any, PLURAL_FORM?: any, ROMAJI?: any, TRANSLATION?: any, TRANSLITERATION?: any, VIDEO?: any }, ResolversTypes['FaceType']>;
+export type FaceTypeResolvers = EnumResolverSignature<{ AUDIO_NATIVE?: any, AUDIO_SLOW?: any, CHARACTER?: any, CONJUGATION?: any, CONTEXT_NOTES?: any, DEFINITION?: any, EXAMPLE_SENTENCE?: any, EXAMPLE_SENTENCE_TRANSLATION?: any, GENDER?: any, HIRAGANA?: any, IMAGE?: any, KATAKANA?: any, MNEMONIC?: any, NOTES?: any, OTHER?: any, PART_OF_SPEECH?: any, PINYIN?: any, PLURAL_FORM?: any, ROMAJI?: any, TRANSLATION?: any, TRANSLITERATION?: any, VIDEO?: any, WORD?: any }, ResolversTypes['FaceType']>;
 
 export type FlashcardResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Flashcard'] = ResolversParentTypes['Flashcard']> = ResolversObject<{
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -923,6 +924,7 @@ export type FlashcardFaceResolvers<ContextType = MyContext, ParentType extends R
   flashcardId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  isFront?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['FaceType'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;

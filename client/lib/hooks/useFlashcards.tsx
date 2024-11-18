@@ -58,12 +58,15 @@ export const useFlashcards = (set: FlashcardSet) => {
             // Filter out empty fields and map to the correct format
             const faces = Object.keys(newCard)
                 .filter(
-                    (key) => newCard[key as keyof FlashcardFormValues] !== ""
+                    (key) =>
+                        key != "frontFace" &&
+                        newCard[key as keyof FlashcardFormValues] !== ""
                 )
                 .map((key, index) => ({
                     type: key.toUpperCase() as FaceType,
                     content: newCard[key as keyof FlashcardFormValues] || "",
                     order: index,
+                    isFront: key === newCard.frontFace,
                 }));
 
             let response = await createFlashcard({
@@ -93,12 +96,16 @@ export const useFlashcards = (set: FlashcardSet) => {
             // Filter out empty fields and map to the correct format
             const faces = Object.keys(updatedCard)
                 .filter(
-                    (key) => updatedCard[key as keyof FlashcardFormValues] !== ""
+                    (key) =>
+                        key != "frontFace" &&
+                    updatedCard[key as keyof FlashcardFormValues] !== ""
                 )
                 .map((key, index) => ({
                     type: key.toUpperCase() as FaceType,
-                    content: updatedCard[key as keyof FlashcardFormValues] || "",
+                    content:
+                        updatedCard[key as keyof FlashcardFormValues] || "",
                     order: index,
+                    isFront: key === updatedCard.frontFace,
                 }));
 
             let response = await updateFlashcard({

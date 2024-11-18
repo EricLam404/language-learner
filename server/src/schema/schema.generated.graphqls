@@ -106,14 +106,12 @@ enum ExerciseType {
 enum FaceType {
   AUDIO_NATIVE
   AUDIO_SLOW
-  BACK
   CHARACTER
   CONJUGATION
   CONTEXT_NOTES
   DEFINITION
   EXAMPLE_SENTENCE
-  EXAMPLE_TRANSLATION
-  FRONT
+  EXAMPLE_SENTENCE_TRANSLATION
   GENDER
   HIRAGANA
   IMAGE
@@ -128,6 +126,7 @@ enum FaceType {
   TRANSLATION
   TRANSLITERATION
   VIDEO
+  WORD
 }
 
 type Flashcard {
@@ -151,6 +150,7 @@ type FlashcardFace {
   flashcardId: Int!
   id: ID!
   imageUrl: String
+  isFront: Boolean!
   order: Int!
   type: FaceType!
   updatedAt: DateTime!
@@ -160,6 +160,7 @@ input FlashcardFaceInput {
   audioUrl: String
   content: String!
   imageUrl: String
+  isFront: Boolean!
   order: Int!
   type: FaceType!
 }

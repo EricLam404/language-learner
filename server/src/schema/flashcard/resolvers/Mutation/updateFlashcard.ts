@@ -3,6 +3,15 @@ import type { MutationResolvers } from "./../../../types.generated";
 export const updateFlashcard: NonNullable<MutationResolvers['updateFlashcard']> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.updateFlashcard resolver logic here */
     try {
+        const frontFaces = _arg.faces.filter((face) => face.isFront);
+        if (frontFaces.length !== 1) {
+            throw new GraphQLError("There must be exactly one front face", {
+                extensions: {
+                    code: "INVALID_FRONT_FACE_COUNT",
+                },
+            });
+        }
+
         const flashcard = await _ctx.dataSources.prisma.flashcard.findUnique({
             where: { id: Number(_arg.id) },
         });
@@ -26,11 +35,13 @@ export const updateFlashcard: NonNullable<MutationResolvers['updateFlashcard']> 
                         },
                         update: {
                             content: face.content,
+                            isFront: face.isFront,
                         },
                         create: {
                             content: face.content,
                             type: face.type,
                             order: face.order,
+                            isFront: face.isFront,
                         },
                     })),
                 },

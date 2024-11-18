@@ -17,7 +17,7 @@ import {
 import { Edit, Volume2 } from "lucide-react";
 import { type Flashcard } from "@/lib/types";
 import { FaceType } from "@/__generated__/graphql";
-import { capitalizeFirstLetter, replaceUnderscoreAndCapitalize } from "@/lib/stringUtils";
+import { replaceUnderscoreAndCapitalize } from "@/lib/stringUtils";
 
 interface FlashcardGridProps {
     cards: Flashcard[];
@@ -47,10 +47,8 @@ export function FlashcardGrid({
                             <CardTitle className="flex justify-between items-center">
                                 <span>
                                     {
-                                        card.faces!.find(
-                                            (face) =>
-                                                face.type === FaceType.Front
-                                        )?.content
+                                        card.faces!.find((face) => face.isFront)
+                                            ?.content
                                     }
                                 </span>
                                 <DropdownMenu>
@@ -89,16 +87,17 @@ export function FlashcardGrid({
                         </CardHeader>
                         <CardContent>
                             {card
-                                .faces!.filter(
-                                    (face) => face.type !== FaceType.Front
-                                )
+                                .faces!.filter((face) => !face.isFront)
                                 .map((face) => (
                                     <div
                                         key={`${card.id}-${face.type}`}
                                         className="mb-2"
                                     >
                                         <strong>
-                                            {replaceUnderscoreAndCapitalize(face.type)}:
+                                            {replaceUnderscoreAndCapitalize(
+                                                face.type
+                                            )}
+                                            :
                                         </strong>{" "}
                                         {face.content}
                                     </div>
