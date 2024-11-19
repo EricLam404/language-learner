@@ -3,11 +3,21 @@ import type { QueryResolvers } from "./../../../types.generated";
 export const flashcardSets: NonNullable<QueryResolvers['flashcardSets']> = async (_parent, _arg, _ctx) => {
     /* Implement Query.flashcardSets resolver logic here */
     try {
-        return await _ctx.dataSources.prisma.flashcardSet.findMany({
+        const flashcardSets = await _ctx.dataSources.prisma.flashcardSet.findMany({
             where: {
-                userId: _ctx.user.id,
+                userId: String(_ctx.user.id),
+            },
+            include: {
+                _count: {
+                    select: { cards: true },
+                },
             },
         });
+
+        return flashcardSets.map(set => ({
+            ...set,
+            totalCards: set._count.cards,
+        }));
     } catch (error) {
         console.log(error);
 

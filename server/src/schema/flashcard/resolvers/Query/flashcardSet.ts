@@ -7,16 +7,35 @@ export const flashcardSet: NonNullable<QueryResolvers['flashcardSet']> = async (
 ) => {
     /* Implement Query.flashcardSet resolver logic here */
     try {
-        return await _ctx.dataSources.prisma.flashcardSet.findUnique({
-            where: { id: Number(_arg.id) },
+        const flashcardSet = await _ctx.dataSources.prisma.flashcardSet.findUnique({
+            where: {
+                id: Number(_arg.id),
+            },
             include: {
                 cards: {
                     include: {
                         faces: true,
                     },
                 },
+                _count: {
+                    select: { cards: true },
+                },
             },
         });
+
+        if (!flashcardSet) {
+            throw new GraphQLError(
+                `Flashcard Set with ID "${_arg.id}" not found`,
+                {
+                    extensions: { code: "BAD_USER_INPUT" },
+                }
+            );
+        }
+
+        return {
+            ...flashcardSet,
+            totalCards: flashcardSet._count.cards,
+        }
     } catch (error) {
         console.log(error);
 
