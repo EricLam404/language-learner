@@ -13,7 +13,7 @@ import { useQuery } from "@apollo/client";
 import { LoadingState } from "@app/_components/LoadingState";
 
 export default function Page({ params }: { params: { id: string } }) {
-    const { data, loading, error } = useQuery(GET_FLASHCARD_SET, {
+    const { data, loading, error, refetch } = useQuery(GET_FLASHCARD_SET, {
         variables: { flashcardSetId: params.id },
     });
 
@@ -47,7 +47,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     {loading ? (
                         <div>Loading flashcards...</div>
                     ) : (
-                        <FlashcardContainer flashcardSet={data.flashcardSet} />
+                        <FlashcardContainer refetch={refetch} flashcardSet={data.flashcardSet} />
                     )}
                 </CardContent>
             </Card>

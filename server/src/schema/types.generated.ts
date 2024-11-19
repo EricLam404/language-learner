@@ -161,9 +161,9 @@ export type Flashcard = {
   easeFactor?: Maybe<Scalars['Float']['output']>;
   faces?: Maybe<Array<FlashcardFace>>;
   id: Scalars['ID']['output'];
-  interval?: Maybe<Scalars['Int']['output']>;
+  interval?: Maybe<Scalars['Float']['output']>;
+  n?: Maybe<Scalars['Int']['output']>;
   nextReviewAt?: Maybe<Scalars['DateTime']['output']>;
-  repetitions?: Maybe<Scalars['Int']['output']>;
   set?: Maybe<FlashcardSet>;
   setId: Scalars['ID']['output'];
   updatedAt: Scalars['DateTime']['output'];
@@ -254,6 +254,7 @@ export type Mutation = {
   updateFlashcardSet: FlashcardSet;
   updateLanguage: Language;
   updateStory: Story;
+  updateStudiedFlashcard: Flashcard;
   updateTag: Tag;
   updateUser: User;
   updateVocabulary: Vocabulary;
@@ -378,6 +379,12 @@ export type MutationupdateLanguageArgs = {
 export type MutationupdateStoryArgs = {
   id: Scalars['ID']['input'];
   input: UpdateStoryInput;
+};
+
+
+export type MutationupdateStudiedFlashcardArgs = {
+  id: Scalars['ID']['input'];
+  score: Scalars['Int']['input'];
 };
 
 
@@ -907,9 +914,9 @@ export type FlashcardResolvers<ContextType = MyContext, ParentType extends Resol
   easeFactor?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   faces?: Resolver<Maybe<Array<ResolversTypes['FlashcardFace']>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  interval?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  interval?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  n?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   nextReviewAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  repetitions?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   set?: Resolver<Maybe<ResolversTypes['FlashcardSet']>, ParentType, ContextType>;
   setId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -995,6 +1002,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
   updateFlashcardSet?: Resolver<ResolversTypes['FlashcardSet'], ParentType, ContextType, RequireFields<MutationupdateFlashcardSetArgs, 'id'>>;
   updateLanguage?: Resolver<ResolversTypes['Language'], ParentType, ContextType, RequireFields<MutationupdateLanguageArgs, 'id'>>;
   updateStory?: Resolver<ResolversTypes['Story'], ParentType, ContextType, RequireFields<MutationupdateStoryArgs, 'id' | 'input'>>;
+  updateStudiedFlashcard?: Resolver<ResolversTypes['Flashcard'], ParentType, ContextType, RequireFields<MutationupdateStudiedFlashcardArgs, 'id' | 'score'>>;
   updateTag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType, RequireFields<MutationupdateTagArgs, 'id' | 'name'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationupdateUserArgs, 'id' | 'username'>>;
   updateVocabulary?: Resolver<ResolversTypes['Vocabulary'], ParentType, ContextType, RequireFields<MutationupdateVocabularyArgs, 'id'>>;

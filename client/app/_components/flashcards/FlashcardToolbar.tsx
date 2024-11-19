@@ -1,11 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Grid, List, Plus, BookOpen } from "lucide-react";
+import { Grid, List, Plus, BookOpen, WalletCardsIcon } from "lucide-react";
+import FlashcardIcon from "../icons";
 
 interface FlashcardToolbarProps {
     isGridView: boolean;
     setIsGridView: (value: boolean) => void;
     onAddCard: () => void;
+    onFlashcardMode: () => void;
     onStudyMode: () => void;
 }
 
@@ -13,6 +15,7 @@ export function FlashcardToolbar({
     isGridView,
     setIsGridView,
     onAddCard,
+    onFlashcardMode,
     onStudyMode,
 }: FlashcardToolbarProps) {
     return (
@@ -38,9 +41,14 @@ export function FlashcardToolbar({
                     <Plus className="w-4 h-4 mr-2" />
                     Add Flashcard
                 </Button>
+                <Button onClick={onFlashcardMode} >
+                    {/* <FlashcardIcon className="w-8! h-8! mr-2" /> */}
+                    <WalletCardsIcon className="w-4 h-4 mr-2" />
+                    Flashcards
+                </Button>
                 <Button onClick={onStudyMode}>
                     <BookOpen className="w-4 h-4 mr-2" />
-                    Study Flashcards
+                    Study
                 </Button>
             </div>
         </div>

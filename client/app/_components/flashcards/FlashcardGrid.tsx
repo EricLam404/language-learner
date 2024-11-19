@@ -17,7 +17,7 @@ import {
 import { Edit, Volume2 } from "lucide-react";
 import { type Flashcard } from "@/lib/types";
 import { FaceType } from "@/__generated__/graphql";
-import { replaceUnderscoreAndCapitalize } from "@/lib/stringUtils";
+import { formatDate, replaceUnderscoreAndCapitalize } from "@/lib/stringUtils";
 
 interface FlashcardGridProps {
     cards: Flashcard[];
@@ -104,14 +104,15 @@ export function FlashcardGrid({
                                 ))}
                         </CardContent>
                         <CardFooter className="mt-auto">
-                            <Button
+                            Review due at: {formatDate(card.nextReviewAt)}
+                            {/* <Button
                                 variant="outline"
                                 className="w-full"
                                 disabled
                             >
                                 <Volume2 className="w-4 h-4 mr-2" />
                                 Listen
-                            </Button>
+                            </Button> */}
                         </CardFooter>
                     </Card>
                 ))}

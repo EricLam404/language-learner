@@ -9,12 +9,15 @@ import { type FlashcardSet, type Flashcard } from "@/lib/types";
 import { FlashcardForm } from "@app/_components/flashcards/FlashcardForm";
 import { FlashcardFormValues } from "@/lib/schemas/flashcard";
 import FlashcardDeleteForm from "./FlashcardDeleteForm";
+import { FlashcardMode } from "./FlashcardMode";
 
 interface FlashcardContainerProps {
+    refetch: () => void;
     flashcardSet: FlashcardSet;
 }
 
 export default function FlashcardContainer({
+    refetch,
     flashcardSet,
 }: FlashcardContainerProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -22,8 +25,11 @@ export default function FlashcardContainer({
         Flashcard | undefined
     >();
     const [isGridView, setIsGridView] = useState(true);
+    const [isFlashcardMode, setIsFlashcardMode] = useState(false);
     const [isStudyMode, setIsStudyMode] = useState(false);
-    const [deleteFlashcard, setDeleteFlashcard] = useState<Flashcard | null>(null);
+    const [deleteFlashcard, setDeleteFlashcard] = useState<Flashcard | null>(
+        null
+    );
     const {
         flashcards,
         searchTerm,
@@ -32,6 +38,7 @@ export default function FlashcardContainer({
         setSortBy,
         addCard,
         editCard,
+        updateStudiedCard,
         deleteCard,
     } = useFlashcards(flashcardSet);
 
@@ -39,7 +46,20 @@ export default function FlashcardContainer({
         return (
             <StudyMode
                 cards={flashcards}
-                onExit={() => setIsStudyMode(false)}
+                updateStudiedCard={updateStudiedCard}
+                onExit={async () => {
+                    setIsStudyMode(false);
+                    refetch();
+                }}
+            />
+        );
+    }
+
+    if (isFlashcardMode) {
+        return (
+            <FlashcardMode
+                cards={flashcards}
+                onExit={() => setIsFlashcardMode(false)}
             />
         );
     }
@@ -68,6 +88,7 @@ export default function FlashcardContainer({
                 setIsGridView={setIsGridView}
                 onAddCard={handleAddCard}
                 onStudyMode={() => setIsStudyMode(true)}
+                onFlashcardMode={() => setIsFlashcardMode(true)}
             />
             <FlashcardSearch
                 searchTerm={searchTerm}
@@ -88,7 +109,12 @@ export default function FlashcardContainer({
                 editCard={currentEditCard}
                 languageName={flashcardSet.languageName}
             />
-            <FlashcardDeleteForm open={!!deleteFlashcard} onOpenChange={(open) => !open && setDeleteFlashcard(null)} onDelete={deleteCard} card={deleteFlashcard!} />
+            <FlashcardDeleteForm
+                open={!!deleteFlashcard}
+                onOpenChange={(open) => !open && setDeleteFlashcard(null)}
+                onDelete={deleteCard}
+                card={deleteFlashcard!}
+            />
         </>
     );
 }

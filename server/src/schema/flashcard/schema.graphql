@@ -17,8 +17,8 @@ type Flashcard {
     setId: ID!
     nextReviewAt: DateTime
     easeFactor: Float
-    interval: Int
-    repetitions: Int
+    interval: Float
+    n: Int
     createdAt: DateTime!
     updatedAt: DateTime!
 
@@ -111,10 +111,11 @@ extend type Mutation {
 
     createFlashcard(setId: ID!, faces: [FlashcardFaceInput!]!): Flashcard!
     updateFlashcard(id: ID!, faces: [FlashcardFaceInput!]!): Flashcard!
-    # updateStudiedFlashcard(id: ID!, nextReviewAt: DateTime, easeFactor: Float, interval: Int, repetitions: Int): Flashcard!
+    updateStudiedFlashcard(id: ID!, score: Int!): Flashcard!
     deleteFlashcard(id: ID!): Boolean!
 
     generateFlashcardFaces(
         input: generateFlashcardFacesInput!
     ): [generateFlashcardFacesPayload!]!
+
 }

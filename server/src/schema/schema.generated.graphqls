@@ -134,9 +134,9 @@ type Flashcard {
   easeFactor: Float
   faces: [FlashcardFace!]
   id: ID!
-  interval: Int
+  interval: Float
+  n: Int
   nextReviewAt: DateTime
-  repetitions: Int
   set: FlashcardSet
   setId: ID!
   updatedAt: DateTime!
@@ -224,6 +224,7 @@ type Mutation {
   updateFlashcardSet(description: String, id: ID!, languageName: String, name: String): FlashcardSet!
   updateLanguage(code: String, id: ID!, name: String): Language!
   updateStory(id: ID!, input: UpdateStoryInput!): Story!
+  updateStudiedFlashcard(id: ID!, score: Int!): Flashcard!
   updateTag(id: ID!, name: String!): Tag!
   updateUser(id: ID!, username: String!): User!
   updateVocabulary(example: String, id: ID!, languageName: String, meaning: String, word: String): Vocabulary!

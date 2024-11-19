@@ -117,3 +117,13 @@ export const GENERATE_FLASHCARD_FACE = gql(`
         }
     }
 `);
+
+
+export const UPDATE_STUDIED_FLASHCARD = gql(`
+    mutation UpdateStudiedFlashcard($id: ID!, $score: Int!) {
+        updateStudiedFlashcard(id: $id, score: $score) {
+            id
+            nextReviewAt
+        }
+    }
+`);

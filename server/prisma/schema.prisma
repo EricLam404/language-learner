@@ -230,8 +230,8 @@ model Flashcard {
   faces        FlashcardFace[]
   nextReviewAt DateTime        @db.Timestamptz(3)
   easeFactor   Float           @default(2.5)
-  interval     Int             @default(0)
-  repetitions  Int             @default(0)
+  interval     Float           @default(1.0)
+  n            Int             @default(0)
   createdAt    DateTime        @default(now()) @db.Timestamptz(3)
   updatedAt    DateTime        @updatedAt @db.Timestamptz(3)
 }

@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import { type FlashcardSet } from "../types";
-import { useMutation } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client";
 import {
     CREATE_FLASHCARD,
     DELETE_FLASHCARD,
     GET_FLASHCARD_SET,
     UPDATE_FLASHCARD,
+    UPDATE_STUDIED_FLASHCARD,
 } from "@app/_components/graphql/flashcards";
 import { toast } from "sonner";
 import { FlashcardFormValues } from "../schemas/flashcard";
@@ -32,7 +33,7 @@ export const useFlashcards = (set: FlashcardSet) => {
         return 0;
     });
 
-    const [createFlashcard, { loading }] = useMutation(CREATE_FLASHCARD, {
+    const [createFlashcard] = useMutation(CREATE_FLASHCARD, {
         refetchQueries: [
             { query: GET_FLASHCARD_SET, variables: { flashcardSetId: set.id } },
         ],
@@ -52,6 +53,8 @@ export const useFlashcards = (set: FlashcardSet) => {
         ],
         awaitRefetchQueries: true,
     });
+
+    const [updateStudiedFlashcard] = useMutation(UPDATE_STUDIED_FLASHCARD);
 
     const addCard = async (newCard: FlashcardFormValues) => {
         try {
@@ -98,7 +101,7 @@ export const useFlashcards = (set: FlashcardSet) => {
                 .filter(
                     (key) =>
                         key != "frontFace" &&
-                    updatedCard[key as keyof FlashcardFormValues] !== ""
+                        updatedCard[key as keyof FlashcardFormValues] !== ""
                 )
                 .map((key, index) => ({
                     type: key.toUpperCase() as FaceType,
@@ -121,7 +124,31 @@ export const useFlashcards = (set: FlashcardSet) => {
                     "No data returned from update flashcard mutation"
                 );
             }
-            toast.success("Flashcard has been successfully created!");
+            toast.success("Flashcard has been successfully updated!");
+        } catch (e) {
+            console.log(e);
+            toast.error(
+                "An unknown error occurred while updating the flashcard. Please try again."
+            );
+        }
+    };
+
+    const updateStudiedCard = async (id: string, score: number) => {
+        try {
+            let response = await updateStudiedFlashcard({
+                variables: {
+                    id,
+                    score,
+                },
+            });
+            if (response.data && response.data.updateStudiedFlashcard) {
+                console.log(response.data.updateStudiedFlashcard);
+            } else {
+                console.error(
+                    "No data returned from update flashcard mutation"
+                );
+            }
+            toast.success("Flashcard has been successfully updated!");
         } catch (e) {
             console.log(e);
             toast.error(
@@ -154,6 +181,7 @@ export const useFlashcards = (set: FlashcardSet) => {
         setSortBy,
         addCard,
         editCard,
+        updateStudiedCard,
         deleteCard,
     };
 };

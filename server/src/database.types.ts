@@ -393,8 +393,8 @@ export type Database = {
           easeFactor: number
           id: number
           interval: number
+          n: number
           nextReviewAt: string
-          repetitions: number
           setId: number
           updatedAt: string
         }
@@ -403,8 +403,8 @@ export type Database = {
           easeFactor?: number
           id?: number
           interval?: number
+          n?: number
           nextReviewAt: string
-          repetitions?: number
           setId: number
           updatedAt: string
         }
@@ -413,8 +413,8 @@ export type Database = {
           easeFactor?: number
           id?: number
           interval?: number
+          n?: number
           nextReviewAt?: string
-          repetitions?: number
           setId?: number
           updatedAt?: string
         }
@@ -436,6 +436,7 @@ export type Database = {
           flashcardId: number
           id: number
           imageUrl: string | null
+          isFront: boolean
           metadata: Json | null
           order: number
           type: Database["public"]["Enums"]["FaceType"]
@@ -448,6 +449,7 @@ export type Database = {
           flashcardId: number
           id?: number
           imageUrl?: string | null
+          isFront?: boolean
           metadata?: Json | null
           order: number
           type: Database["public"]["Enums"]["FaceType"]
@@ -460,6 +462,7 @@ export type Database = {
           flashcardId?: number
           id?: number
           imageUrl?: string | null
+          isFront?: boolean
           metadata?: Json | null
           order?: number
           type?: Database["public"]["Enums"]["FaceType"]
@@ -541,7 +544,7 @@ export type Database = {
           updatedAt: string
         }
         Insert: {
-          config: Json
+          config?: Json
           createdAt?: string
           id?: number
           languageName: string
@@ -904,18 +907,17 @@ export type Database = {
         | "SENTENCE_CONSTRUCTION"
         | "TRANSLATION"
       FaceType:
-        | "FRONT"
-        | "BACK"
+        | "WORD"
+        | "TRANSLATION"
+        | "EXAMPLE_SENTENCE"
+        | "EXAMPLE_SENTENCE_TRANSLATION"
         | "PINYIN"
         | "CHARACTER"
         | "ROMAJI"
         | "HIRAGANA"
         | "KATAKANA"
         | "TRANSLITERATION"
-        | "TRANSLATION"
         | "DEFINITION"
-        | "EXAMPLE_SENTENCE"
-        | "EXAMPLE_TRANSLATION"
         | "CONTEXT_NOTES"
         | "MNEMONIC"
         | "PART_OF_SPEECH"

@@ -14,30 +14,21 @@ import { capitalizeFirstLetter } from "@/lib/stringUtils";
 
 interface StudyModeProps {
     cards: Flashcard[];
-    updateStudiedCard: (id: string, level: number) => void;
     onExit: () => void;
 }
 
-export function StudyMode({
-    cards,
-    updateStudiedCard,
-    onExit,
-}: StudyModeProps) {
+export function FlashcardMode({ cards, onExit }: StudyModeProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [dueCards, setDueCards] = useState<Flashcard[]>(
-        cards.filter(
-            (card) => Date.parse(card.nextReviewAt!) <= new Date().getTime()
-        ) || []
-    );
     const [revealedFaces, setRevealedFaces] = useState<string[]>([]);
-    const handleRecallResponse = (score: number) => {
-        setRevealedFaces([]);
-        if (currentIndex + 1 === dueCards.length) {
-            onExit();
-        }
 
-        updateStudiedCard(dueCards[currentIndex].id, score);
-        setCurrentIndex((prev) => prev + 1);
+    const handleNext = () => {
+        setRevealedFaces([]);
+        setCurrentIndex((prev) => (prev + 1) % cards.length);
+    };
+
+    const handlePrev = () => {
+        setRevealedFaces([]);
+        setCurrentIndex((prev) => (prev - 1 + cards.length) % cards.length);
     };
 
     const toggleReveal = (face: string) => {
@@ -48,36 +39,13 @@ export function StudyMode({
         );
     };
 
-    if (dueCards.length === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center space-y-4">
-                <Card className="w-full max-w-md">
-                    <CardHeader>
-                        <CardTitle>All caught up!</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p>
-                            You have no more flashcards due for review. Keep up
-                            the good work!
-                        </p>
-                    </CardContent>
-                    <CardFooter>
-                        <Button variant="outline" onClick={onExit}>
-                            Exit Study Mode
-                        </Button>
-                    </CardFooter>
-                </Card>
-            </div>
-        );
-    }
-
     return (
         <div className="flex flex-col items-center justify-center space-y-4">
             <Card className="w-full max-w-md">
                 <CardHeader>
                     <CardTitle>
                         {
-                            dueCards[currentIndex].faces!.find(
+                            cards[currentIndex].faces!.find(
                                 (face) => face.isFront
                             )?.content
                         }
@@ -98,7 +66,7 @@ export function StudyMode({
                                         {capitalizeFirstLetter(faceType)}:
                                     </strong>{" "}
                                     {
-                                        dueCards[currentIndex].faces!.find(
+                                        cards[currentIndex].faces!.find(
                                             (face) => face.type === faceType
                                         )?.content
                                     }
@@ -108,9 +76,10 @@ export function StudyMode({
                     </AnimatePresence>
                 </CardContent>
                 <CardFooter className="flex flex-wrap gap-2">
-                    {dueCards[currentIndex]
-                        .faces!.filter((face) => face.isFront)
+                    {cards[currentIndex]
+                        .faces!.filter((face) => !face.isFront)
                         .map((face) => (
+                            console.log(face.type),
                             <Button
                                 key={face.type}
                                 onClick={() => toggleReveal(face.type)}
@@ -126,33 +95,11 @@ export function StudyMode({
                 </CardFooter>
             </Card>
             <div className="flex space-x-4">
-                <Button
-                    onClick={() => handleRecallResponse(1)}
-                    variant="outline"
-                >
-                    Forgot
-                </Button>
-                <Button
-                    onClick={() => handleRecallResponse(2)}
-                    variant="outline"
-                >
-                    Familiar
-                </Button>
-                <Button
-                    onClick={() => handleRecallResponse(3)}
-                    variant="outline"
-                >
-                    Almost
-                </Button>
-                <Button
-                    onClick={() => handleRecallResponse(5)}
-                    variant="outline"
-                >
-                    Got it!
-                </Button>
+                <Button onClick={handlePrev}>Previous</Button>
+                <Button onClick={handleNext}>Next</Button>
             </div>
             <Button variant="outline" onClick={onExit}>
-                Exit Study Mode
+                Exit Flashcard Mode
             </Button>
         </div>
     );
