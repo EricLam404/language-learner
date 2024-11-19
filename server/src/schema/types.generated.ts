@@ -202,6 +202,7 @@ export type FlashcardSet = {
   language?: Maybe<Language>;
   languageName: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  totalCards: Scalars['Int']['output'];
   user?: Maybe<User>;
   userId: Scalars['ID']['output'];
   vocabularies?: Maybe<Array<Vocabulary>>;
@@ -604,7 +605,7 @@ export type User = {
   chatSession?: Maybe<Array<ChatSession>>;
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
-  flashcardSet?: Maybe<Array<FlashcardSet>>;
+  flashcardSets?: Maybe<Array<FlashcardSet>>;
   languages?: Maybe<Array<Language>>;
   readingProgress?: Maybe<Array<ReadingProgress>>;
   stories?: Maybe<Array<Story>>;
@@ -767,7 +768,7 @@ export type ResolversTypes = ResolversObject<{
   Tag: ResolverTypeWrapper<Omit<Tag, 'stories'> & { stories?: Maybe<Array<ResolversTypes['Story']>> }>;
   UpdateStoryInput: UpdateStoryInput;
   UpdateWorksheetInput: UpdateWorksheetInput;
-  User: ResolverTypeWrapper<Omit<User, 'chatSession' | 'flashcardSet' | 'languages' | 'readingProgress' | 'stories' | 'submission' | 'vocabularies' | 'worksheets'> & { chatSession?: Maybe<Array<ResolversTypes['ChatSession']>>, flashcardSet?: Maybe<Array<ResolversTypes['FlashcardSet']>>, languages?: Maybe<Array<ResolversTypes['Language']>>, readingProgress?: Maybe<Array<ResolversTypes['ReadingProgress']>>, stories?: Maybe<Array<ResolversTypes['Story']>>, submission?: Maybe<Array<ResolversTypes['Submission']>>, vocabularies?: Maybe<Array<ResolversTypes['Vocabulary']>>, worksheets?: Maybe<Array<ResolversTypes['Worksheet']>> }>;
+  User: ResolverTypeWrapper<Omit<User, 'chatSession' | 'flashcardSets' | 'languages' | 'readingProgress' | 'stories' | 'submission' | 'vocabularies' | 'worksheets'> & { chatSession?: Maybe<Array<ResolversTypes['ChatSession']>>, flashcardSets?: Maybe<Array<ResolversTypes['FlashcardSet']>>, languages?: Maybe<Array<ResolversTypes['Language']>>, readingProgress?: Maybe<Array<ResolversTypes['ReadingProgress']>>, stories?: Maybe<Array<ResolversTypes['Story']>>, submission?: Maybe<Array<ResolversTypes['Submission']>>, vocabularies?: Maybe<Array<ResolversTypes['Vocabulary']>>, worksheets?: Maybe<Array<ResolversTypes['Worksheet']>> }>;
   Vocabulary: ResolverTypeWrapper<Omit<Vocabulary, 'flashcardSet' | 'language' | 'stories' | 'story' | 'user'> & { flashcardSet?: Maybe<ResolversTypes['FlashcardSet']>, language?: Maybe<ResolversTypes['Language']>, stories?: Maybe<Array<ResolversTypes['Story']>>, story?: Maybe<ResolversTypes['Story']>, user?: Maybe<ResolversTypes['User']> }>;
   Worksheet: ResolverTypeWrapper<Omit<Worksheet, 'exercises' | 'language' | 'user'> & { exercises?: Maybe<Array<Maybe<ResolversTypes['Exercise']>>>, language?: Maybe<ResolversTypes['Language']>, user?: Maybe<ResolversTypes['User']> }>;
   generateFlashcardFacesInput: generateFlashcardFacesInput;
@@ -808,7 +809,7 @@ export type ResolversParentTypes = ResolversObject<{
   Tag: Omit<Tag, 'stories'> & { stories?: Maybe<Array<ResolversParentTypes['Story']>> };
   UpdateStoryInput: UpdateStoryInput;
   UpdateWorksheetInput: UpdateWorksheetInput;
-  User: Omit<User, 'chatSession' | 'flashcardSet' | 'languages' | 'readingProgress' | 'stories' | 'submission' | 'vocabularies' | 'worksheets'> & { chatSession?: Maybe<Array<ResolversParentTypes['ChatSession']>>, flashcardSet?: Maybe<Array<ResolversParentTypes['FlashcardSet']>>, languages?: Maybe<Array<ResolversParentTypes['Language']>>, readingProgress?: Maybe<Array<ResolversParentTypes['ReadingProgress']>>, stories?: Maybe<Array<ResolversParentTypes['Story']>>, submission?: Maybe<Array<ResolversParentTypes['Submission']>>, vocabularies?: Maybe<Array<ResolversParentTypes['Vocabulary']>>, worksheets?: Maybe<Array<ResolversParentTypes['Worksheet']>> };
+  User: Omit<User, 'chatSession' | 'flashcardSets' | 'languages' | 'readingProgress' | 'stories' | 'submission' | 'vocabularies' | 'worksheets'> & { chatSession?: Maybe<Array<ResolversParentTypes['ChatSession']>>, flashcardSets?: Maybe<Array<ResolversParentTypes['FlashcardSet']>>, languages?: Maybe<Array<ResolversParentTypes['Language']>>, readingProgress?: Maybe<Array<ResolversParentTypes['ReadingProgress']>>, stories?: Maybe<Array<ResolversParentTypes['Story']>>, submission?: Maybe<Array<ResolversParentTypes['Submission']>>, vocabularies?: Maybe<Array<ResolversParentTypes['Vocabulary']>>, worksheets?: Maybe<Array<ResolversParentTypes['Worksheet']>> };
   Vocabulary: Omit<Vocabulary, 'flashcardSet' | 'language' | 'stories' | 'story' | 'user'> & { flashcardSet?: Maybe<ResolversParentTypes['FlashcardSet']>, language?: Maybe<ResolversParentTypes['Language']>, stories?: Maybe<Array<ResolversParentTypes['Story']>>, story?: Maybe<ResolversParentTypes['Story']>, user?: Maybe<ResolversParentTypes['User']> };
   Worksheet: Omit<Worksheet, 'exercises' | 'language' | 'user'> & { exercises?: Maybe<Array<Maybe<ResolversParentTypes['Exercise']>>>, language?: Maybe<ResolversParentTypes['Language']>, user?: Maybe<ResolversParentTypes['User']> };
   generateFlashcardFacesInput: generateFlashcardFacesInput;
@@ -946,6 +947,7 @@ export type FlashcardSetResolvers<ContextType = MyContext, ParentType extends Re
   language?: Resolver<Maybe<ResolversTypes['Language']>, ParentType, ContextType>;
   languageName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  totalCards?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   vocabularies?: Resolver<Maybe<Array<ResolversTypes['Vocabulary']>>, ParentType, ContextType>;
@@ -1110,7 +1112,7 @@ export type UserResolvers<ContextType = MyContext, ParentType extends ResolversP
   chatSession?: Resolver<Maybe<Array<ResolversTypes['ChatSession']>>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  flashcardSet?: Resolver<Maybe<Array<ResolversTypes['FlashcardSet']>>, ParentType, ContextType>;
+  flashcardSets?: Resolver<Maybe<Array<ResolversTypes['FlashcardSet']>>, ParentType, ContextType>;
   languages?: Resolver<Maybe<Array<ResolversTypes['Language']>>, ParentType, ContextType>;
   readingProgress?: Resolver<Maybe<Array<ResolversTypes['ReadingProgress']>>, ParentType, ContextType>;
   stories?: Resolver<Maybe<Array<ResolversTypes['Story']>>, ParentType, ContextType>;

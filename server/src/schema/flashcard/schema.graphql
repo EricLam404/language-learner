@@ -10,6 +10,9 @@ type FlashcardSet {
     vocabularies: [Vocabulary!]
     cards: [Flashcard!]
     chatSessions: [ChatSession!]
+
+    # Composite fields
+    totalCards: Int!
 }
 
 type Flashcard {

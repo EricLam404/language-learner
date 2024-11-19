@@ -25,15 +25,30 @@ export const updateFlashcardSet: NonNullable<MutationResolvers['updateFlashcardS
                 }
             );
         }
-        
-        return await _ctx.dataSources.prisma.flashcardSet.update({
-            where: { id: Number(_arg.id) },
-            data: {
-                ...(!!_arg.name && { name: _arg.name }),
-                ...(!!_arg.description && { description: _arg.description }),
-                ...(!!_arg.languageName && { languageName: _arg.languageName }),
-            },
-        });
+
+        const updatedFlashcardSet =
+            await _ctx.dataSources.prisma.flashcardSet.update({
+                where: { id: Number(_arg.id) },
+                data: {
+                    ...(!!_arg.name && { name: _arg.name }),
+                    ...(!!_arg.description && {
+                        description: _arg.description,
+                    }),
+                    ...(!!_arg.languageName && {
+                        languageName: _arg.languageName,
+                    }),
+                },
+                include: {
+                    _count: {
+                        select: { cards: true },
+                    },
+                },
+            });
+
+        return {
+            ...updatedFlashcardSet,
+            totalCards: updatedFlashcardSet._count.cards,
+        };
     } catch (error) {
         console.log(error);
 

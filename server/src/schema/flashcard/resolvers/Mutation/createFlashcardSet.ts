@@ -20,12 +20,17 @@ export const createFlashcardSet: NonNullable<MutationResolvers['createFlashcardS
             languageName: _arg.languageName,
             userId: _ctx.user.id,
         };
-        return await _ctx.dataSources.prisma.flashcardSet.create({
+        const createdFlashcardSet = await _ctx.dataSources.prisma.flashcardSet.create({
             data: {
                 ...input,
                 ...(!!_arg.description && { description: _arg.description }),
             },
         });
+
+        return {
+            ...createdFlashcardSet,
+            totalCards: 0,
+        }
     } catch (error) {
         console.log(error);
 

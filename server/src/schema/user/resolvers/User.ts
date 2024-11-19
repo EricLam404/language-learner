@@ -12,4 +12,30 @@ export const User: UserResolvers = {
             },
         });
     },
+
+    stories: async (_parent, _arg, _ctx, _info) => {
+        return await _ctx.dataSources.prisma.story.findMany({
+            where: {
+                userId: String(_parent.userId),
+            },
+        });
+    },
+    
+    flashcardSets: async (_parent, _arg, _ctx, _info) => {
+        const flashcardSets = await _ctx.dataSources.prisma.flashcardSet.findMany({
+            where: {
+                userId: String(_parent.userId),
+            },
+            include: {
+                _count: {
+                    select: { cards: true },
+                },
+            },
+        });
+
+        return flashcardSets.map(set => ({
+            ...set,
+            totalCards: set._count.cards,
+        }));
+    },
 };

@@ -10,7 +10,7 @@ type User {
     stories: [Story!]
     worksheets: [Worksheet!]
     readingProgress: [ReadingProgress!]
-    flashcardSet: [FlashcardSet!]
+    flashcardSets: [FlashcardSet!]
     chatSession: [ChatSession!]
     submission: [Submission!]
 }

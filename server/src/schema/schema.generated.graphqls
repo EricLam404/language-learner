@@ -173,6 +173,7 @@ type FlashcardSet {
   language: Language
   languageName: String!
   name: String!
+  totalCards: Int!
   user: User
   userId: ID!
   vocabularies: [Vocabulary!]
@@ -350,7 +351,7 @@ type User {
   chatSession: [ChatSession!]
   createdAt: DateTime!
   email: String!
-  flashcardSet: [FlashcardSet!]
+  flashcardSets: [FlashcardSet!]
   languages: [Language!]
   readingProgress: [ReadingProgress!]
   stories: [Story!]
