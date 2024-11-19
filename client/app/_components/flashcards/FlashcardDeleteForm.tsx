@@ -38,7 +38,7 @@ export default function FlashcardDeleteForm({
                     <DialogTitle>Delete Flashcard</DialogTitle>
                     <DialogDescription>
                         This action cannot be undone. This will permanently
-                        delete the flashcard "{frontContent}" from your list.
+                        delete the flashcard &quot;{frontContent}&quot; from your list.
                     </DialogDescription>
                 </DialogHeader>
 

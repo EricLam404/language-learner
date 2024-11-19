@@ -40,7 +40,7 @@ export interface Story {
 // TODO: Add search functionality with timeout
 // TODO: Add search by tags
 
-export default function page() {
+export default function Page() {
     const { data: languages, isLoading, isError } = useLanguages();
     const { data: stories, loading, error } = useQuery(GET_PUBLIC_STORIES);
     const [searchTerm, setSearchTerm] = useState("");

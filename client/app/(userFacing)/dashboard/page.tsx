@@ -6,7 +6,7 @@ import { Badge } from "@components/ui/badge";
 import { useUserInfo } from "@/lib/hooks/useUserInfo";
 import { Button } from "@components/ui/button";
 
-export default function page() {
+export default function Page() {
     const { userInfo, loading, error } = useUserInfo();
     console.log(userInfo, loading, error);
 
@@ -22,7 +22,7 @@ export default function page() {
                         Welcome back, {userInfo?.username}!
                     </h1>
                     <p className="text-muted-foreground">
-                        Let's continue your language learning journey.
+                        Let&apos;s continue your language learning journey.
                     </p>
                 </div>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -51,7 +51,7 @@ export default function page() {
                                 ) : (
                                     <div>
                                         <div className="font-medium">
-                                            Don't have any stories yet.
+                                            Don&apos;t have any stories yet.
                                         </div>
                                         <Button>
                                             <Link href="/create-story">
@@ -96,7 +96,7 @@ export default function page() {
                                     ) : (
                                         <div>
                                             <div className="font-medium">
-                                                Don't have any flashcard sets
+                                                Don&apos;t have any flashcard sets
                                                 yet.
                                             </div>
                                             <Button>

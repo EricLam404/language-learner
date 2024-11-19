@@ -206,7 +206,7 @@ export function DeleteFlashcardSetModal({
                     </DialogTitle>
                     <DialogDescription>
                         This action cannot be undone. This will permanently
-                        delete the set "{flashcardSet.name}" from your list.
+                        delete the set &quot;{flashcardSet.name}&quot; from your list.
                     </DialogDescription>
                     <Button
                         type="submit"

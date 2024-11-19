@@ -289,7 +289,7 @@ export function DeleteStoryForm({ handleClose, story }: DeleteStoryFormProps) {
                 </DialogTitle>
                 <DialogDescription>
                     This action cannot be undone. This will permanently delete
-                    the story "{story.title}" from your list.
+                    the story &quot;{story.title}&quot; from your list.
                 </DialogDescription>
                 <Button type="submit" variant="destructive" onClick={onDelete} disabled={loading}>
                     Delete

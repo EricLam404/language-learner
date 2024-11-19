@@ -394,7 +394,7 @@ export function DeleteVocabularyForm({
                 </DialogTitle>
                 <DialogDescription>
                     This action cannot be undone. This will permanently delete
-                    the vocabulary word "{vocab.word}" from your list.
+                    the vocabulary word &quot;{vocab.word}&quot; from your list.
                 </DialogDescription>
                 <Button
                     type="submit"

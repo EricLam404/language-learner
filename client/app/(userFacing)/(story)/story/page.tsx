@@ -24,7 +24,7 @@ import { GetStoriesQuery } from "@/__generated__/graphql";
 
 export type Story = GetStoriesQuery["stories"][number];
 
-export default function page() {
+export default function Page() {
     const { data: languages, isLoading, isError } = useLanguages();
     const { data: stories, loading, error } = useQuery(GET_STORIES);
     const [searchTerm, setSearchTerm] = useState("");
