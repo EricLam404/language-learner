@@ -6,37 +6,37 @@ This web application helps users study different languages by utilizing traditio
 ## Tech Stack
 
 ### Frontend
-- **React**: A library for building user interfaces.
-- **Next.js**: A React framework with server-side rendering and static site generation.
-- **TypeScript**: A superset of JavaScript for type-safe code.
-- **Tailwind CSS**: A utility-first CSS framework for rapid UI development.
+- **React**  
+- **Next.js**   
+- **TypeScript**  
+- **Tailwind CSS**  
+- **Apollo Client**  
 
 ### Backend
-- **Node.js**: JavaScript runtime for building scalable network applications.
-- **Express.js**: Web application framework for Node.js.
-- **GraphQL**: A query language for your API.
+- **Node.js**  
+- **Express.js**  
+- **GraphQL**  
 
 ### Database
-- **PostgreSQL**: Robust, open-source relational database.
-- **Redis**: In-memory data structure store for caching and session management.
+- **Supabase/Prisma**
+- **Redis?**
 
 ### AI/ML
-- **Pre-trained Model**: Using OpenAI's GPT-4 API for generating stories and worksheets from vocabulary lists.
+- **GPT-4o mini**
+- **Gemini-1.5 flash**
 
 ### DevOps and Infrastructure
-- **Docker**: Platform for containerized applications.
-- **Kubernetes**: System for automating deployment, scaling, and management of containerized applications.
-- **AWS/GCP/Azure**: Cloud services for hosting and infrastructure.
-- **CI/CD**: Jenkins, CircleCI, or GitHub Actions for automated testing and deployment.
+- **Docker**
+- **Kubernetes?**
+- **AWS**
+- **CI/CD**: Jenkins/CircleCI?
 
-### Authentication and Security
-- **OAuth 2.0 / OpenID Connect**: Passport.js for authentication.
-- **JWT (JSON Web Tokens)**: For securing API endpoints.
+### Authentication
+- **Supabase Auth**
 
-### Monitoring and Analytics
-- **Prometheus**: Monitoring and alerting toolkit.
-- **Grafana**: Dashboard for monitoring and observability.
-- **Google Analytics**: Web analytics service.
-- **Sentry**: Real-time error tracking.
+### Monitoring and Analytics(Future)
+- **Prometheus**
+- **Grafana**
+- **Google Analytics**
+- **Sentry**
 
-## Getting Started
