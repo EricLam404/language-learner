@@ -11,9 +11,12 @@ export default function parseCookies() {
         next: NextFunction
     ) {
         if (!req.headers.cookie) {
-            req.cookies = {};
-            next();
-            return;
+            throw new GraphQLError("Cookies not found", {
+                extensions: {
+                    code: "NOT_FOUND",
+                    http: { status: 404 },
+                },
+            });
         }
 
         const cookieObject: { [key: string]: string } = {};
