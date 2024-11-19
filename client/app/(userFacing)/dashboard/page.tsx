@@ -1,14 +1,26 @@
+"use client";
+
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@components/ui/badge";
+import { useUserInfo } from "@/lib/hooks/useUserInfo";
+import { Button } from "@components/ui/button";
 
 export default function page() {
+    const { userInfo, loading, error } = useUserInfo();
+    console.log(userInfo, loading, error);
+
+    if ((!userInfo && !loading) || error) {
+        return <div>Error loading user info</div>;
+    }
+
     return (
         <div className="flex min-h-screen w-full flex-col bg-background">
             <main className="flex-1 p-4 sm:p-6">
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold">Welcome back, John!</h1>
+                    <h1 className="text-2xl font-bold">
+                        Welcome back, {userInfo?.username}!
+                    </h1>
                     <p className="text-muted-foreground">
                         Let's continue your language learning journey.
                     </p>
@@ -20,159 +32,80 @@ export default function page() {
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-4">
-                                <Link
-                                    href="#"
-                                    className="group grid gap-2 rounded-md bg-muted p-4 transition-colors hover:bg-muted-foreground hover:text-background"
-                                    prefetch={false}
-                                >
-                                    <div className="text-lg font-medium group-hover:text-primary">
-                                        My First Adventure
+                                {userInfo?.stories?.length ?? 0 > 0 ? (
+                                    userInfo?.stories?.map((story) => (
+                                        <Link
+                                            href="#"
+                                            className="group grid gap-2 rounded-md bg-muted p-4 transition-colors hover:bg-muted-foreground hover:text-background"
+                                            prefetch={false}
+                                            key={story.id}
+                                        >
+                                            <div className="text-lg font-medium group-hover:text-primary">
+                                                {story.title}
+                                            </div>
+                                            <p className="text-sm text-muted-foreground group-hover:text-muted">
+                                                {story.description}
+                                            </p>
+                                        </Link>
+                                    ))
+                                ) : (
+                                    <div>
+                                        <div className="font-medium">
+                                            Don't have any stories yet.
+                                        </div>
+                                        <Button>
+                                            <Link href="/create-story">
+                                                Create a new story
+                                            </Link>
+                                        </Button>
                                     </div>
-                                    <p className="text-sm text-muted-foreground group-hover:text-muted">
-                                        A short story about my first trip to a
-                                        new country.
-                                    </p>
-                                </Link>
-                                <Link
-                                    href="#"
-                                    className="group grid gap-2 rounded-md bg-muted p-4 transition-colors hover:bg-muted-foreground hover:text-background"
-                                    prefetch={false}
-                                >
-                                    <div className="text-lg font-medium group-hover:text-primary">
-                                        Exploring the City
-                                    </div>
-                                    <p className="text-sm text-muted-foreground group-hover:text-muted">
-                                        A story about discovering the hidden
-                                        gems of a new city.
-                                    </p>
-                                </Link>
-                                <Link
-                                    href="#"
-                                    className="group grid gap-2 rounded-md bg-muted p-4 transition-colors hover:bg-muted-foreground hover:text-background"
-                                    prefetch={false}
-                                >
-                                    <div className="text-lg font-medium group-hover:text-primary">
-                                        A Day in the Life
-                                    </div>
-                                    <p className="text-sm text-muted-foreground group-hover:text-muted">
-                                        A glimpse into a typical day in my life
-                                        as a language learner.
-                                    </p>
-                                </Link>
+                                )}
                             </div>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardHeader>
-                            <CardTitle>Vocabulary List</CardTitle>
+                            <CardTitle>Flashcards</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-6">
                                 <div className="grid gap-2 border rounded-lg p-4 bg-background">
-                                    <div className="flex items-center justify-between">
-                                        <h2 className="text-lg font-semibold">
-                                            Spanish Vocabulary
-                                        </h2>
-                                        <Badge
-                                            variant="outline"
-                                            className="bg-muted text-muted-foreground"
-                                        >
-                                            10 words
-                                        </Badge>
-                                    </div>
-                                    <div className="grid gap-4">
-                                        <div className="grid grid-cols-[1fr_1fr] gap-x-6 gap-y-2">
+                                    {userInfo?.flashcardSets?.length ?? 0 > 0 ? (
+                                        userInfo?.flashcardSets?.map((set) => (
+                                            <Link
+                                                href={`/flashcard/${set.id}`}
+                                                className="group grid gap-2 rounded-md bg-muted p-4 transition-colors hover:bg-muted-foreground hover:text-background"
+                                                prefetch={false}
+                                                key={set.id}
+                                            >
+                                                <div className="text-lg font-medium group-hover:text-primary">
+                                                    {set.name}
+                                                </div>
+                                                <p className="text-sm text-muted-foreground group-hover:text-muted">
+                                                    {set.description}
+                                                </p>
+                                                <Badge
+                                                    variant="outline"
+                                                    className="bg-muted text-muted-foreground"
+                                                >
+                                                    {set.totalCards} cards
+                                                </Badge>
+                                            </Link>
+                                            
+                                        ))
+                                    ) : (
+                                        <div>
                                             <div className="font-medium">
-                                                Hello
+                                                Don't have any flashcard sets
+                                                yet.
                                             </div>
-                                            <div className="text-muted-foreground">
-                                                <span className="font-medium">
-                                                    Español:
-                                                </span>{" "}
-                                                Hola
-                                            </div>
-                                            <div className="font-medium">
-                                                Thank you
-                                            </div>
-                                            <div className="text-muted-foreground">
-                                                <span className="font-medium">
-                                                    Español:
-                                                </span>{" "}
-                                                Gracias
-                                            </div>
-                                            <div className="font-medium">
-                                                Excuse me
-                                            </div>
-                                            <div className="text-muted-foreground">
-                                                <span className="font-medium">
-                                                    Español:
-                                                </span>{" "}
-                                                Perdón
-                                            </div>
-                                            <div className="font-medium">
-                                                Good morning
-                                            </div>
-                                            <div className="text-muted-foreground">
-                                                <span className="font-medium">
-                                                    Español:
-                                                </span>{" "}
-                                                Buenos días
-                                            </div>
+                                            <Button>
+                                                <Link href="/flashcard">
+                                                    Create a new flashcard set
+                                                </Link>
+                                            </Button>
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="grid gap-2 border rounded-lg p-4 bg-background">
-                                    <div className="flex items-center justify-between">
-                                        <h2 className="text-lg font-semibold">
-                                            French Vocabulary
-                                        </h2>
-                                        <Badge
-                                            variant="outline"
-                                            className="bg-muted text-muted-foreground"
-                                        >
-                                            15 words
-                                        </Badge>
-                                    </div>
-                                    <div className="grid gap-4">
-                                        <div className="grid grid-cols-[1fr_1fr] gap-x-6 gap-y-2">
-                                            <div className="font-medium">
-                                                Airport
-                                            </div>
-                                            <div className="text-muted-foreground">
-                                                <span className="font-medium">
-                                                    Français:
-                                                </span>{" "}
-                                                Aéroport
-                                            </div>
-                                            <div className="font-medium">
-                                                Hotel
-                                            </div>
-                                            <div className="text-muted-foreground">
-                                                <span className="font-medium">
-                                                    Français:
-                                                </span>{" "}
-                                                Hôtel
-                                            </div>
-                                            <div className="font-medium">
-                                                Train
-                                            </div>
-                                            <div className="text-muted-foreground">
-                                                <span className="font-medium">
-                                                    Français:
-                                                </span>{" "}
-                                                Train
-                                            </div>
-                                            <div className="font-medium">
-                                                Taxi
-                                            </div>
-                                            <div className="text-muted-foreground">
-                                                <span className="font-medium">
-                                                    Français:
-                                                </span>{" "}
-                                                Taxi
-                                            </div>
-                                        </div>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
                         </CardContent>

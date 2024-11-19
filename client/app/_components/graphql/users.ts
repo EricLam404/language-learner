@@ -10,3 +10,30 @@ export const CREATE_USER = gql(`
         }
     }
 `);
+
+export const GET_USER = gql(`
+    query GetUser($userId: ID!) {
+        user(userId: $userId) {
+        username
+        userId
+        stories {
+            id
+            languageName
+            title
+            tags {
+                id
+                name
+        }
+        difficulty
+        description
+        }
+        flashcardSets {
+            id
+            name
+            description
+            totalCards
+            languageName
+            }
+        }
+    }
+`);
