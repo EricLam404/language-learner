@@ -1,8 +1,6 @@
 import { GraphQLError } from "graphql";
 import type { QueryResolvers } from "./../../../types.generated";
-export const flashcardSetsByLanguage: NonNullable<
-    QueryResolvers["flashcardSetsByLanguage"]
-> = async (_parent, _arg, _ctx) => {
+export const flashcardSetsByLanguage: NonNullable<QueryResolvers['flashcardSetsByLanguage']> = async (_parent, _arg, _ctx) => {
     /* Implement Query.flashcardSetsByLanguage resolver logic here */
     try {
         const flashcardSets =
