@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { StoryFormValues } from "@/lib/schemas/story";
 
 
-const page = () => {
+const Page = () => {
     const router = useRouter();
     const [createStory, { loading }] = useMutation(
         CREATE_STORY,
@@ -59,4 +59,4 @@ const page = () => {
     );
 };
 
-export default page;
+export default Page;

@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Story } from "../story/page";
 import { StoryFormValues } from "@/lib/schemas/story";
 
-const page = () => {
+const Page = () => {
     const searchParams = useSearchParams();
     const [updateStory, { loading }] = useMutation(UPDATE_STORY, {
         refetchQueries: [{ query: GET_STORIES }],
@@ -67,4 +67,4 @@ const page = () => {
     return <StoryForm onSubmit={onSubmit} story={story} />;
 };
 
-export default page;
+export default Page;

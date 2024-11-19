@@ -5,7 +5,7 @@ import { GET_STORY } from "@app/_components/graphql/stories";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@components/ui/card";
 import { useParams } from "next/navigation";
 
-const page = () => {
+const Page = () => {
     const { storyId } = useParams<{
         storyId: string;
     }>();
@@ -48,4 +48,4 @@ const page = () => {
     );
 };
 
-export default page;
+export default Page;
