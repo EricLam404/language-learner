@@ -10,7 +10,6 @@ export default function parseCookies() {
         res: Response,
         next: NextFunction
     ) {
-        console.log(req.headers);
         if (!req.headers.cookie) {
             req.cookies = {};
             next();
