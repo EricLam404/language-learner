@@ -10,13 +10,11 @@ export default function parseCookies() {
         res: Response,
         next: NextFunction
     ) {
+        console.log(req.headers);
         if (!req.headers.cookie) {
-            throw new GraphQLError("Cookies not found", {
-                extensions: {
-                    code: "NOT_FOUND",
-                    http: { status: 404 },
-                },
-            });
+            req.cookies = {};
+            next();
+            return;
         }
 
         const cookieObject: { [key: string]: string } = {};
@@ -68,7 +66,7 @@ export default function parseCookies() {
         }
         if (cookieObject[authTokenName]) {
             let value = cookieObject[authTokenName].replace(/^base64-/, "");
-            value = Buffer.from(value, 'base64').toString('utf-8');
+            value = Buffer.from(value, "base64").toString("utf-8");
             cookieObject[authTokenName] = parseJSONCookies(value);
         }
         req.cookies = cookieObject;

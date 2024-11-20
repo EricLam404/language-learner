@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import http from "http";
 import cors from "cors";
-import './utils/config/logging';
+import "./utils/config/logging";
 
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
@@ -14,7 +14,12 @@ import prisma from "./utils/dataSource/db/prisma";
 import parseCookies from "./utils/middleware/parseCookie";
 import { MyContext } from "./utils/types/context";
 import { GraphQLError } from "graphql";
-import { authTokenName, SERVER_HOSTNAME, SERVER_PORT } from "./utils/config/config";
+import {
+    authTokenName,
+    origin,
+    SERVER_HOSTNAME,
+    SERVER_PORT,
+} from "./utils/config/config";
 import { loggingHandler } from "./utils/middleware/loggingHandler";
 
 dotenv.config();
@@ -50,7 +55,7 @@ await server.start();
 app.use(
     "/graphql",
     cors<cors.CorsRequest>({
-        origin: ["http://localhost:3000"],
+        origin: [origin],
         credentials: true,
     }),
     express.json(),
@@ -59,6 +64,14 @@ app.use(
             if (req.cookies.introspection) {
                 // @ts-expect-error: Introspection cookie is used for internal purposes only
                 return null;
+            }
+            if (!req.cookies[authTokenName]) {
+                throw new GraphQLError("User is not authenticated", {
+                    extensions: {
+                        code: "UNAUTHENTICATED",
+                        http: { status: 401 },
+                    },
+                });
             }
             const token = req.cookies[authTokenName].access_token;
             const supabase = getServiceSupabase();
