@@ -8,7 +8,6 @@ import { Button } from "@components/ui/button";
 
 export default function Page() {
     const { userInfo, loading, error } = useUserInfo();
-    console.log(userInfo, loading, error);
 
     if ((!userInfo && !loading) || error) {
         return <div>Error loading user info</div>;

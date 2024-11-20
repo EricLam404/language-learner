@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
+import { HOST_NAME } from "@/utils/config/config";
 
 export async function login(formData: FormData) {
     const supabase = createClient();
@@ -53,7 +54,7 @@ export async function loginWithGoogle() {
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-            redirectTo: "http://localhost:3000/auth/callback",
+            redirectTo: HOST_NAME + "/auth/callback",
         },
     });
     if (error) {
