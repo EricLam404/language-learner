@@ -13,7 +13,7 @@ export const supabaseAnonKey = DEVELOPMENT ? process.env.LOCAL_SUPABASE_ANON_KEY
 export const supabaseServiceRoleKey = DEVELOPMENT ? process.env.LOCAL_SUPBASE_SERVICE_ROLE_KEY as string : process.env.SUPABASE_SERVICE_ROLE_KEY as string;
 export const isProduction = process.env.NODE_ENV === 'production';
 export const authTokenName = process.env.AUTH_TOKEN_NAME as string;
-export const origin = DEVELOPMENT ? `http://localhost:3000` : `https://${process.env.ORIGIN_HOSTNAME}`;
+export const origin = DEVELOPMENT ? `http://localhost:3000` : `${process.env.ORIGIN_HOSTNAME}`;
 export const supabase = {
     supabaseUrl,
     supabaseAnonKey,
