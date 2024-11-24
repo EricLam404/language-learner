@@ -1,5 +1,3 @@
-import { URI } from "./utils/config/config.js";
-
 module.exports = {
     async headers() {
         return [
@@ -8,7 +6,7 @@ module.exports = {
                 headers: [
                     {
                         key: "Access-Control-Allow-Origin",
-                        value: URI,
+                        value: process.env.NODE_ENV === 'development' ? process.env.NEXT_PUBLIC_LOCAL_URI : process.env.NEXT_PUBLIC_PROD_URI,
                     },
                     {
                         key: "Access-Control-Allow-Credentials",
