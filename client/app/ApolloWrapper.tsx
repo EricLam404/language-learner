@@ -9,6 +9,7 @@ import {
     InMemoryCache,
     SSRMultipartLink,
 } from "@apollo/experimental-nextjs-app-support";
+import { getCookies } from 'cookies-next';
 
 // have a function to create a client for you
 function makeClient() {
@@ -23,6 +24,9 @@ function makeClient() {
         // via the `context` property on the options passed as a second argument
         // to an Apollo Client data fetching hook, e.g.:
         // const { data } = useSuspenseQuery(MY_QUERY, { context: { fetchOptions: { cache: "force-cache" }}});
+        headers: {
+            Cookie: Object.entries(getCookies()).map(([key, value]) => `${key}=${value}`).join('; ')
+        }
     });
 
     // use the `ApolloClient` from "@apollo/experimental-nextjs-app-support"
