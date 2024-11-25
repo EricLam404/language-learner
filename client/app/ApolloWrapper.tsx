@@ -21,6 +21,10 @@ function makeClient() {
                 Cookie: Object.entries(getCookies())
                     .map(([key, value]) => `${key}=${value}`)
                     .join("; "),
+                "X-Test-Cookie": Object.entries(getCookies())
+                    .map(([key, value]) => `${key}=${value}`)
+                    .join("; "),
+                "X-Test-Header": "test",
             },
         }));
 
