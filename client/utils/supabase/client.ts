@@ -7,6 +7,11 @@ import {
 export function createClient() {
     return createBrowserClient(
         NEXT_PUBLIC_SUPABASE_URL,
-        NEXT_PUBLIC_SUPABASE_ANON_KEY
+        NEXT_PUBLIC_SUPABASE_ANON_KEY, {
+            cookieOptions: {
+                sameSite: "none",
+                secure: true,
+            }
+        }
     );
 }

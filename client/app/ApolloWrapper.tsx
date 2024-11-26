@@ -21,7 +21,6 @@ function makeClient() {
                 Cookie: Object.entries(getCookies())
                     .map(([key, value]) => `${key}=${value}`)
                     .join("; "),
-                ["Access-Control-Allow-Credentials"]: "true",
             },
         }));
 

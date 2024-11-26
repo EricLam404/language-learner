@@ -1,6 +1,9 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { NEXT_PUBLIC_SUPABASE_ANON_KEY, NEXT_PUBLIC_SUPABASE_URL } from "../config/config";
+import {
+    NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_SUPABASE_URL,
+} from "../config/config";
 
 export function createClient() {
     const cookieStore = cookies();
@@ -23,6 +26,10 @@ export function createClient() {
                         // user sessions.
                     }
                 },
+            },
+            cookieOptions: {
+                sameSite: "none",
+                secure: true,
             },
         }
     );
