@@ -10,10 +10,6 @@ export function createClient() {
         NEXT_PUBLIC_SUPABASE_ANON_KEY,
         {
             cookieOptions: {
-                domain:
-                    process.env.NODE_ENV === "production"
-                        ? process.env.NEXT_PUBLIC_PROD_DOMAIN!
-                        : "",
                 sameSite: "none",
                 secure: true,
             },

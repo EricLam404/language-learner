@@ -28,10 +28,6 @@ export function createClient() {
                 },
             },
             cookieOptions: {
-                domain:
-                    process.env.NODE_ENV === "production"
-                        ? process.env.NEXT_PUBLIC_PROD_DOMAIN!
-                        : "",
                 sameSite: "none",
                 secure: true,
             },
