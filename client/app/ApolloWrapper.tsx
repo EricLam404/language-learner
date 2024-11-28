@@ -15,6 +15,11 @@ import { getCookies } from "cookies-next";
 function makeClient() {
     const cookieMiddleware = new ApolloLink((operation, forward) => {
         // add the authorization to the headers
+        console.log(
+            Object.entries(getCookies())
+                .map(([key, value]) => `${key}=${value}`)
+                .join("; ")
+        );
         operation.setContext(({ headers = {} }) => ({
             headers: {
                 ...headers,
