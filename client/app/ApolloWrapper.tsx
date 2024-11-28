@@ -3,28 +3,30 @@ import { URI } from "@/utils/config/config";
 // ^ this file needs the "use client" pragma
 
 import { ApolloLink, HttpLink, concat } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import {
     ApolloNextAppProvider,
     ApolloClient,
     InMemoryCache,
     SSRMultipartLink,
 } from "@apollo/experimental-nextjs-app-support";
-import { getCookies } from "cookies-next";
+import { getCookie } from "cookies-next";
 
 // have a function to create a client for you
 function makeClient() {
-    const cookieMiddleware = new ApolloLink((operation, forward) => {
-        // add the authorization to the headers
-        operation.setContext(({ headers = {} }) => ({
+    const authLink = setContext((_, { headers }) => {
+        // get the authentication token from local storage if it exists
+        const cookie = getCookie(process.env.NEXT_PUBLIC_AUTH_TOKEN_NAME!)!;
+        let value = cookie.replace(/^base64-/, "");
+        value = Buffer.from(value, "base64").toString("utf-8");
+        const token = JSON.parse(value);
+        // return the headers to the context so httpLink can read them
+        return {
             headers: {
                 ...headers,
-                "Cookie": Object.entries(getCookies())
-                    .map(([key, value]) => `${key}=${value}`)
-                    .join("; "),
+                authorization: token?.access_token ? `Bearer ${token.access_token}` : "",
             },
-        }));
-
-        return forward(operation);
+        };
     });
     const httpLink = new HttpLink({
         // this needs to be an absolute url, as relative urls cannot be used in SSR
@@ -43,7 +45,7 @@ function makeClient() {
     return new ApolloClient({
         // use the `InMemoryCache` from "@apollo/experimental-nextjs-app-support"
         cache: new InMemoryCache(),
-        link: concat(cookieMiddleware, httpLink),
+        link: authLink.concat(httpLink),
     });
 }
 

@@ -21,6 +21,7 @@ import {
     SERVER_PORT,
 } from "./utils/config/config";
 import { loggingHandler } from "./utils/middleware/loggingHandler";
+import { authMiddleware } from "./utils/middleware/authMiddleware";
 
 dotenv.config();
 
@@ -32,11 +33,19 @@ logging.log("Initializing API");
 logging.log("----------------------------------------");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(
+    cors<cors.CorsRequest>({
+        origin: origin,
+        credentials: true,
+    })
+);
+app.use(express.urlencoded({ extended: true }));
 
 logging.log("----------------------------------------");
 logging.log("Logging & Configuration");
 logging.log("----------------------------------------");
-app.use(parseCookies());
+// app.use(parseCookies());
+app.use(authMiddleware);
 app.use(loggingHandler);
 
 logging.log("----------------------------------------");
@@ -54,26 +63,13 @@ await server.start();
 
 app.use(
     "/graphql",
-    cors<cors.CorsRequest>({
-        origin: origin,
-        credentials: true,
-    }),
-    express.json(),
     expressMiddleware(server, {
         context: async ({ req }): Promise<MyContext> => {
-            if (req.cookies.introspection) {
+            if (req.cookies?.introspection) {
                 // @ts-expect-error: Introspection cookie is used for internal purposes only
                 return null;
             }
-            if (!req.cookies[authTokenName]) {
-                throw new GraphQLError("User is not authenticated", {
-                    extensions: {
-                        code: "UNAUTHENTICATED",
-                        http: { status: 401 },
-                    },
-                });
-            }
-            const token = req.cookies[authTokenName].access_token;
+            const token = req.headers["authorization"]!.split(" ")[1];
             const supabase = getServiceSupabase();
             const {
                 data: { user },
@@ -103,7 +99,6 @@ await new Promise<void>((resolve) =>
     httpServer.listen({ port: SERVER_PORT }, resolve)
 );
 
-// console.log(`Server started on ${SERVER_HOSTNAME}:${SERVER_PORT}/graphql`);
 logging.log("----------------------------------------");
 logging.log(`Server started on ${SERVER_HOSTNAME}:${SERVER_PORT}/graphql`);
 logging.log("----------------------------------------");
