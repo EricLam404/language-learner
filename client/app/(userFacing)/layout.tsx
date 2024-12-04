@@ -1,4 +1,4 @@
-import Header from "../_components/header/Header";
+import Header from "../../components/header/Header";
 
 export const dynamic = "force-dynamic"
 

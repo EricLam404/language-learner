@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@apollo/client";
-import { GET_STORY } from "@app/_components/graphql/stories";
+import { GET_STORY } from "@components/graphql/stories";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@components/ui/card";
 import { useParams } from "next/navigation";
 

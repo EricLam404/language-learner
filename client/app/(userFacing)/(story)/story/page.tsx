@@ -15,10 +15,10 @@ import {
 } from "@components/ui/dropdown-menu";
 import { useLanguages } from "@/lib/hooks/useLanguages";
 import { useQuery } from "@apollo/client";
-import { GET_STORIES } from "@app/_components/graphql/stories";
+import { GET_STORIES } from "@components/graphql/stories";
 import Link from "next/link";
 import { difficultyLevels, levels } from "@/lib/difficultyLevels";
-import { DeleteStoryForm } from "@app/_components/forms/StoryForms";
+import { DeleteStoryForm } from "@components/forms/StoryForms";
 import { Dialog, DialogContent } from "@components/ui/dialog";
 import { GetStoriesQuery } from "@/__generated__/graphql";
 

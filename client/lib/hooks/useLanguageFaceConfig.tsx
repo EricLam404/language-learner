@@ -1,6 +1,6 @@
 import { FaceType } from "@/__generated__/graphql";
 import { useQuery } from "@apollo/client";
-import { GET_LANUAGE_FACE_CONFIG } from "@app/_components/graphql/languages";
+import { GET_LANUAGE_FACE_CONFIG } from "@components/graphql/languages";
 
 export interface LanguageConfig {
     required: FaceType[];

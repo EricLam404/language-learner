@@ -1,5 +1,5 @@
 import { useLazyQuery } from "@apollo/client";
-import { GET_USER } from "@app/_components/graphql/users";
+import { GET_USER } from "@components/graphql/users";
 import { useUser } from "./useUser";
 import { useEffect } from "react";
 

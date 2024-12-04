@@ -21,12 +21,12 @@ import {
 } from "@components/ui/dropdown-menu";
 import { useLanguages } from "@/lib/hooks/useLanguages";
 import { useQuery } from "@apollo/client";
-import { GET_FLASHCARD_SETS } from "@app/_components/graphql/flashcards";
+import { GET_FLASHCARD_SETS } from "@components/graphql/flashcards";
 import { SearchIcon } from "@components/icons";
 import {
     FlashcardSetMenu,
     FlashcardSetForm,
-} from "@app/_components/forms/FlashcardSet";
+} from "@components/forms/FlashcardSet";
 import Link from "next/link";
 import { type FlashcardSet } from "@/lib/types";
 

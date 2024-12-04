@@ -8,7 +8,7 @@ import {
     GET_FLASHCARD_SET,
     UPDATE_FLASHCARD,
     UPDATE_STUDIED_FLASHCARD,
-} from "@app/_components/graphql/flashcards";
+} from "@components/graphql/flashcards";
 import { toast } from "sonner";
 import { FlashcardFormValues } from "../schemas/flashcard";
 import { FaceType } from "@/__generated__/graphql";

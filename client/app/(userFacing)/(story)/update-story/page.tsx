@@ -1,9 +1,9 @@
 "use client";
 
 import { useMutation } from "@apollo/client";
-import { StoryForm } from "@app/_components/forms/StoryForms";
+import { StoryForm } from "@components/forms/StoryForms";
 import { toast } from "sonner";
-import { UPDATE_STORY, GET_STORIES } from "@app/_components/graphql/stories";
+import { UPDATE_STORY, GET_STORIES } from "@components/graphql/stories";
 import { DifficultyToNumber } from "@/lib/difficultyLevels";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Story } from "../story/page";

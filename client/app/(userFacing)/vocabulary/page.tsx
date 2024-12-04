@@ -14,7 +14,7 @@ import {
     PlusIcon,
     FilePenIcon,
     TrashIcon,
-} from "@app/_components/icons";
+} from "@/components/icons";
 import {
     Select,
     SelectTrigger,
@@ -22,15 +22,15 @@ import {
     SelectContent,
 } from "@/components/ui/select";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { GET_VOCABULARY } from "@app/_components/graphql/vocabularies";
+import { GET_VOCABULARY } from "@components/graphql/vocabularies";
 import { useQuery } from "@apollo/client";
 import Skeleton from "react-loading-skeleton";
 import {
     CreateVocabularyForm,
     DeleteVocabularyForm,
     UpdateVocabularyForm,
-} from "@app/_components/forms/VocabularyForms";
-import Selections from "@app/_components/forms/Selections";
+} from "@/components/forms/VocabularyForms";
+import Selections from "@/components/forms/Selections";
 
 // TODO: Add word to vocabulary list validation check
 // FEATURE: Add radio button to select words for flashcards

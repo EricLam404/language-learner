@@ -15,7 +15,7 @@ import {
 } from "@components/ui/dropdown-menu";
 import { useLanguages } from "@/lib/hooks/useLanguages";
 import { useQuery } from "@apollo/client";
-import { GET_PUBLIC_STORIES } from "@app/_components/graphql/stories";
+import { GET_PUBLIC_STORIES } from "@components/graphql/stories";
 import { difficultyLevels, levels } from "@/lib/difficultyLevels";
 import Link from "next/link";
 

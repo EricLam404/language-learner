@@ -7,10 +7,10 @@ import {
     CardDescription,
 } from "@components/ui/card";
 import { CardContent } from "@/components/ui/card";
-import FlashcardContainer from "@/app/_components/flashcards/FlashcardContainer";
-import { GET_FLASHCARD_SET } from "@app/_components/graphql/flashcards";
+import FlashcardContainer from "@components/flashcards/FlashcardContainer";
+import { GET_FLASHCARD_SET } from "@components/graphql/flashcards";
 import { useQuery } from "@apollo/client";
-import { LoadingState } from "@app/_components/LoadingState";
+import { LoadingState } from "@components/LoadingState";
 
 export default function Page({ params }: { params: { id: string } }) {
     const { data, loading, error, refetch } = useQuery(GET_FLASHCARD_SET, {
