@@ -4,6 +4,7 @@ type FlashcardSet {
     description: String
     userId: ID!
     languageName: String!
+    lastFrontFace: FaceType
 
     user: User
     language: Language

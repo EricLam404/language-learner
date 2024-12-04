@@ -108,6 +108,7 @@ export default function FlashcardContainer({
                 onSubmit={handleCardSubmit}
                 editCard={currentEditCard}
                 languageName={flashcardSet.languageName}
+                defaultFrontFace={flashcardSet.lastFrontFace}
             />
             <FlashcardDeleteForm
                 open={!!deleteFlashcard}

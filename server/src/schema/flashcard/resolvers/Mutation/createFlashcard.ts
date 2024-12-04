@@ -1,10 +1,12 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
 import { FaceType } from "@prisma/client";
-export const createFlashcard: NonNullable<MutationResolvers['createFlashcard']> = async (_parent, _arg, _ctx) => {
+export const createFlashcard: NonNullable<
+    MutationResolvers["createFlashcard"]
+> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.createFlashcard resolver logic here */
     try {
-        const frontFaces = _arg.faces.filter(face => face.isFront);
+        const frontFaces = _arg.faces.filter((face) => face.isFront);
         if (frontFaces.length !== 1) {
             throw new GraphQLError("There must be exactly one front face", {
                 extensions: {
@@ -12,20 +14,32 @@ export const createFlashcard: NonNullable<MutationResolvers['createFlashcard']> 
                 },
             });
         }
-        return await _ctx.dataSources.prisma.flashcard.create({
-            data: {
-                setId: Number(_arg.setId),
-                nextReviewAt: new Date(),
-                faces: {
-                    create: _arg.faces.map((face) => ({
-                        ...face,
-                        type: face.type.toUpperCase() as FaceType,
-                        isFront: face.isFront
-                    })),
+        const frontFace = frontFaces[0];
+
+        const [flashcard] = await _ctx.dataSources.prisma.$transaction([
+            _ctx.dataSources.prisma.flashcard.create({
+                data: {
+                    setId: Number(_arg.setId),
+                    nextReviewAt: new Date(),
+                    faces: {
+                        create: _arg.faces.map((face) => ({
+                            ...face,
+                            type: face.type,
+                            isFront: face.isFront,
+                        })),
+                    },
                 },
-            },
-            include: { faces: true },
-        });
+                include: { faces: true },
+            }),
+            _ctx.dataSources.prisma.flashcardSet.update({
+                where: { id: Number(_arg.setId) },
+                data: {
+                    lastFrontFace: frontFace.type,
+                },
+            }),
+        ]);
+
+        return flashcard;
     } catch (error) {
         console.log(error);
 

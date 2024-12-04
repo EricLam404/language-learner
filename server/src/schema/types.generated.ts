@@ -201,6 +201,7 @@ export type FlashcardSet = {
   id: Scalars['ID']['output'];
   language?: Maybe<Language>;
   languageName: Scalars['String']['output'];
+  lastFrontFace?: Maybe<FaceType>;
   name: Scalars['String']['output'];
   totalCards: Scalars['Int']['output'];
   user?: Maybe<User>;
@@ -754,7 +755,7 @@ export type ResolversTypes = ResolversObject<{
   Flashcard: ResolverTypeWrapper<Omit<Flashcard, 'faces' | 'set'> & { faces?: Maybe<Array<ResolversTypes['FlashcardFace']>>, set?: Maybe<ResolversTypes['FlashcardSet']> }>;
   FlashcardFace: ResolverTypeWrapper<Omit<FlashcardFace, 'flashcard' | 'type'> & { flashcard?: Maybe<ResolversTypes['Flashcard']>, type: ResolversTypes['FaceType'] }>;
   FlashcardFaceInput: FlashcardFaceInput;
-  FlashcardSet: ResolverTypeWrapper<Omit<FlashcardSet, 'cards' | 'chatSessions' | 'language' | 'user' | 'vocabularies'> & { cards?: Maybe<Array<ResolversTypes['Flashcard']>>, chatSessions?: Maybe<Array<ResolversTypes['ChatSession']>>, language?: Maybe<ResolversTypes['Language']>, user?: Maybe<ResolversTypes['User']>, vocabularies?: Maybe<Array<ResolversTypes['Vocabulary']>> }>;
+  FlashcardSet: ResolverTypeWrapper<Omit<FlashcardSet, 'cards' | 'chatSessions' | 'language' | 'lastFrontFace' | 'user' | 'vocabularies'> & { cards?: Maybe<Array<ResolversTypes['Flashcard']>>, chatSessions?: Maybe<Array<ResolversTypes['ChatSession']>>, language?: Maybe<ResolversTypes['Language']>, lastFrontFace?: Maybe<ResolversTypes['FaceType']>, user?: Maybe<ResolversTypes['User']>, vocabularies?: Maybe<Array<ResolversTypes['Vocabulary']>> }>;
   JSON: ResolverTypeWrapper<Scalars['JSON']['output']>;
   Language: ResolverTypeWrapper<Omit<Language, 'chatSession' | 'flashcardSets' | 'languageFaceConfig' | 'stories' | 'users' | 'vocabularies' | 'worksheets'> & { chatSession?: Maybe<Array<ResolversTypes['ChatSession']>>, flashcardSets?: Maybe<Array<ResolversTypes['FlashcardSet']>>, languageFaceConfig?: Maybe<ResolversTypes['LanguageFaceConfig']>, stories?: Maybe<Array<ResolversTypes['Story']>>, users?: Maybe<Array<ResolversTypes['User']>>, vocabularies?: Maybe<Array<ResolversTypes['Vocabulary']>>, worksheets?: Maybe<Array<ResolversTypes['Worksheet']>> }>;
   LanguageFaceConfig: ResolverTypeWrapper<Omit<LanguageFaceConfig, 'language'> & { language?: Maybe<ResolversTypes['Language']> }>;
@@ -946,6 +947,7 @@ export type FlashcardSetResolvers<ContextType = MyContext, ParentType extends Re
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   language?: Resolver<Maybe<ResolversTypes['Language']>, ParentType, ContextType>;
   languageName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lastFrontFace?: Resolver<Maybe<ResolversTypes['FaceType']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   totalCards?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;

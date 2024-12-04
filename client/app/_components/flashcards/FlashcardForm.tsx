@@ -55,6 +55,7 @@ interface FlashcardFormProps {
     onSubmit: (card: FlashcardFormValues) => void;
     editCard?: Flashcard;
     languageName: string;
+    defaultFrontFace?: FaceType | null;
 }
 
 export function FlashcardForm({
@@ -63,6 +64,7 @@ export function FlashcardForm({
     onSubmit,
     editCard,
     languageName,
+    defaultFrontFace,
 }: FlashcardFormProps) {
     const [optionalFaces, setOptionalFaces] = useState([] as FaceType[]);
     const {
@@ -99,7 +101,10 @@ export function FlashcardForm({
     }, {} as { [key: string]: string });
     const defaultValues = useMemo(
         () => ({
-            frontFace: editCard?.faces!.find((face) => face.isFront)?.type.toLowerCase() || "",
+            frontFace:
+                editCard
+                    ?.faces!.find((face) => face.isFront)
+                    ?.type.toLowerCase() || defaultFrontFace?.toLowerCase(),
             ...defaultRequiredFaces,
             ...defaultOptionalFaces,
         }),
@@ -135,7 +140,10 @@ export function FlashcardForm({
         if (generateFaceData) {
             const faces = generateFaceData.generateFlashcardFaces;
             faces.forEach((face) => {
-                form.setValue(face.faceType.toLowerCase() as keyof FlashcardFormValues, face.content);
+                form.setValue(
+                    face.faceType.toLowerCase() as keyof FlashcardFormValues,
+                    face.content
+                );
             });
         }
     }, [generateFaceData]);
@@ -253,7 +261,10 @@ export function FlashcardForm({
                                                     onValueChange={
                                                         field.onChange
                                                     }
-                                                    defaultValue={field.value}
+                                                    defaultValue={
+                                                        defaultFrontFace?.toLowerCase() ??
+                                                        field.value
+                                                    }
                                                 >
                                                     <FormControl>
                                                         <SelectTrigger>
@@ -283,7 +294,9 @@ export function FlashcardForm({
                                         <FormField
                                             key={faceType}
                                             control={form.control}
-                                            name={faceType.toLowerCase() as keyof FlashcardFormValues}
+                                            name={
+                                                faceType.toLowerCase() as keyof FlashcardFormValues
+                                            }
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>
@@ -311,7 +324,9 @@ export function FlashcardForm({
                                         <FormField
                                             key={faceType}
                                             control={form.control}
-                                            name={faceType.toLowerCase() as keyof FlashcardFormValues}
+                                            name={
+                                                faceType.toLowerCase() as keyof FlashcardFormValues
+                                            }
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>

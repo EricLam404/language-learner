@@ -172,6 +172,7 @@ type FlashcardSet {
   id: ID!
   language: Language
   languageName: String!
+  lastFrontFace: FaceType
   name: String!
   totalCards: Int!
   user: User

@@ -19,6 +19,7 @@ export const GET_FLASHCARD_SET = gql(`
             languageName
             id
             description
+            lastFrontFace
             cards {
                 id
                 nextReviewAt

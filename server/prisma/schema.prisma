@@ -211,16 +211,17 @@ model Submission {
 }
 
 model FlashcardSet {
-  id           Int           @id @default(autoincrement())
-  name         String
-  description  String?
-  userId       String        @db.Uuid
-  user         User          @relation(fields: [userId], references: [userId])
-  languageName String
-  language     Language      @relation(fields: [languageName], references: [name])
-  vocabularies Vocabulary[]
-  cards        Flashcard[]
-  chatSessions ChatSession[]
+  id            Int           @id @default(autoincrement())
+  name          String
+  description   String?
+  userId        String        @db.Uuid
+  user          User          @relation(fields: [userId], references: [userId])
+  languageName  String
+  language      Language      @relation(fields: [languageName], references: [name])
+  lastFrontFace FaceType?
+  vocabularies  Vocabulary[]
+  cards         Flashcard[]
+  chatSessions  ChatSession[]
 }
 
 model Flashcard {

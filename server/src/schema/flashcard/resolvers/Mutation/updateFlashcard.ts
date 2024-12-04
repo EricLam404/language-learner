@@ -1,6 +1,8 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
-export const updateFlashcard: NonNullable<MutationResolvers['updateFlashcard']> = async (_parent, _arg, _ctx) => {
+export const updateFlashcard: NonNullable<
+    MutationResolvers["updateFlashcard"]
+> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.updateFlashcard resolver logic here */
     try {
         const frontFaces = _arg.faces.filter((face) => face.isFront);
@@ -22,32 +24,44 @@ export const updateFlashcard: NonNullable<MutationResolvers['updateFlashcard']> 
             });
         }
 
-        return await _ctx.dataSources.prisma.flashcard.update({
-            where: { id: Number(_arg.id) },
-            data: {
-                faces: {
-                    upsert: _arg.faces.map((face) => ({
-                        where: {
-                            flashcardId_type: {
-                                flashcardId: Number(_arg.id),
-                                type: face.type,
+        const frontFace = frontFaces[0];
+
+        const [updatedFlashcard] = await _ctx.dataSources.prisma.$transaction([
+            _ctx.dataSources.prisma.flashcard.update({
+                where: { id: Number(_arg.id) },
+                data: {
+                    faces: {
+                        upsert: _arg.faces.map((face) => ({
+                            where: {
+                                flashcardId_type: {
+                                    flashcardId: Number(_arg.id),
+                                    type: face.type,
+                                },
                             },
-                        },
-                        update: {
-                            content: face.content,
-                            isFront: face.isFront,
-                        },
-                        create: {
-                            content: face.content,
-                            type: face.type,
-                            order: face.order,
-                            isFront: face.isFront,
-                        },
-                    })),
+                            update: {
+                                content: face.content,
+                                isFront: face.isFront,
+                            },
+                            create: {
+                                content: face.content,
+                                type: face.type,
+                                order: face.order,
+                                isFront: face.isFront,
+                            },
+                        })),
+                    },
                 },
-            },
-            include: { faces: true },
-        });
+                include: { faces: true },
+            }),
+            _ctx.dataSources.prisma.flashcardSet.update({
+                where: { id: Number(flashcard.setId) },
+                data: {
+                    lastFrontFace: frontFace.type,
+                },
+            }),
+        ]);
+
+        return updatedFlashcard;
     } catch (error) {
         console.log(error);
 
