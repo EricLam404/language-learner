@@ -26,7 +26,6 @@ function makeClient() {
             const tokenSegments: { [key: string]: string[] } = {};
             let cookieValue;
             for (const [name, value] of Object.entries(cookies)) {
-                console.log(name + " = " + value);
                 const segmentMatch = name.match(
                     new RegExp(`^(${authTokenName})\.(\\d+)$`)
                 );
@@ -46,7 +45,6 @@ function makeClient() {
                     );
                 }
             }
-            console.log(tokenSegments);
             if (tokenSegments[authTokenName]) {
                 let concatenatedToken = tokenSegments[authTokenName].join("");
                 cookieValue = decodeURIComponent(
@@ -54,7 +52,6 @@ function makeClient() {
                 );
             }
             cookieValue = Buffer.from(cookieValue!, "base64").toString("utf-8");
-            console.log(cookieValue);
             const token = JSON.parse(cookieValue);
             // return the headers to the context so httpLink can read them
             return {
