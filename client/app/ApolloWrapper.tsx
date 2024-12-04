@@ -24,8 +24,9 @@ function makeClient() {
             // value = Buffer.from(value, "base64").toString("utf-8");
             // const token = JSON.parse(value);
             const tokenSegments: { [key: string]: string[] } = {};
-            for (let cookie in cookies) {
-                let [name, value] = cookie.split("=");
+            let cookieValue;
+            for (const [name, value] of Object.entries(cookies)) {
+                console.log(name + " = " + value);
                 const segmentMatch = name.match(
                     new RegExp(`^(${authTokenName})\.(\\d+)$`)
                 );
@@ -36,27 +37,25 @@ function makeClient() {
                         tokenSegments[baseName] = [];
                     }
 
-                    tokenSegments[baseName][Number(index)] =
-                        decodeURIComponent(value);
+                    tokenSegments[baseName][Number(index)] = decodeURIComponent(
+                        value!
+                    );
                 } else if (name === authTokenName) {
-                    value = decodeURIComponent(value.replace(/^base64-/, ""));
+                    cookieValue = decodeURIComponent(
+                        value!.replace(/^base64-/, "")
+                    );
                 }
             }
-            let token;
+            console.log(tokenSegments);
             if (tokenSegments[authTokenName]) {
-                const concatenatedToken = tokenSegments[authTokenName].join("");
-                const value = Buffer.from(concatenatedToken, "base64").toString(
-                    "utf-8"
+                let concatenatedToken = tokenSegments[authTokenName].join("");
+                cookieValue = decodeURIComponent(
+                    concatenatedToken.replace(/^base64-/, "")
                 );
-                token = JSON.parse(value);
-            } else {
-                const cookie = getCookie(
-                    process.env.NEXT_PUBLIC_AUTH_TOKEN_NAME!
-                )!;
-                let value = cookie.replace(/^base64-/, "");
-                value = Buffer.from(value, "base64").toString("utf-8");
-                token = JSON.parse(value);
             }
+            cookieValue = Buffer.from(cookieValue!, "base64").toString("utf-8");
+            console.log(cookieValue);
+            const token = JSON.parse(cookieValue);
             // return the headers to the context so httpLink can read them
             return {
                 headers: {
