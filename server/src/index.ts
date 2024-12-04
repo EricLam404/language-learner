@@ -16,6 +16,7 @@ import { MyContext } from "./utils/types/context";
 import { GraphQLError } from "graphql";
 import {
     authTokenName,
+    DEVELOPMENT,
     origin,
     SERVER_HOSTNAME,
     SERVER_PORT,
@@ -33,19 +34,22 @@ logging.log("Initializing API");
 logging.log("----------------------------------------");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(
-    cors<cors.CorsRequest>({
-        origin: origin,
-        credentials: true,
-    })
-);
 app.use(express.urlencoded({ extended: true }));
 
 logging.log("----------------------------------------");
 logging.log("Logging & Configuration");
 logging.log("----------------------------------------");
-// app.use(parseCookies());
-app.use(authMiddleware);
+if (DEVELOPMENT) {
+    app.use(parseCookies());
+    app.use(
+        cors<cors.CorsRequest>({
+            origin: origin,
+            credentials: true,
+        })
+    );
+} else {
+    app.use(authMiddleware);
+}
 app.use(loggingHandler);
 
 logging.log("----------------------------------------");
@@ -69,7 +73,21 @@ app.use(
                 // @ts-expect-error: Introspection cookie is used for internal purposes only
                 return null;
             }
-            const token = req.headers["authorization"]!.split(" ")[1];
+            let token;
+
+            if (DEVELOPMENT) {
+                if (!req.cookies[authTokenName]) {
+                    throw new GraphQLError("User is not authenticated", {
+                        extensions: {
+                            code: "UNAUTHENTICATED",
+                            http: { status: 401 },
+                        },
+                    });
+                }
+                token = req.cookies[authTokenName].access_token;
+            } else {
+                token = req.headers["authorization"]!.split(" ")[1];
+            }
             const supabase = getServiceSupabase();
             const {
                 data: { user },
