@@ -282,7 +282,7 @@ enum FaceType {
 }
 
 model ChatSession {
-  id             Int           @id @default(autoincrement())
+  id             String        @id @default(uuid()) @db.Uuid
   userId         String        @db.Uuid
   user           User          @relation(fields: [userId], references: [userId])
   languageName   String
@@ -298,18 +298,19 @@ model ChatSession {
 }
 
 model ChatMessage {
-  id        Int         @id @default(autoincrement())
-  sessionId Int
+  id        String      @id @default(uuid()) @db.Uuid
+  sessionId String      @db.Uuid
   session   ChatSession @relation(fields: [sessionId], references: [id])
   role      String
   content   String
   // flashcardId   Int?
   // flashcard     Flashcard?  @relation(fields: [flashcardId], references: [id])
   // vocabularyIds Int[]      // Array of vocabulary IDs used in this message
-  timestamp DateTime    @default(now()) @db.Timestamptz(3)
+  createdAt DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime    @updatedAt @db.Timestamptz(3)
   // @@index([flashcardId])
 
-  @@index([sessionId, timestamp])
+  @@index([sessionId, createdAt])
 }
 
 // enum AppPermission {

@@ -16,7 +16,7 @@ import {
 import { Input } from "@components/ui/input";
 import { Form } from "@/components/ui/form";
 import { z, infer as zInfer } from "zod";
-import Selections from "./Selections";
+import Selections from "../selections/LanguageSelections";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { toast } from "sonner";

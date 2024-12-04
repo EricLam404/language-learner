@@ -30,7 +30,7 @@ import {
     DeleteVocabularyForm,
     UpdateVocabularyForm,
 } from "@/components/forms/VocabularyForms";
-import Selections from "@/components/forms/Selections";
+import Selections from "@components/selections/LanguageSelections";
 
 // TODO: Add word to vocabulary list validation check
 // FEATURE: Add radio button to select words for flashcards

@@ -21,7 +21,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@components/ui/select";
-import Selections from "./Selections";
+import Selections from "../selections/LanguageSelections";
 import { difficultyLevels, levels } from "@/lib/difficultyLevels";
 import { Textarea } from "@components/ui/textarea";
 import { Story } from "@app/(userFacing)/(story)/story/page";

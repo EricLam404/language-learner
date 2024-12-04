@@ -28,7 +28,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@components/ui/select";
-import Selections from "./Selections";
+import Selections from "../selections/LanguageSelections";
 import {
     VocabularyFormValues,
     vocabularySchema,
