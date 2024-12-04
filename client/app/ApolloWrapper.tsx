@@ -10,23 +10,70 @@ import {
     InMemoryCache,
     SSRMultipartLink,
 } from "@apollo/experimental-nextjs-app-support";
-import { getCookie } from "cookies-next";
+import { getCookie, getCookies } from "cookies-next";
 
 // have a function to create a client for you
 function makeClient() {
     const authLink = setContext((_, { headers }) => {
-        // get the authentication token from local storage if it exists
-        const cookie = getCookie(process.env.NEXT_PUBLIC_AUTH_TOKEN_NAME!)!;
-        let value = cookie.replace(/^base64-/, "");
-        value = Buffer.from(value, "base64").toString("utf-8");
-        const token = JSON.parse(value);
-        // return the headers to the context so httpLink can read them
-        return {
-            headers: {
-                ...headers,
-                authorization: token?.access_token ? `Bearer ${token.access_token}` : "",
-            },
-        };
+        try {
+            // get the authentication token from local storage if it exists
+            const cookies = getCookies();
+            const authTokenName = process.env.NEXT_PUBLIC_AUTH_TOKEN_NAME!;
+            // const cookie = getCookie(process.env.NEXT_PUBLIC_AUTH_TOKEN_NAME!)!;
+            // let value = cookie.replace(/^base64-/, "");
+            // value = Buffer.from(value, "base64").toString("utf-8");
+            // const token = JSON.parse(value);
+            const tokenSegments: { [key: string]: string[] } = {};
+            for (let cookie in cookies) {
+                let [name, value] = cookie.split("=");
+                const segmentMatch = name.match(
+                    new RegExp(`^(${authTokenName})\.(\\d+)$`)
+                );
+                if (segmentMatch) {
+                    const [, baseName, index] = segmentMatch;
+
+                    if (!tokenSegments[baseName]) {
+                        tokenSegments[baseName] = [];
+                    }
+
+                    tokenSegments[baseName][Number(index)] =
+                        decodeURIComponent(value);
+                } else if (name === authTokenName) {
+                    value = decodeURIComponent(value.replace(/^base64-/, ""));
+                }
+            }
+            let token;
+            if (tokenSegments[authTokenName]) {
+                const concatenatedToken = tokenSegments[authTokenName].join("");
+                const value = Buffer.from(concatenatedToken, "base64").toString(
+                    "utf-8"
+                );
+                token = JSON.parse(value);
+            } else {
+                const cookie = getCookie(
+                    process.env.NEXT_PUBLIC_AUTH_TOKEN_NAME!
+                )!;
+                let value = cookie.replace(/^base64-/, "");
+                value = Buffer.from(value, "base64").toString("utf-8");
+                token = JSON.parse(value);
+            }
+            // return the headers to the context so httpLink can read them
+            return {
+                headers: {
+                    ...headers,
+                    authorization: token?.access_token
+                        ? `Bearer ${token.access_token}`
+                        : "",
+                },
+            };
+        } catch (e) {
+            console.error(e);
+            return {
+                headers: {
+                    ...headers,
+                },
+            };
+        }
     });
     const httpLink = new HttpLink({
         // this needs to be an absolute url, as relative urls cannot be used in SSR
