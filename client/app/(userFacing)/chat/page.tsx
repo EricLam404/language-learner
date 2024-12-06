@@ -1,4 +1,4 @@
-import { ChatContainer } from "@components/chatbot/ChatContainer";
+import { ChatContainer } from "@components/chat/ChatContainer";
 import React from "react";
 
 const Page = () => {

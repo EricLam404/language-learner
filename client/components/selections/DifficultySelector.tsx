@@ -1,32 +1,53 @@
-'use client'
+"use client";
+import {
+    FormField,
+    FormItem,
+    FormLabel,
+    FormControl,
+    FormMessage,
+} from "@/components/ui/form";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ChatFormData } from "@/lib/schemas/chat";
+import { UseFormReturn } from "react-hook-form";
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
+type DifficultySelectorProps = {
+    form: UseFormReturn<ChatFormData>;
+};
 
-interface DifficultySelectorProps {
-  onDifficultyChange: (difficulty: string) => void;
-}
-
-export function DifficultySelector({ onDifficultyChange }: DifficultySelectorProps) {
-  return (
-    <div>
-      <Label htmlFor="difficulty" className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-        Difficulty
-      </Label>
-      <RadioGroup id="difficulty" defaultValue="beginner" onValueChange={onDifficultyChange} className="flex space-x-4">
-        <div className="flex items-center">
-          <RadioGroupItem value="beginner" id="beginner" className="text-purple-600" />
-          <Label htmlFor="beginner" className="ml-2 text-sm">Beginner</Label>
-        </div>
-        <div className="flex items-center">
-          <RadioGroupItem value="intermediate" id="intermediate" className="text-purple-600" />
-          <Label htmlFor="intermediate" className="ml-2 text-sm">Intermediate</Label>
-        </div>
-        <div className="flex items-center">
-          <RadioGroupItem value="advanced" id="advanced" className="text-purple-600" />
-          <Label htmlFor="advanced" className="ml-2 text-sm">Advanced</Label>
-        </div>
-      </RadioGroup>
-    </div>
-  )
+export function DifficultySelector({ form }: DifficultySelectorProps) {
+    return (
+        <FormField
+            control={form.control}
+            name="difficulty"
+            render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Difficulty</FormLabel>
+                    <FormControl>
+                        <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex space-x-4"
+                        >
+                            {["beginner", "intermediate", "advanced"].map(
+                                (level) => (
+                                    <FormItem
+                                        key={level}
+                                        className="flex items-center space-x-2"
+                                    >
+                                        <FormControl>
+                                            <RadioGroupItem value={level} />
+                                        </FormControl>
+                                        <FormLabel className="font-normal capitalize">
+                                            {level}
+                                        </FormLabel>
+                                    </FormItem>
+                                )
+                            )}
+                        </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+            )}
+        />
+    );
 }

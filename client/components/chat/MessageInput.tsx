@@ -1,15 +1,14 @@
 "use client";
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send, Mic } from "lucide-react";
 
-interface MessageInputProps {
+type MessageInputProps = {
     inputMessage: string;
     onInputChange: (value: string) => void;
     onSendMessage: () => void;
     onSpeechRecognition: () => void;
-}
+};
 
 export function MessageInput({
     inputMessage,

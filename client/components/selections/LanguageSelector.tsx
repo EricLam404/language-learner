@@ -1,29 +1,53 @@
-'use client'
+"use client";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
+import {
+    FormField,
+    FormItem,
+    FormLabel,
+    FormControl,
+    FormMessage,
+} from "@/components/ui/form";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { ChatFormData } from "@/lib/schemas/chat";
+import { UseFormReturn } from "react-hook-form";
 
 interface LanguageSelectorProps {
-  onLanguageChange: (language: string) => void;
+    form: UseFormReturn<ChatFormData>;
 }
 
-export function LanguageSelector({ onLanguageChange }: LanguageSelectorProps) {
-  return (
-    <div>
-      <Label htmlFor="language" className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-        Language
-      </Label>
-      <Select onValueChange={onLanguageChange}>
-        <SelectTrigger id="language" className="w-full">
-          <SelectValue placeholder="Select a language" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="spanish">Spanish</SelectItem>
-          <SelectItem value="french">French</SelectItem>
-          <SelectItem value="german">German</SelectItem>
-          <SelectItem value="italian">Italian</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
-  )
+export function LanguageSelector({ form }: LanguageSelectorProps) {
+    return (
+        <FormField
+            control={form.control}
+            name="language"
+            render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Language</FormLabel>
+                    <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                    >
+                        <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a language" />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            <SelectItem value="spanish">Spanish</SelectItem>
+                            <SelectItem value="french">French</SelectItem>
+                            <SelectItem value="german">German</SelectItem>
+                            <SelectItem value="italian">Italian</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <FormMessage />
+                </FormItem>
+            )}
+        />
+    );
 }

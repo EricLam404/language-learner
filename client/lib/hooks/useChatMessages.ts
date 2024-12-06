@@ -29,10 +29,12 @@ export function useChatMessages() {
         }, 1000);
     };
 
+
     return {
         messages,
         isLoading,
         addMessage,
+        setMessages,
         simulateBotResponse,
     };
 }
