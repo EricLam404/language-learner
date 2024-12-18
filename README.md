@@ -1,7 +1,10 @@
-# Language Learning Web App
+# LingoVoyage: Language Learning Redefined
 
-## Overview
-This web application helps users study different languages by utilizing traditional study techniques and AI-generated stories and worksheets from vocabulary lists. 
+Explore the power of language learning with **LingoVoyage**, a dynamic platform designed to make studying new languages engaging and effective. Whether you’re mastering Chinese or any other language, LingoVoyage combines traditional learning techniques with cutting-edge AI tools to offer a personalized experience.
+
+[Visit LingoVoyage Now!](https://lingovoyage.vercel.app/)
+
+Start your journey toward fluency today with LingoVoyage!
 
 ## Tech Stack
 
