@@ -20,7 +20,7 @@ const chivo = Chivo({
   display: 'swap',
 })
 export const metadata: Metadata = {
-    title: "Language Learner",
+    title: "Lingo Voyage",
     description:
         "An app to help you learn a new language through traditional techniques and Generative AI.",
 };

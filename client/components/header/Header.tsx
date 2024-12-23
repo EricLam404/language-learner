@@ -56,7 +56,7 @@ const Header = () => {
                 prefetch={false}
             >
                 <MountainIcon className="h-6 w-6" />
-                <span className="font-bold">Language Learner</span>
+                <span className="font-bold">Lingo Voyage</span>
             </NavLink>
             <div className="flex w-full justify-end gap-2 md:gap-16">
                 {/* Desktop Navigation */}

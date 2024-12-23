@@ -39,6 +39,7 @@ export interface Story {
 
 // TODO: Add search functionality with timeout
 // TODO: Add search by tags
+// Fix: Fetch only public stories with user languages
 
 export default function Page() {
     const { data: languages, isLoading, isError } = useLanguages();
