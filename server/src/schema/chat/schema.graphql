@@ -2,16 +2,16 @@ type ChatSession {
     id: ID!
     userId: ID!
     languageName: String!
-    messages: [JSON!]
+    name: String!
+    difficulty: Int!
     createdAt: DateTime!
     updatedAt: DateTime!
     flashcardSetId: ID
 
-
-    user: User!
-    language: Language!
+    user: User
+    language: Language
     flashcardSet: FlashcardSet
-    chatMessages: [ChatMessage!]
+    messages: [ChatMessage!]
 }
 
 type ChatMessage {
@@ -19,10 +19,29 @@ type ChatMessage {
     sessionId: ID!
     role: String!
     content: String!
-    # flashcardId: ID
-    # flashcard: Flashcard
-    # vocabularyIds: [ID!]
-    timestamp: DateTime!
-    
-    session: ChatSession!
+    timestamp: DateTime
+
+    session: ChatSession
+}
+
+extend type Query {
+    chatSession(id: ID!): ChatSession
+    chatSessions: [ChatSession!]
+}
+
+extend type Mutation {
+    createChatSession(
+        languageName: String!
+        name: String
+        difficulty: Int!
+        flashcardMode: Boolean!
+        flashcardSetId: ID
+        chatMode: String!
+    ): ChatSession
+    deleteChatSession(id: ID!): Boolean!
+    createChatMessage(
+        sessionId: ID!
+        role: String!
+        content: String!
+    ): ChatMessage
 }

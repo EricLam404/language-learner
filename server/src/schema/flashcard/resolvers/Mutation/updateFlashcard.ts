@@ -1,8 +1,6 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
-export const updateFlashcard: NonNullable<
-    MutationResolvers["updateFlashcard"]
-> = async (_parent, _arg, _ctx) => {
+export const updateFlashcard: NonNullable<MutationResolvers['updateFlashcard']> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.updateFlashcard resolver logic here */
     try {
         const frontFaces = _arg.faces.filter((face) => face.isFront);

@@ -30,22 +30,23 @@ type ChatMessage {
   content: String!
   id: ID!
   role: String!
-  session: ChatSession!
+  session: ChatSession
   sessionId: ID!
-  timestamp: DateTime!
+  timestamp: DateTime
 }
 
 type ChatSession {
-  chatMessages: [ChatMessage!]
   createdAt: DateTime!
+  difficulty: Int!
   flashcardSet: FlashcardSet
   flashcardSetId: ID
   id: ID!
-  language: Language!
+  language: Language
   languageName: String!
-  messages: [JSON!]
+  messages: [ChatMessage!]
+  name: String!
   updatedAt: DateTime!
-  user: User!
+  user: User
   userId: ID!
 }
 
@@ -205,6 +206,8 @@ type LanguageFaceConfig {
 }
 
 type Mutation {
+  createChatMessage(content: String!, role: String!, sessionId: ID!): ChatMessage
+  createChatSession(chatMode: String!, difficulty: Int!, flashcardMode: Boolean!, flashcardSetId: ID, languageName: String!, name: String): ChatSession
   createFlashcard(faces: [FlashcardFaceInput!]!, setId: ID!): Flashcard!
   createFlashcardSet(description: String, languageName: String!, name: String!): FlashcardSet!
   createLanguage(code: String!, name: String!): Language!
@@ -213,6 +216,7 @@ type Mutation {
   createUser(languages: [String!]!, username: String!): User!
   createVocabulary(example: String, languageName: String!, meaning: String!, word: String!): Vocabulary!
   createWorksheet(input: CreateWorksheetInput!): Worksheet
+  deleteChatSession(id: ID!): Boolean!
   deleteFlashcard(id: ID!): Boolean!
   deleteFlashcardSet(id: ID!): Boolean!
   deleteLanguage(id: ID!): Boolean!
@@ -240,6 +244,8 @@ type PaginatedStoriesResponse {
 }
 
 type Query {
+  chatSession(id: ID!): ChatSession
+  chatSessions: [ChatSession!]
   flashcard(id: ID!): Flashcard
   flashcardSet(id: ID!): FlashcardSet
   flashcardSets: [FlashcardSet!]!

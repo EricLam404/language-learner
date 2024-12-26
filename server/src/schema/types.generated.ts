@@ -56,23 +56,24 @@ export type ChatMessage = {
   content: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   role: Scalars['String']['output'];
-  session: ChatSession;
+  session?: Maybe<ChatSession>;
   sessionId: Scalars['ID']['output'];
-  timestamp: Scalars['DateTime']['output'];
+  timestamp?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type ChatSession = {
   __typename?: 'ChatSession';
-  chatMessages?: Maybe<Array<ChatMessage>>;
   createdAt: Scalars['DateTime']['output'];
+  difficulty: Scalars['Int']['output'];
   flashcardSet?: Maybe<FlashcardSet>;
   flashcardSetId?: Maybe<Scalars['ID']['output']>;
   id: Scalars['ID']['output'];
-  language: Language;
+  language?: Maybe<Language>;
   languageName: Scalars['String']['output'];
-  messages?: Maybe<Array<Scalars['JSON']['output']>>;
+  messages?: Maybe<Array<ChatMessage>>;
+  name: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
-  user: User;
+  user?: Maybe<User>;
   userId: Scalars['ID']['output'];
 };
 
@@ -235,6 +236,8 @@ export type LanguageFaceConfig = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createChatMessage?: Maybe<ChatMessage>;
+  createChatSession?: Maybe<ChatSession>;
   createFlashcard: Flashcard;
   createFlashcardSet: FlashcardSet;
   createLanguage: Language;
@@ -243,6 +246,7 @@ export type Mutation = {
   createUser: User;
   createVocabulary: Vocabulary;
   createWorksheet?: Maybe<Worksheet>;
+  deleteChatSession: Scalars['Boolean']['output'];
   deleteFlashcard: Scalars['Boolean']['output'];
   deleteFlashcardSet: Scalars['Boolean']['output'];
   deleteLanguage: Scalars['Boolean']['output'];
@@ -261,6 +265,23 @@ export type Mutation = {
   updateUser: User;
   updateVocabulary: Vocabulary;
   updateWorksheet?: Maybe<Worksheet>;
+};
+
+
+export type MutationcreateChatMessageArgs = {
+  content: Scalars['String']['input'];
+  role: Scalars['String']['input'];
+  sessionId: Scalars['ID']['input'];
+};
+
+
+export type MutationcreateChatSessionArgs = {
+  chatMode: Scalars['String']['input'];
+  difficulty: Scalars['Int']['input'];
+  flashcardMode: Scalars['Boolean']['input'];
+  flashcardSetId?: InputMaybe<Scalars['ID']['input']>;
+  languageName: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -309,6 +330,11 @@ export type MutationcreateVocabularyArgs = {
 
 export type MutationcreateWorksheetArgs = {
   input: CreateWorksheetInput;
+};
+
+
+export type MutationdeleteChatSessionArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -425,6 +451,8 @@ export type PaginatedStoriesResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  chatSession?: Maybe<ChatSession>;
+  chatSessions?: Maybe<Array<ChatSession>>;
   flashcard?: Maybe<Flashcard>;
   flashcardSet?: Maybe<FlashcardSet>;
   flashcardSets: Array<FlashcardSet>;
@@ -444,6 +472,11 @@ export type Query = {
   vocabulary?: Maybe<Vocabulary>;
   worksheet?: Maybe<Worksheet>;
   worksheets: Array<Worksheet>;
+};
+
+
+export type QuerychatSessionArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -741,8 +774,8 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   ChapterProgress: ResolverTypeWrapper<Omit<ChapterProgress, 'chapter' | 'readingProgress'> & { chapter: ResolversTypes['Chapter'], readingProgress: ResolversTypes['ReadingProgress'] }>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
-  ChatMessage: ResolverTypeWrapper<Omit<ChatMessage, 'session'> & { session: ResolversTypes['ChatSession'] }>;
-  ChatSession: ResolverTypeWrapper<Omit<ChatSession, 'chatMessages' | 'flashcardSet' | 'language' | 'user'> & { chatMessages?: Maybe<Array<ResolversTypes['ChatMessage']>>, flashcardSet?: Maybe<ResolversTypes['FlashcardSet']>, language: ResolversTypes['Language'], user: ResolversTypes['User'] }>;
+  ChatMessage: ResolverTypeWrapper<Omit<ChatMessage, 'session'> & { session?: Maybe<ResolversTypes['ChatSession']> }>;
+  ChatSession: ResolverTypeWrapper<Omit<ChatSession, 'flashcardSet' | 'language' | 'messages' | 'user'> & { flashcardSet?: Maybe<ResolversTypes['FlashcardSet']>, language?: Maybe<ResolversTypes['Language']>, messages?: Maybe<Array<ResolversTypes['ChatMessage']>>, user?: Maybe<ResolversTypes['User']> }>;
   ComprehensionQuestion: ResolverTypeWrapper<Omit<ComprehensionQuestion, 'chapter' | 'options'> & { chapter: ResolversTypes['Chapter'], options: Array<ResolversTypes['ComprehensionQuestionOption']> }>;
   ComprehensionQuestionOption: ResolverTypeWrapper<Omit<ComprehensionQuestionOption, 'question'> & { question: ResolversTypes['ComprehensionQuestion'] }>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
@@ -784,8 +817,8 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID']['output'];
   ChapterProgress: Omit<ChapterProgress, 'chapter' | 'readingProgress'> & { chapter: ResolversParentTypes['Chapter'], readingProgress: ResolversParentTypes['ReadingProgress'] };
   Float: Scalars['Float']['output'];
-  ChatMessage: Omit<ChatMessage, 'session'> & { session: ResolversParentTypes['ChatSession'] };
-  ChatSession: Omit<ChatSession, 'chatMessages' | 'flashcardSet' | 'language' | 'user'> & { chatMessages?: Maybe<Array<ResolversParentTypes['ChatMessage']>>, flashcardSet?: Maybe<ResolversParentTypes['FlashcardSet']>, language: ResolversParentTypes['Language'], user: ResolversParentTypes['User'] };
+  ChatMessage: Omit<ChatMessage, 'session'> & { session?: Maybe<ResolversParentTypes['ChatSession']> };
+  ChatSession: Omit<ChatSession, 'flashcardSet' | 'language' | 'messages' | 'user'> & { flashcardSet?: Maybe<ResolversParentTypes['FlashcardSet']>, language?: Maybe<ResolversParentTypes['Language']>, messages?: Maybe<Array<ResolversParentTypes['ChatMessage']>>, user?: Maybe<ResolversParentTypes['User']> };
   ComprehensionQuestion: Omit<ComprehensionQuestion, 'chapter' | 'options'> & { chapter: ResolversParentTypes['Chapter'], options: Array<ResolversParentTypes['ComprehensionQuestionOption']> };
   ComprehensionQuestionOption: Omit<ComprehensionQuestionOption, 'question'> & { question: ResolversParentTypes['ComprehensionQuestion'] };
   Boolean: Scalars['Boolean']['output'];
@@ -851,23 +884,24 @@ export type ChatMessageResolvers<ContextType = MyContext, ParentType extends Res
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   role?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  session?: Resolver<ResolversTypes['ChatSession'], ParentType, ContextType>;
+  session?: Resolver<Maybe<ResolversTypes['ChatSession']>, ParentType, ContextType>;
   sessionId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  timestamp?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  timestamp?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type ChatSessionResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['ChatSession'] = ResolversParentTypes['ChatSession']> = ResolversObject<{
-  chatMessages?: Resolver<Maybe<Array<ResolversTypes['ChatMessage']>>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  difficulty?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   flashcardSet?: Resolver<Maybe<ResolversTypes['FlashcardSet']>, ParentType, ContextType>;
   flashcardSetId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  language?: Resolver<ResolversTypes['Language'], ParentType, ContextType>;
+  language?: Resolver<Maybe<ResolversTypes['Language']>, ParentType, ContextType>;
   languageName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  messages?: Resolver<Maybe<Array<ResolversTypes['JSON']>>, ParentType, ContextType>;
+  messages?: Resolver<Maybe<Array<ResolversTypes['ChatMessage']>>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -985,6 +1019,8 @@ export type LanguageFaceConfigResolvers<ContextType = MyContext, ParentType exte
 }>;
 
 export type MutationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  createChatMessage?: Resolver<Maybe<ResolversTypes['ChatMessage']>, ParentType, ContextType, RequireFields<MutationcreateChatMessageArgs, 'content' | 'role' | 'sessionId'>>;
+  createChatSession?: Resolver<Maybe<ResolversTypes['ChatSession']>, ParentType, ContextType, RequireFields<MutationcreateChatSessionArgs, 'chatMode' | 'difficulty' | 'flashcardMode' | 'languageName'>>;
   createFlashcard?: Resolver<ResolversTypes['Flashcard'], ParentType, ContextType, RequireFields<MutationcreateFlashcardArgs, 'faces' | 'setId'>>;
   createFlashcardSet?: Resolver<ResolversTypes['FlashcardSet'], ParentType, ContextType, RequireFields<MutationcreateFlashcardSetArgs, 'languageName' | 'name'>>;
   createLanguage?: Resolver<ResolversTypes['Language'], ParentType, ContextType, RequireFields<MutationcreateLanguageArgs, 'code' | 'name'>>;
@@ -993,6 +1029,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationcreateUserArgs, 'languages' | 'username'>>;
   createVocabulary?: Resolver<ResolversTypes['Vocabulary'], ParentType, ContextType, RequireFields<MutationcreateVocabularyArgs, 'languageName' | 'meaning' | 'word'>>;
   createWorksheet?: Resolver<Maybe<ResolversTypes['Worksheet']>, ParentType, ContextType, RequireFields<MutationcreateWorksheetArgs, 'input'>>;
+  deleteChatSession?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteChatSessionArgs, 'id'>>;
   deleteFlashcard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteFlashcardArgs, 'id'>>;
   deleteFlashcardSet?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteFlashcardSetArgs, 'id'>>;
   deleteLanguage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteLanguageArgs, 'id'>>;
@@ -1021,6 +1058,8 @@ export type PaginatedStoriesResponseResolvers<ContextType = MyContext, ParentTyp
 }>;
 
 export type QueryResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  chatSession?: Resolver<Maybe<ResolversTypes['ChatSession']>, ParentType, ContextType, RequireFields<QuerychatSessionArgs, 'id'>>;
+  chatSessions?: Resolver<Maybe<Array<ResolversTypes['ChatSession']>>, ParentType, ContextType>;
   flashcard?: Resolver<Maybe<ResolversTypes['Flashcard']>, ParentType, ContextType, RequireFields<QueryflashcardArgs, 'id'>>;
   flashcardSet?: Resolver<Maybe<ResolversTypes['FlashcardSet']>, ParentType, ContextType, RequireFields<QueryflashcardSetArgs, 'id'>>;
   flashcardSets?: Resolver<Array<ResolversTypes['FlashcardSet']>, ParentType, ContextType>;
