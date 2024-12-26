@@ -7,13 +7,8 @@ interface Message {
     content: string;
 }
 
-export function useChatMessages() {
+export function useChatMessages(chatId: string) {
     const [messages, setMessages] = useState<Message[]>([
-        {
-            role: "bot",
-            content:
-                "Hello! I'm your AI language tutor. What would you like to practice today?",
-        },
     ]);
     const [isLoading, setIsLoading] = useState(false);
 

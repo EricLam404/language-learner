@@ -13,6 +13,9 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "\n    mutation CreateChatSession($languageName: String!, $difficulty: Int!, $flashcardMode: Boolean!, $chatMode: String!) {\n        createChatSession(languageName: $languageName, difficulty: $difficulty, flashcardMode: $flashcardMode, chatMode: $chatMode) {\n            updatedAt\n            name\n            languageName\n            id\n            flashcardSetId\n            difficulty\n            createdAt\n        }\n    }\n": types.CreateChatSessionDocument,
+    "\n    mutation CreateChatMessage($sessionId: ID!, $role: String!, $content: String!) {\n        createChatMessage(sessionId: $sessionId, role: $role, content: $content) {\n            content\n            id\n            role\n            sessionId\n        }\n    }\n": types.CreateChatMessageDocument,
+    "\n    query ChatSession($chatSessionId: ID!) {\n        chatSession(id: $chatSessionId) {\n            messages {\n                content\n                role\n            }\n            name\n            languageName\n            difficulty\n        }\n    }\n": types.ChatSessionDocument,
     "\n    query GetFlashcardSets {\n        flashcardSets {\n            description\n            id\n            name\n            languageName\n            userId\n        }\n    }\n": types.GetFlashcardSetsDocument,
     "\n    query FlashcardSet($flashcardSetId: ID!) {\n        flashcardSet(id: $flashcardSetId) {\n            name\n            languageName\n            id\n            description\n            lastFrontFace\n            cards {\n                id\n                nextReviewAt\n                interval\n                faces {\n                    id\n                    order\n                    type\n                    content\n                    isFront\n                }\n            }\n        }\n    }\n": types.FlashcardSetDocument,
     "\n    mutation CreateFlashcardSet($languageName: String!, $name: String!, $description: String) {\n        createFlashcardSet(languageName: $languageName, name: $name, description: $description) {\n            description\n            id\n            name\n            userId\n        }\n    }\n": types.CreateFlashcardSetDocument,
@@ -54,6 +57,18 @@ const documents = {
  */
 export function gql(source: string): unknown;
 
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    mutation CreateChatSession($languageName: String!, $difficulty: Int!, $flashcardMode: Boolean!, $chatMode: String!) {\n        createChatSession(languageName: $languageName, difficulty: $difficulty, flashcardMode: $flashcardMode, chatMode: $chatMode) {\n            updatedAt\n            name\n            languageName\n            id\n            flashcardSetId\n            difficulty\n            createdAt\n        }\n    }\n"): (typeof documents)["\n    mutation CreateChatSession($languageName: String!, $difficulty: Int!, $flashcardMode: Boolean!, $chatMode: String!) {\n        createChatSession(languageName: $languageName, difficulty: $difficulty, flashcardMode: $flashcardMode, chatMode: $chatMode) {\n            updatedAt\n            name\n            languageName\n            id\n            flashcardSetId\n            difficulty\n            createdAt\n        }\n    }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    mutation CreateChatMessage($sessionId: ID!, $role: String!, $content: String!) {\n        createChatMessage(sessionId: $sessionId, role: $role, content: $content) {\n            content\n            id\n            role\n            sessionId\n        }\n    }\n"): (typeof documents)["\n    mutation CreateChatMessage($sessionId: ID!, $role: String!, $content: String!) {\n        createChatMessage(sessionId: $sessionId, role: $role, content: $content) {\n            content\n            id\n            role\n            sessionId\n        }\n    }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    query ChatSession($chatSessionId: ID!) {\n        chatSession(id: $chatSessionId) {\n            messages {\n                content\n                role\n            }\n            name\n            languageName\n            difficulty\n        }\n    }\n"): (typeof documents)["\n    query ChatSession($chatSessionId: ID!) {\n        chatSession(id: $chatSessionId) {\n            messages {\n                content\n                role\n            }\n            name\n            languageName\n            difficulty\n        }\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

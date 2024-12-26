@@ -1,9 +1,7 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
 import { FaceType } from "@prisma/client";
-export const createFlashcard: NonNullable<
-    MutationResolvers["createFlashcard"]
-> = async (_parent, _arg, _ctx) => {
+export const createFlashcard: NonNullable<MutationResolvers['createFlashcard']> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.createFlashcard resolver logic here */
     try {
         const frontFaces = _arg.faces.filter((face) => face.isFront);

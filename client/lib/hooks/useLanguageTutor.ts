@@ -3,6 +3,11 @@ import { useChatMessages } from "./useChatMessages";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { chatSchema, type ChatFormData } from "../schemas/chat";
+import {
+    CREATE_CHAT_MESSAGE,
+    GET_CHAT_SESSION,
+} from "@components/graphql/chat";
+import { useMutation, useQuery } from "@apollo/client";
 
 // Mock data for flashcard sets
 const flashcardSets = [
@@ -13,7 +18,7 @@ const flashcardSets = [
     { id: "5", name: "Travel Vocabulary" },
 ];
 
-export function useLanguageTutor() {
+export function useLanguageTutor(chatId: string) {
     const [inputMessage, setInputMessage] = useState("");
     const [showRolePlayOptions, setShowRolePlayOptions] = useState(false);
 
@@ -23,7 +28,27 @@ export function useLanguageTutor() {
         addMessage,
         setMessages,
         simulateBotResponse,
-    } = useChatMessages();
+    } = useChatMessages(chatId);
+
+    const {
+        data: chatSession,
+        loading,
+        error,
+    } = useQuery(GET_CHAT_SESSION, {
+        variables: { chatSessionId: chatId },
+    });
+
+    const [createChatMessage, { loading: createChatMessageLoading }] =
+        useMutation(CREATE_CHAT_MESSAGE, {
+            refetchQueries: [
+                {
+                    query: GET_CHAT_SESSION,
+                    variables: { chatSessionId: chatId },
+                },
+            ],
+        });
+
+    console.log(chatSession);
 
     const form = useForm<ChatFormData>({
         resolver: zodResolver(chatSchema),
@@ -43,8 +68,14 @@ export function useLanguageTutor() {
 
     const handleSendMessage = () => {
         if (inputMessage.trim()) {
-            addMessage({ role: "user", content: inputMessage });
-            simulateBotResponse(inputMessage);
+            createChatMessage({
+                variables: {
+                    sessionId: chatId,
+                    role: "user",
+                    content: inputMessage,
+                },
+            });
+            // simulateBotResponse(inputMessage);
             setInputMessage("");
         }
     };
@@ -101,32 +132,52 @@ export function useLanguageTutor() {
     };
 
     const handleFlashcardSetChange = (setId: string) => {
-        setValue('flashcardSet', setId)
-        const selectedSet = flashcardSets.find(set => set.id === setId)
+        setValue("flashcardSet", setId);
+        const selectedSet = flashcardSets.find((set) => set.id === setId);
         if (selectedSet) {
-          setMessages([...messages, { role: 'bot', content: `Great! Let's practice with the "${selectedSet.name}" flashcard set.` }])
+            setMessages([
+                ...messages,
+                {
+                    role: "bot",
+                    content: `Great! Let's practice with the "${selectedSet.name}" flashcard set.`,
+                },
+            ]);
         }
-      }
-    
-      const handleChatModeChange = (mode: 'free' | 'roleplay') => {
-        setValue('chatMode', mode)
-        const selectedSet = flashcardSets.find(set => set.id === selectedFlashcardSet)
+    };
+
+    const handleChatModeChange = (mode: "free" | "roleplay") => {
+        setValue("chatMode", mode);
+        const selectedSet = flashcardSets.find(
+            (set) => set.id === selectedFlashcardSet
+        );
         if (selectedSet) {
-          if (mode === 'free') {
-            setMessages([...messages, { role: 'bot', content: `I see you are learning ${selectedSet.name}! What would you like to talk about?` }])
-          } else if (mode === 'roleplay') {
-            setMessages([...messages, { role: 'bot', content: `Would you like me to roleplay a scenario based on ${selectedSet.name}?` }])
-            setShowRolePlayOptions(true)
-          }
+            if (mode === "free") {
+                setMessages([
+                    ...messages,
+                    {
+                        role: "bot",
+                        content: `I see you are learning ${selectedSet.name}! What would you like to talk about?`,
+                    },
+                ]);
+            } else if (mode === "roleplay") {
+                setMessages([
+                    ...messages,
+                    {
+                        role: "bot",
+                        content: `Would you like me to roleplay a scenario based on ${selectedSet.name}?`,
+                    },
+                ]);
+                setShowRolePlayOptions(true);
+            }
         }
-      }
+    };
 
     return {
         form,
         flashcardMode,
         selectedFlashcardSet,
         chatMode,
-        messages,
+        messages: chatSession?.chatSession?.messages || [],
         isLoading,
         inputMessage,
         showRolePlayOptions,

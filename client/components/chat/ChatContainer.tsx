@@ -14,7 +14,7 @@ import { MessageInput } from "@/components/chat/MessageInput";
 import { FlashcardModeSettings } from "@/components/chat/FlashcardModeSettings";
 import { useLanguageTutor } from "@/lib/hooks/useLanguageTutor";
 
-export function ChatContainer() {
+export function ChatContainer({ chatId }: { chatId: string }) {
     const {
         form,
         flashcardMode,
@@ -32,7 +32,7 @@ export function ChatContainer() {
         handleFlashcardModeChange,
         handleFlashcardSetChange,
         handleChatModeChange,
-    } = useLanguageTutor();
+    } = useLanguageTutor(chatId);
 
     return (
         <Card className="w-full bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 shadow-lg">
@@ -42,7 +42,7 @@ export function ChatContainer() {
                 </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-                <Form {...form}>
+                {/* <Form {...form}>
                     <form className="grid gap-6 mb-6">
                         <div className="grid grid-cols-2 gap-4">
                             <LanguageSelector form={form} />
@@ -60,7 +60,7 @@ export function ChatContainer() {
                             handleChatModeChange={handleChatModeChange}
                         />
                     </form>
-                </Form>
+                </Form> */}
                 <MessageList
                     messages={messages}
                     isLoading={isLoading}

@@ -55,23 +55,24 @@ export type ChatMessage = {
   content: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   role: Scalars['String']['output'];
-  session: ChatSession;
+  session?: Maybe<ChatSession>;
   sessionId: Scalars['ID']['output'];
-  timestamp: Scalars['DateTime']['output'];
+  timestamp?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type ChatSession = {
   __typename?: 'ChatSession';
-  chatMessages?: Maybe<Array<ChatMessage>>;
   createdAt: Scalars['DateTime']['output'];
+  difficulty: Scalars['Int']['output'];
   flashcardSet?: Maybe<FlashcardSet>;
   flashcardSetId?: Maybe<Scalars['ID']['output']>;
   id: Scalars['ID']['output'];
-  language: Language;
+  language?: Maybe<Language>;
   languageName: Scalars['String']['output'];
-  messages?: Maybe<Array<Scalars['JSON']['output']>>;
+  messages?: Maybe<Array<ChatMessage>>;
+  name: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
-  user: User;
+  user?: Maybe<User>;
   userId: Scalars['ID']['output'];
 };
 
@@ -236,6 +237,8 @@ export type LanguageFaceConfig = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createChatMessage?: Maybe<ChatMessage>;
+  createChatSession?: Maybe<ChatSession>;
   createFlashcard: Flashcard;
   createFlashcardSet: FlashcardSet;
   createLanguage: Language;
@@ -244,6 +247,7 @@ export type Mutation = {
   createUser: User;
   createVocabulary: Vocabulary;
   createWorksheet?: Maybe<Worksheet>;
+  deleteChatSession: Scalars['Boolean']['output'];
   deleteFlashcard: Scalars['Boolean']['output'];
   deleteFlashcardSet: Scalars['Boolean']['output'];
   deleteLanguage: Scalars['Boolean']['output'];
@@ -262,6 +266,23 @@ export type Mutation = {
   updateUser: User;
   updateVocabulary: Vocabulary;
   updateWorksheet?: Maybe<Worksheet>;
+};
+
+
+export type MutationCreateChatMessageArgs = {
+  content: Scalars['String']['input'];
+  role: Scalars['String']['input'];
+  sessionId: Scalars['ID']['input'];
+};
+
+
+export type MutationCreateChatSessionArgs = {
+  chatMode: Scalars['String']['input'];
+  difficulty: Scalars['Int']['input'];
+  flashcardMode: Scalars['Boolean']['input'];
+  flashcardSetId?: InputMaybe<Scalars['ID']['input']>;
+  languageName: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -310,6 +331,11 @@ export type MutationCreateVocabularyArgs = {
 
 export type MutationCreateWorksheetArgs = {
   input: CreateWorksheetInput;
+};
+
+
+export type MutationDeleteChatSessionArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -426,6 +452,8 @@ export type PaginatedStoriesResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  chatSession?: Maybe<ChatSession>;
+  chatSessions?: Maybe<Array<ChatSession>>;
   flashcard?: Maybe<Flashcard>;
   flashcardSet?: Maybe<FlashcardSet>;
   flashcardSets: Array<FlashcardSet>;
@@ -445,6 +473,11 @@ export type Query = {
   vocabulary?: Maybe<Vocabulary>;
   worksheet?: Maybe<Worksheet>;
   worksheets: Array<Worksheet>;
+};
+
+
+export type QueryChatSessionArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -664,6 +697,32 @@ export type GenerateFlashcardFacesPayload = {
   faceType: Scalars['String']['output'];
 };
 
+export type CreateChatSessionMutationVariables = Exact<{
+  languageName: Scalars['String']['input'];
+  difficulty: Scalars['Int']['input'];
+  flashcardMode: Scalars['Boolean']['input'];
+  chatMode: Scalars['String']['input'];
+}>;
+
+
+export type CreateChatSessionMutation = { __typename?: 'Mutation', createChatSession?: { __typename?: 'ChatSession', updatedAt: any, name: string, languageName: string, id: string, flashcardSetId?: string | null, difficulty: number, createdAt: any } | null };
+
+export type CreateChatMessageMutationVariables = Exact<{
+  sessionId: Scalars['ID']['input'];
+  role: Scalars['String']['input'];
+  content: Scalars['String']['input'];
+}>;
+
+
+export type CreateChatMessageMutation = { __typename?: 'Mutation', createChatMessage?: { __typename?: 'ChatMessage', content: string, id: string, role: string, sessionId: string } | null };
+
+export type ChatSessionQueryVariables = Exact<{
+  chatSessionId: Scalars['ID']['input'];
+}>;
+
+
+export type ChatSessionQuery = { __typename?: 'Query', chatSession?: { __typename?: 'ChatSession', name: string, languageName: string, difficulty: number, messages?: Array<{ __typename?: 'ChatMessage', content: string, role: string }> | null } | null };
+
 export type GetFlashcardSetsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -851,6 +910,9 @@ export type DeleteVocabularyMutationVariables = Exact<{
 export type DeleteVocabularyMutation = { __typename?: 'Mutation', deleteVocabulary: boolean };
 
 
+export const CreateChatSessionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateChatSession"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"languageName"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"difficulty"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"flashcardMode"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"chatMode"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createChatSession"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"languageName"},"value":{"kind":"Variable","name":{"kind":"Name","value":"languageName"}}},{"kind":"Argument","name":{"kind":"Name","value":"difficulty"},"value":{"kind":"Variable","name":{"kind":"Name","value":"difficulty"}}},{"kind":"Argument","name":{"kind":"Name","value":"flashcardMode"},"value":{"kind":"Variable","name":{"kind":"Name","value":"flashcardMode"}}},{"kind":"Argument","name":{"kind":"Name","value":"chatMode"},"value":{"kind":"Variable","name":{"kind":"Name","value":"chatMode"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"flashcardSetId"}},{"kind":"Field","name":{"kind":"Name","value":"difficulty"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<CreateChatSessionMutation, CreateChatSessionMutationVariables>;
+export const CreateChatMessageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateChatMessage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"sessionId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"role"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"content"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createChatMessage"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"sessionId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"sessionId"}}},{"kind":"Argument","name":{"kind":"Name","value":"role"},"value":{"kind":"Variable","name":{"kind":"Name","value":"role"}}},{"kind":"Argument","name":{"kind":"Name","value":"content"},"value":{"kind":"Variable","name":{"kind":"Name","value":"content"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"sessionId"}}]}}]}}]} as unknown as DocumentNode<CreateChatMessageMutation, CreateChatMessageMutationVariables>;
+export const ChatSessionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ChatSession"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"chatSessionId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"chatSession"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"chatSessionId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"messages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"role"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"difficulty"}}]}}]}}]} as unknown as DocumentNode<ChatSessionQuery, ChatSessionQueryVariables>;
 export const GetFlashcardSetsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFlashcardSets"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"flashcardSets"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]} as unknown as DocumentNode<GetFlashcardSetsQuery, GetFlashcardSetsQueryVariables>;
 export const FlashcardSetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FlashcardSet"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"flashcardSetId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"flashcardSet"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"flashcardSetId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"languageName"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"lastFrontFace"}},{"kind":"Field","name":{"kind":"Name","value":"cards"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"nextReviewAt"}},{"kind":"Field","name":{"kind":"Name","value":"interval"}},{"kind":"Field","name":{"kind":"Name","value":"faces"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"isFront"}}]}}]}}]}}]}}]} as unknown as DocumentNode<FlashcardSetQuery, FlashcardSetQueryVariables>;
 export const CreateFlashcardSetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateFlashcardSet"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"languageName"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"description"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createFlashcardSet"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"languageName"},"value":{"kind":"Variable","name":{"kind":"Name","value":"languageName"}}},{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"description"},"value":{"kind":"Variable","name":{"kind":"Name","value":"description"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]} as unknown as DocumentNode<CreateFlashcardSetMutation, CreateFlashcardSetMutationVariables>;

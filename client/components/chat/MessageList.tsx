@@ -3,14 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Volume2, Loader2 } from "lucide-react";
-
-export type Message = {
-    role: "bot" | "user";
-    content: string;
-};
+import { ChatMessage } from "@/lib/types";
 
 type MessageListProps = {
-    messages: Message[];
+    messages: ChatMessage[];
     isLoading: boolean;
     showRolePlayOptions: boolean;
     onTextToSpeech: (text: string) => void;
