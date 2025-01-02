@@ -22,7 +22,7 @@ import {
     SERVER_PORT,
 } from "./utils/config/config";
 import { loggingHandler } from "./utils/middleware/loggingHandler";
-import { authMiddleware } from "./utils/middleware/authMiddleware";
+import { authMiddleware } from "./utils/middleware/auth";
 
 dotenv.config();
 
