@@ -43,5 +43,5 @@ extend type Mutation {
         sessionId: ID!
         role: String!
         content: String!
-    ): ChatMessage
+    ): [ChatMessage]
 }

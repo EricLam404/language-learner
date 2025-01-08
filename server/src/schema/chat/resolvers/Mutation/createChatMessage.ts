@@ -1,8 +1,6 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
-export const createChatMessage: NonNullable<
-    MutationResolvers["createChatMessage"]
-> = async (_parent, _arg, _ctx) => {
+export const createChatMessage: NonNullable<MutationResolvers['createChatMessage']> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.createChatMessage resolver logic here */
     try {
         const messages =
@@ -21,7 +19,7 @@ export const createChatMessage: NonNullable<
                 ],
             });
 
-        return messages[0];
+        return messages;
     } catch (error) {
         console.log(error);
 

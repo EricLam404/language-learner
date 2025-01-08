@@ -206,7 +206,7 @@ type LanguageFaceConfig {
 }
 
 type Mutation {
-  createChatMessage(content: String!, role: String!, sessionId: ID!): ChatMessage
+  createChatMessage(content: String!, role: String!, sessionId: ID!): [ChatMessage]
   createChatSession(chatMode: String!, difficulty: Int!, flashcardMode: Boolean!, flashcardSetId: ID, languageName: String!, name: String): ChatSession
   createFlashcard(faces: [FlashcardFaceInput!]!, setId: ID!): Flashcard!
   createFlashcardSet(description: String, languageName: String!, name: String!): FlashcardSet!
