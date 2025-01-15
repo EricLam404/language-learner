@@ -237,7 +237,7 @@ export type LanguageFaceConfig = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createChatMessage?: Maybe<ChatMessage>;
+  createChatMessage?: Maybe<Array<Maybe<ChatMessage>>>;
   createChatSession?: Maybe<ChatSession>;
   createFlashcard: Flashcard;
   createFlashcardSet: FlashcardSet;
@@ -714,7 +714,7 @@ export type CreateChatMessageMutationVariables = Exact<{
 }>;
 
 
-export type CreateChatMessageMutation = { __typename?: 'Mutation', createChatMessage?: { __typename?: 'ChatMessage', content: string, id: string, role: string, sessionId: string } | null };
+export type CreateChatMessageMutation = { __typename?: 'Mutation', createChatMessage?: Array<{ __typename?: 'ChatMessage', content: string, id: string, role: string, sessionId: string } | null> | null };
 
 export type ChatSessionQueryVariables = Exact<{
   chatSessionId: Scalars['ID']['input'];
