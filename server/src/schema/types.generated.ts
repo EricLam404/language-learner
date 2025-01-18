@@ -236,6 +236,7 @@ export type LanguageFaceConfig = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addChatMessage?: Maybe<ChatMessage>;
   createChatMessage?: Maybe<Array<Maybe<ChatMessage>>>;
   createChatSession?: Maybe<ChatSession>;
   createFlashcard: Flashcard;
@@ -256,6 +257,7 @@ export type Mutation = {
   deleteVocabulary: Scalars['Boolean']['output'];
   deleteWorksheet: Scalars['Boolean']['output'];
   generateFlashcardFaces: Array<generateFlashcardFacesPayload>;
+  updateChatSession?: Maybe<ChatSession>;
   updateFlashcard: Flashcard;
   updateFlashcardSet: FlashcardSet;
   updateLanguage: Language;
@@ -265,6 +267,13 @@ export type Mutation = {
   updateUser: User;
   updateVocabulary: Vocabulary;
   updateWorksheet?: Maybe<Worksheet>;
+};
+
+
+export type MutationaddChatMessageArgs = {
+  content: Scalars['String']['input'];
+  role: Scalars['String']['input'];
+  sessionId: Scalars['ID']['input'];
 };
 
 
@@ -380,6 +389,15 @@ export type MutationdeleteWorksheetArgs = {
 
 export type MutationgenerateFlashcardFacesArgs = {
   input: generateFlashcardFacesInput;
+};
+
+
+export type MutationupdateChatSessionArgs = {
+  difficulty?: InputMaybe<Scalars['Int']['input']>;
+  flashcardSetId?: InputMaybe<Scalars['ID']['input']>;
+  id: Scalars['ID']['input'];
+  languageName?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1019,6 +1037,7 @@ export type LanguageFaceConfigResolvers<ContextType = MyContext, ParentType exte
 }>;
 
 export type MutationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  addChatMessage?: Resolver<Maybe<ResolversTypes['ChatMessage']>, ParentType, ContextType, RequireFields<MutationaddChatMessageArgs, 'content' | 'role' | 'sessionId'>>;
   createChatMessage?: Resolver<Maybe<Array<Maybe<ResolversTypes['ChatMessage']>>>, ParentType, ContextType, RequireFields<MutationcreateChatMessageArgs, 'content' | 'role' | 'sessionId'>>;
   createChatSession?: Resolver<Maybe<ResolversTypes['ChatSession']>, ParentType, ContextType, RequireFields<MutationcreateChatSessionArgs, 'chatMode' | 'difficulty' | 'flashcardMode' | 'languageName'>>;
   createFlashcard?: Resolver<ResolversTypes['Flashcard'], ParentType, ContextType, RequireFields<MutationcreateFlashcardArgs, 'faces' | 'setId'>>;
@@ -1039,6 +1058,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
   deleteVocabulary?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteVocabularyArgs, 'id'>>;
   deleteWorksheet?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationdeleteWorksheetArgs, 'id'>>;
   generateFlashcardFaces?: Resolver<Array<ResolversTypes['generateFlashcardFacesPayload']>, ParentType, ContextType, RequireFields<MutationgenerateFlashcardFacesArgs, 'input'>>;
+  updateChatSession?: Resolver<Maybe<ResolversTypes['ChatSession']>, ParentType, ContextType, RequireFields<MutationupdateChatSessionArgs, 'id'>>;
   updateFlashcard?: Resolver<ResolversTypes['Flashcard'], ParentType, ContextType, RequireFields<MutationupdateFlashcardArgs, 'faces' | 'id'>>;
   updateFlashcardSet?: Resolver<ResolversTypes['FlashcardSet'], ParentType, ContextType, RequireFields<MutationupdateFlashcardSetArgs, 'id'>>;
   updateLanguage?: Resolver<ResolversTypes['Language'], ParentType, ContextType, RequireFields<MutationupdateLanguageArgs, 'id'>>;

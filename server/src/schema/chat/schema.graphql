@@ -39,6 +39,18 @@ extend type Mutation {
         chatMode: String!
     ): ChatSession
     deleteChatSession(id: ID!): Boolean!
+    updateChatSession(
+        id: ID!
+        languageName: String
+        name: String
+        difficulty: Int
+        flashcardSetId: ID
+    ): ChatSession
+    addChatMessage(
+        sessionId: ID!
+        role: String!
+        content: String!
+    ): ChatMessage
     createChatMessage(
         sessionId: ID!
         role: String!
