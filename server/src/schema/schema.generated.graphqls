@@ -206,7 +206,6 @@ type LanguageFaceConfig {
 }
 
 type Mutation {
-  addChatMessage(content: String!, role: String!, sessionId: ID!): ChatMessage
   createChatMessage(content: String!, role: String!, sessionId: ID!): [ChatMessage]
   createChatSession(chatMode: String!, difficulty: Int!, flashcardMode: Boolean!, flashcardSetId: ID, languageName: String!, name: String): ChatSession
   createFlashcard(faces: [FlashcardFaceInput!]!, setId: ID!): Flashcard!
@@ -227,7 +226,7 @@ type Mutation {
   deleteVocabulary(id: ID!): Boolean!
   deleteWorksheet(id: Int!): Boolean!
   generateFlashcardFaces(input: generateFlashcardFacesInput!): [generateFlashcardFacesPayload!]!
-  updateChatSession(difficulty: Int, flashcardSetId: ID, id: ID!, languageName: String, name: String): ChatSession
+  updateChatSession(difficulty: Int, flashcardSetId: ID, id: ID!, name: String): ChatSession
   updateFlashcard(faces: [FlashcardFaceInput!]!, id: ID!): Flashcard!
   updateFlashcardSet(description: String, id: ID!, languageName: String, name: String): FlashcardSet!
   updateLanguage(code: String, id: ID!, name: String): Language!

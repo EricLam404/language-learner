@@ -237,6 +237,7 @@ export type LanguageFaceConfig = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addChatMessage?: Maybe<ChatMessage>;
   createChatMessage?: Maybe<Array<Maybe<ChatMessage>>>;
   createChatSession?: Maybe<ChatSession>;
   createFlashcard: Flashcard;
@@ -257,6 +258,7 @@ export type Mutation = {
   deleteVocabulary: Scalars['Boolean']['output'];
   deleteWorksheet: Scalars['Boolean']['output'];
   generateFlashcardFaces: Array<GenerateFlashcardFacesPayload>;
+  updateChatSession?: Maybe<ChatSession>;
   updateFlashcard: Flashcard;
   updateFlashcardSet: FlashcardSet;
   updateLanguage: Language;
@@ -266,6 +268,13 @@ export type Mutation = {
   updateUser: User;
   updateVocabulary: Vocabulary;
   updateWorksheet?: Maybe<Worksheet>;
+};
+
+
+export type MutationAddChatMessageArgs = {
+  content: Scalars['String']['input'];
+  role: Scalars['String']['input'];
+  sessionId: Scalars['ID']['input'];
 };
 
 
@@ -381,6 +390,15 @@ export type MutationDeleteWorksheetArgs = {
 
 export type MutationGenerateFlashcardFacesArgs = {
   input: GenerateFlashcardFacesInput;
+};
+
+
+export type MutationUpdateChatSessionArgs = {
+  difficulty?: InputMaybe<Scalars['Int']['input']>;
+  flashcardSetId?: InputMaybe<Scalars['ID']['input']>;
+  id: Scalars['ID']['input'];
+  languageName?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 
