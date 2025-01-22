@@ -1,7 +1,9 @@
 import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
-import { freePlay } from "../../responses/response";
-export const createChatSession: NonNullable<MutationResolvers['createChatSession']> = async (_parent, _arg, _ctx) => {
+import { freePlayBot, freePlayUser } from "../../responses/response";
+export const createChatSession: NonNullable<
+    MutationResolvers["createChatSession"]
+> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.createChatSession resolver logic here */
     try {
         const chatSession = await _ctx.dataSources.prisma.chatSession.create({
@@ -11,10 +13,16 @@ export const createChatSession: NonNullable<MutationResolvers['createChatSession
                 name: _arg.name ?? "New Chat",
                 difficulty: _arg.difficulty,
                 messages: {
-                    create: {
-                        role: "bot",
-                        content: freePlay,
-                    },
+                    create: [
+                        {
+                            role: "user",
+                            content: freePlayUser,
+                        },
+                        {
+                            role: "model",
+                            content: freePlayBot,
+                        },
+                    ],
                 },
             },
         });

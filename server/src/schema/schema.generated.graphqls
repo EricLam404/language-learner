@@ -44,6 +44,7 @@ type ChatSession {
   language: Language
   languageName: String!
   messages: [ChatMessage!]
+  mode: String!
   name: String!
   updatedAt: DateTime!
   user: User

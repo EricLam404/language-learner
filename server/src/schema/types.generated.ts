@@ -71,6 +71,7 @@ export type ChatSession = {
   language?: Maybe<Language>;
   languageName: Scalars['String']['output'];
   messages?: Maybe<Array<ChatMessage>>;
+  mode: Scalars['String']['output'];
   name: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
   user?: Maybe<User>;
@@ -908,6 +909,7 @@ export type ChatSessionResolvers<ContextType = MyContext, ParentType extends Res
   language?: Resolver<Maybe<ResolversTypes['Language']>, ParentType, ContextType>;
   languageName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   messages?: Resolver<Maybe<Array<ResolversTypes['ChatMessage']>>, ParentType, ContextType>;
+  mode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
