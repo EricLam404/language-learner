@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -16,8 +17,27 @@ export function MessageList({
     isLoading,
     onTextToSpeech,
 }: MessageListProps) {
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+    const scrollToBottom = () => {
+        if (scrollAreaRef.current) {
+            const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+            if (scrollContainer) {
+                scrollContainer.scrollTop = scrollContainer.scrollHeight;
+            }
+        }
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
     return (
-        <ScrollArea className="h-[calc(100vh-22rem)] w-full rounded-md border border-gray-200 dark:border-gray-700 p-4 scroll-area">
+        <ScrollArea
+            ref={scrollAreaRef}
+            className="h-[calc(100vh-24rem)] w-full rounded-md border border-gray-200 dark:border-gray-700 p-4 scroll-area"
+        >
             <AnimatePresence>
                 {messages.map((message, index) => (
                     <motion.div
@@ -63,6 +83,7 @@ export function MessageList({
                     </div>
                 </div>
             )}
+            <div ref={messagesEndRef} />
         </ScrollArea>
     );
 }
