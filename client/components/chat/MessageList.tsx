@@ -8,20 +8,16 @@ import { ChatMessage } from "@/lib/types";
 type MessageListProps = {
     messages: ChatMessage[];
     isLoading: boolean;
-    showRolePlayOptions: boolean;
     onTextToSpeech: (text: string) => void;
-    onRolePlayResponse: (answer: "yes" | "no") => void;
 };
 
 export function MessageList({
     messages,
     isLoading,
-    showRolePlayOptions,
     onTextToSpeech,
-    onRolePlayResponse,
 }: MessageListProps) {
     return (
-        <ScrollArea className="h-[400px] w-full rounded-md border border-gray-200 dark:border-gray-700 p-4 scroll-area">
+        <ScrollArea className="h-full w-full rounded-md border border-gray-200 dark:border-gray-700 p-4 scroll-area">
             <AnimatePresence>
                 {messages.map((message, index) => (
                     <motion.div
@@ -65,22 +61,6 @@ export function MessageList({
                     <div className="rounded-lg p-3 bg-white dark:bg-gray-800 shadow-md">
                         <Loader2 className="h-5 w-5 animate-spin text-purple-600" />
                     </div>
-                </div>
-            )}
-            {showRolePlayOptions && (
-                <div className="flex justify-center space-x-4 mt-4">
-                    <Button
-                        onClick={() => onRolePlayResponse("yes")}
-                        className="bg-green-500 hover:bg-green-600 text-white"
-                    >
-                        Yes
-                    </Button>
-                    <Button
-                        onClick={() => onRolePlayResponse("no")}
-                        className="bg-red-500 hover:bg-red-600 text-white"
-                    >
-                        No
-                    </Button>
                 </div>
             )}
         </ScrollArea>

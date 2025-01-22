@@ -23,16 +23,8 @@ export function useLanguageTutor(chatId: string) {
     const [showRolePlayOptions, setShowRolePlayOptions] = useState(false);
 
     const {
-        messages,
-        isLoading,
-        addMessage,
-        setMessages,
-        simulateBotResponse,
-    } = useChatMessages(chatId);
-
-    const {
         data: chatSession,
-        loading,
+        loading: getChatSessionLoading  ,
         error,
     } = useQuery(GET_CHAT_SESSION, {
         variables: { chatSessionId: chatId },
@@ -47,8 +39,6 @@ export function useLanguageTutor(chatId: string) {
                 },
             ],
         });
-
-    console.log(chatSession);
 
     const form = useForm<ChatFormData>({
         resolver: zodResolver(chatSchema),
@@ -80,24 +70,6 @@ export function useLanguageTutor(chatId: string) {
         }
     };
 
-    const handleRolePlayResponse = (answer: "yes" | "no") => {
-        setShowRolePlayOptions(false);
-        addMessage({
-            role: "user",
-            content:
-                answer === "yes"
-                    ? "Yes, let's roleplay."
-                    : "No, not right now.",
-        });
-        addMessage({
-            role: "bot",
-            content:
-                answer === "yes"
-                    ? "Great! Let's start our roleplay. I'll begin with a scenario..."
-                    : "Alright, no problem. What would you like to talk about instead?",
-        });
-    };
-
     const handleTextToSpeech = (text: string) => {
         console.log("Text-to-speech activated for:", text);
     };
@@ -106,71 +78,6 @@ export function useLanguageTutor(chatId: string) {
         console.log("Speech recognition activated");
     };
 
-    const handleFlashcardModeChange = (checked: boolean) => {
-        setValue("flashcardMode", checked);
-        if (checked) {
-            setMessages([
-                ...messages,
-                {
-                    role: "bot",
-                    content:
-                        "Flashcard mode activated. Please select a flashcard set to begin.",
-                },
-            ]);
-        } else {
-            setMessages([
-                ...messages,
-                {
-                    role: "bot",
-                    content:
-                        "Flashcard mode deactivated. We can now have a free-form conversation.",
-                },
-            ]);
-            setValue("flashcardSet", "");
-            setValue("chatMode", "none");
-        }
-    };
-
-    const handleFlashcardSetChange = (setId: string) => {
-        setValue("flashcardSet", setId);
-        const selectedSet = flashcardSets.find((set) => set.id === setId);
-        if (selectedSet) {
-            setMessages([
-                ...messages,
-                {
-                    role: "bot",
-                    content: `Great! Let's practice with the "${selectedSet.name}" flashcard set.`,
-                },
-            ]);
-        }
-    };
-
-    const handleChatModeChange = (mode: "free" | "roleplay") => {
-        setValue("chatMode", mode);
-        const selectedSet = flashcardSets.find(
-            (set) => set.id === selectedFlashcardSet
-        );
-        if (selectedSet) {
-            if (mode === "free") {
-                setMessages([
-                    ...messages,
-                    {
-                        role: "bot",
-                        content: `I see you are learning ${selectedSet.name}! What would you like to talk about?`,
-                    },
-                ]);
-            } else if (mode === "roleplay") {
-                setMessages([
-                    ...messages,
-                    {
-                        role: "bot",
-                        content: `Would you like me to roleplay a scenario based on ${selectedSet.name}?`,
-                    },
-                ]);
-                setShowRolePlayOptions(true);
-            }
-        }
-    };
 
     return {
         form,
@@ -178,16 +85,12 @@ export function useLanguageTutor(chatId: string) {
         selectedFlashcardSet,
         chatMode,
         messages: chatSession?.chatSession?.messages || [],
-        isLoading,
+        isLoading: getChatSessionLoading || createChatMessageLoading,
         inputMessage,
         showRolePlayOptions,
         setInputMessage,
         handleSendMessage,
-        handleRolePlayResponse,
         handleTextToSpeech,
         handleSpeechRecognition,
-        handleFlashcardModeChange,
-        handleFlashcardSetChange,
-        handleChatModeChange,
     };
 }

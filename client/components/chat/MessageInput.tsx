@@ -8,6 +8,7 @@ type MessageInputProps = {
     onInputChange: (value: string) => void;
     onSendMessage: () => void;
     onSpeechRecognition: () => void;
+    isLoading: boolean;
 };
 
 export function MessageInput({
@@ -15,6 +16,7 @@ export function MessageInput({
     onInputChange,
     onSendMessage,
     onSpeechRecognition,
+    isLoading,
 }: MessageInputProps) {
     return (
         <div className="flex w-full items-center space-x-2">
@@ -30,6 +32,7 @@ export function MessageInput({
                 type="submit"
                 onClick={onSendMessage}
                 className="bg-purple-600 hover:bg-purple-700 text-white"
+                disabled={isLoading}
             >
                 <Send className="h-4 w-4" />
             </Button>

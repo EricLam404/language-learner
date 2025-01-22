@@ -26,22 +26,18 @@ export function ChatContainer({ chatId }: { chatId: string }) {
         showRolePlayOptions,
         setInputMessage,
         handleSendMessage,
-        handleRolePlayResponse,
         handleTextToSpeech,
         handleSpeechRecognition,
-        handleFlashcardModeChange,
-        handleFlashcardSetChange,
-        handleChatModeChange,
     } = useLanguageTutor(chatId);
 
     return (
-        <Card className="w-full bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 shadow-lg">
+        <Card className="flex flex-col w-full h-[calc(100vh-10rem)] bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 shadow-lg">
             <CardHeader className="border-b border-gray-200 dark:border-gray-700">
                 <CardTitle className="text-2xl font-bold text-purple-700 dark:text-purple-400">
                     AI Language Tutor
                 </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
+            <CardContent className="p-6 grow">
                 {/* <Form {...form}>
                     <form className="grid gap-6 mb-6">
                         <div className="grid grid-cols-2 gap-4">
@@ -64,9 +60,7 @@ export function ChatContainer({ chatId }: { chatId: string }) {
                 <MessageList
                     messages={messages}
                     isLoading={isLoading}
-                    showRolePlayOptions={showRolePlayOptions}
                     onTextToSpeech={handleTextToSpeech}
-                    onRolePlayResponse={handleRolePlayResponse}
                 />
             </CardContent>
             <CardFooter className="border-t border-gray-200 dark:border-gray-700 p-4">
@@ -75,6 +69,7 @@ export function ChatContainer({ chatId }: { chatId: string }) {
                     onInputChange={setInputMessage}
                     onSendMessage={handleSendMessage}
                     onSpeechRecognition={handleSpeechRecognition}
+                    isLoading={isLoading}
                 />
             </CardFooter>
         </Card>
