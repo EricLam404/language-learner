@@ -17,7 +17,7 @@ export function MessageList({
     onTextToSpeech,
 }: MessageListProps) {
     return (
-        <ScrollArea className="h-full w-full rounded-md border border-gray-200 dark:border-gray-700 p-4 scroll-area">
+        <ScrollArea className="h-[calc(100vh-22rem)] w-full rounded-md border border-gray-200 dark:border-gray-700 p-4 scroll-area">
             <AnimatePresence>
                 {messages.map((message, index) => (
                     <motion.div
