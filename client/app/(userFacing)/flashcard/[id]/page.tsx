@@ -17,6 +17,8 @@ export default function Page({ params }: { params: { id: string } }) {
         variables: { flashcardSetId: params.id },
     });
 
+    console.log(data);
+
     if (loading) {
         return <LoadingState />;
     }

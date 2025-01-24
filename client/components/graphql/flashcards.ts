@@ -22,6 +22,7 @@ export const GET_FLASHCARD_SET = gql(`
             lastFrontFace
             cards {
                 id
+                setId
                 nextReviewAt
                 interval
                 faces {
@@ -80,12 +81,16 @@ export const GET_FLASHCARD = gql(`
 export const CREATE_FLASHCARD = gql(`
     mutation CreateFlashcard($setId: ID!, $faces: [FlashcardFaceInput!]!){
         createFlashcard(setId: $setId, faces: $faces) {
+            id
             setId
             nextReviewAt
+            interval
             faces {
                 id
+                order
                 type
                 content
+                isFront
             }
         }
     }
@@ -118,7 +123,6 @@ export const GENERATE_FLASHCARD_FACE = gql(`
         }
     }
 `);
-
 
 export const UPDATE_STUDIED_FLASHCARD = gql(`
     mutation UpdateStudiedFlashcard($id: ID!, $score: Int!) {

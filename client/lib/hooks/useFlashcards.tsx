@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { type FlashcardSet } from "../types";
-import { useApolloClient, useMutation } from "@apollo/client";
+import { gql, useApolloClient, useMutation } from "@apollo/client";
 import {
     CREATE_FLASHCARD,
     DELETE_FLASHCARD,
@@ -38,6 +38,44 @@ export const useFlashcards = (set: FlashcardSet) => {
             { query: GET_FLASHCARD_SET, variables: { flashcardSetId: set.id } },
         ],
         awaitRefetchQueries: true,
+        // update(cache, { data }) {
+        //     const createFlashcard = data?.createFlashcard;
+        //     if (!createFlashcard) return;
+        //     cache.modify({
+        //         fields: {
+        //             flashcardSet(existingFlashcardSet = {}) {
+        //                 const newFlashcardRef = cache.writeFragment({
+        //                     data: createFlashcard,
+        //                     fragment: gql`
+        //                         fragment Flashcard on Flashcard {
+        //                             id
+        //                             nextReviewAt
+        //                             interval
+        //                             faces {
+        //                                 id
+        //                                 order
+        //                                 type
+        //                                 content
+        //                                 isFront
+        //                             }
+        //                         }
+        //                     `,
+        //                 });
+
+        //                 console.log(existingFlashcardSet);
+        //                 console.log(newFlashcardRef);
+
+        //                 return {
+        //                     ...existingFlashcardSet,
+        //                     cards: [
+        //                         ...(existingFlashcardSet.cards ?? []),
+        //                         newFlashcardRef,
+        //                     ],
+        //                 };
+        //             },
+        //         },
+        //     });
+        // },
     });
 
     const [updateFlashcard] = useMutation(UPDATE_FLASHCARD, {
@@ -76,6 +114,20 @@ export const useFlashcards = (set: FlashcardSet) => {
                 variables: {
                     setId: set.id,
                     faces: faces,
+                },
+                optimisticResponse: {
+                    createFlashcard: {
+                        __typename: "Flashcard",
+                        id: "temp-id",
+                        setId: set.id,
+                        nextReviewAt: new Date().toISOString(),
+                        interval: 0,
+                        faces: faces.map((face, index) => ({
+                            __typename: "FlashcardFace",
+                            id: `temp-id-${index}`,
+                            ...face,
+                        })),
+                    },
                 },
             });
             if (response.data && response.data.createFlashcard) {
