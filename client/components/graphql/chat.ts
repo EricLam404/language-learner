@@ -29,8 +29,10 @@ export const GET_CHAT_SESSION = gql(`
     query ChatSession($chatSessionId: ID!) {
         chatSession(id: $chatSessionId) {
             messages {
+                id
                 content
                 role
+                sessionId
             }
             name
             languageName
