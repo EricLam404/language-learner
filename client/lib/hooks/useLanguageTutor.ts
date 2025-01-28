@@ -37,39 +37,43 @@ export function useLanguageTutor(chatId: string) {
 
     const [createChatMessage, { loading: createChatMessageLoading }] =
         useMutation(CREATE_CHAT_MESSAGE, {
-            update(cache, { data }) {
-                if (!data || !data.createChatMessage) return;
-                const { createChatMessage } = data;
+            refetchQueries: [
+                { query: GET_CHAT_SESSION, variables: { chatSessionId: chatId } },
+            ],
+            awaitRefetchQueries: true,
+            // update(cache, { data }) {
+            //     if (!data || !data.createChatMessage) return;
+            //     const { createChatMessage } = data;
 
-                cache.modify({
-                    fields: {
-                        chatSession(existingChatSession = {}) {
-                            const newChatMessageRef = cache.writeFragment({
-                                data: createChatMessage,
-                                fragment: gql`
-                                    fragment ChatMessage on ChatSession {
-                                        messages {
-                                            id
-                                            role
-                                            content
-                                            sessionId
-                                        }
-                                    }
-                                `,
-                            });
-                            console.log(newChatMessageRef);
-                            console.log(existingChatSession);
-                            return {
-                                ...existingChatSession,
-                                messages: [
-                                    ...(existingChatSession.messages ?? []),
-                                    newChatMessageRef,
-                                ],
-                            };
-                        },
-                    },
-                });
-            },
+            //     cache.modify({
+            //         fields: {
+            //             chatSession(existingChatSession = {}) {
+            //                 const newChatMessageRef = cache.writeFragment({
+            //                     data: createChatMessage,
+            //                     fragment: gql`
+            //                         fragment ChatMessage on ChatSession {
+            //                             messages {
+            //                                 id
+            //                                 role
+            //                                 content
+            //                                 sessionId
+            //                             }
+            //                         }
+            //                     `,
+            //                 });
+            //                 console.log(newChatMessageRef);
+            //                 console.log(existingChatSession);
+            //                 return {
+            //                     ...existingChatSession,
+            //                     messages: [
+            //                         ...(existingChatSession.messages ?? []),
+            //                         newChatMessageRef,
+            //                     ],
+            //                 };
+            //             },
+            //         },
+            //     });
+            // },
         });
 
     const form = useForm<ChatFormData>({
@@ -94,25 +98,23 @@ export function useLanguageTutor(chatId: string) {
             //     addOptimisticMessage(inputMessage);
             // });
 
-            // await delay(10000);
-
             createChatMessage({
                 variables: {
                     sessionId: chatId,
                     role: "user",
                     content: inputMessage,
                 },
-                optimisticResponse: {
-                    createChatMessage: [
-                        {
-                            __typename: "ChatMessage",
-                            id: "temp-id",
-                            role: "user",
-                            content: inputMessage,
-                            sessionId: chatId,
-                        },
-                    ],
-                },
+                // optimisticResponse: {
+                //     createChatMessage: [
+                //         {
+                //             __typename: "ChatMessage",
+                //             id: "temp-id",
+                //             role: "user",
+                //             content: inputMessage,
+                //             sessionId: chatId,
+                //         },
+                //     ],
+                // },
             });
             setInputMessage("");
         }
