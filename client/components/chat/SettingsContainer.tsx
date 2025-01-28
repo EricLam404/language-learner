@@ -172,7 +172,7 @@ export default function SettingsContainer() {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
+                            {/* <FormField
                                 control={form.control}
                                 name="flashcardMode"
                                 render={({ field }) => (
@@ -190,7 +190,7 @@ export default function SettingsContainer() {
                                         <BookOpen className="h-4 w-4 text-purple-600" />
                                     </FormItem>
                                 )}
-                            />
+                            /> */}
                             {flashcardMode && (
                                 <>
                                     <FormField

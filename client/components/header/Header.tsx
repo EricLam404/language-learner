@@ -22,14 +22,18 @@ const links = [
         href: "/story",
         label: "My Stories",
     },
-    {
-        href: "/vocabulary",
-        label: "My Vocabulary",
-    },
+    // {
+    //     href: "/vocabulary",
+    //     label: "My Vocabulary",
+    // },
     {
         href: "/flashcard",
         label: "My Flashcards",
-    },
+    }, 
+    {
+        href: "/chat",
+        label: "Language Chatbot",
+    }
 ]
 
 const publicContent = [
