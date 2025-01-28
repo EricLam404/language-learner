@@ -75,7 +75,7 @@ export default function FlashcardContainer({
 
     const handleCardSubmit = (cardData: FlashcardFormValues) => {
         if (currentEditCard) {
-            editCard(cardData, currentEditCard.id);
+            editCard(cardData, currentEditCard);
         } else {
             addCard(cardData);
         }

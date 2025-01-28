@@ -100,10 +100,15 @@ export const UPDATE_FLASHCARD = gql(`
     mutation UpdateFlashcard($updateFlashcardId: ID!, $faces: [FlashcardFaceInput!]!){
         updateFlashcard(id: $updateFlashcardId, faces: $faces) {
             id
+            setId
+            nextReviewAt
+            interval
             faces {
                 id
+                order
                 type
                 content
+                isFront
             }
         }
     }

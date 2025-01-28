@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { type FlashcardSet } from "../types";
+import { Flashcard, type FlashcardSet } from "../types";
 import { gql, useApolloClient, useMutation } from "@apollo/client";
 import {
     CREATE_FLASHCARD,
@@ -37,59 +37,56 @@ export const useFlashcards = (set: FlashcardSet) => {
         refetchQueries: [
             { query: GET_FLASHCARD_SET, variables: { flashcardSetId: set.id } },
         ],
-        awaitRefetchQueries: true,
-        // update(cache, { data }) {
-        //     const createFlashcard = data?.createFlashcard;
-        //     if (!createFlashcard) return;
-        //     cache.modify({
-        //         fields: {
-        //             flashcardSet(existingFlashcardSet = {}) {
-        //                 const newFlashcardRef = cache.writeFragment({
-        //                     data: createFlashcard,
-        //                     fragment: gql`
-        //                         fragment Flashcard on Flashcard {
-        //                             id
-        //                             nextReviewAt
-        //                             interval
-        //                             faces {
-        //                                 id
-        //                                 order
-        //                                 type
-        //                                 content
-        //                                 isFront
-        //                             }
-        //                         }
-        //                     `,
-        //                 });
+        // awaitRefetchQueries: true,
+        update(cache, { data }) {
+            if (!data || !data.createFlashcard) return;
+            const { createFlashcard } = data;
+            cache.modify({
+                fields: {
+                    flashcardSet(existingFlashcardSet = {}) {
+                        const newFlashcardRef = cache.writeFragment({
+                            data: createFlashcard,
+                            fragment: gql`
+                                fragment Flashcard on Flashcard {
+                                    id
+                                    nextReviewAt
+                                    interval
+                                    faces {
+                                        id
+                                        order
+                                        type
+                                        content
+                                        isFront
+                                    }
+                                }
+                            `,
+                        });
 
-        //                 console.log(existingFlashcardSet);
-        //                 console.log(newFlashcardRef);
-
-        //                 return {
-        //                     ...existingFlashcardSet,
-        //                     cards: [
-        //                         ...(existingFlashcardSet.cards ?? []),
-        //                         newFlashcardRef,
-        //                     ],
-        //                 };
-        //             },
-        //         },
-        //     });
-        // },
+                        return {
+                            ...existingFlashcardSet,
+                            cards: [
+                                ...(existingFlashcardSet.cards ?? []),
+                                newFlashcardRef,
+                            ],
+                        };
+                    },
+                },
+            });
+        },
     });
 
     const [updateFlashcard] = useMutation(UPDATE_FLASHCARD, {
         refetchQueries: [
             { query: GET_FLASHCARD_SET, variables: { flashcardSetId: set.id } },
         ],
-        awaitRefetchQueries: true,
+        // awaitRefetchQueries: true,
     });
 
     const [deleteFlashcard] = useMutation(DELETE_FLASHCARD, {
         refetchQueries: [
             { query: GET_FLASHCARD_SET, variables: { flashcardSetId: set.id } },
         ],
-        awaitRefetchQueries: true,
+        // awaitRefetchQueries: true,
     });
 
     const [updateStudiedFlashcard] = useMutation(UPDATE_STUDIED_FLASHCARD);
@@ -146,7 +143,7 @@ export const useFlashcards = (set: FlashcardSet) => {
         }
     };
 
-    const editCard = async (updatedCard: FlashcardFormValues, id: string) => {
+    const editCard = async (updatedCard: FlashcardFormValues, card: Flashcard) => {
         try {
             // Filter out empty fields and map to the correct format
             const faces = Object.keys(updatedCard)
@@ -165,8 +162,22 @@ export const useFlashcards = (set: FlashcardSet) => {
 
             let response = await updateFlashcard({
                 variables: {
-                    updateFlashcardId: id,
+                    updateFlashcardId: card.id,
                     faces: faces,
+                },
+                optimisticResponse: {
+                    updateFlashcard: {
+                        __typename: "Flashcard",
+                        id: card.id,
+                        setId: set.id,
+                        nextReviewAt: card.nextReviewAt,
+                        interval: card.interval,
+                        faces: faces.map((face, index) => ({
+                            __typename: "FlashcardFace",
+                            id: `temp-id-${index}`,
+                            ...face,
+                        })),
+                    },
                 },
             });
             if (response.data && response.data.updateFlashcard) {

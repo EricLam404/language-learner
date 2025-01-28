@@ -21,6 +21,7 @@ export function useLanguageTutor(chatId: string) {
     } = useQuery(GET_CHAT_SESSION, {
         variables: { chatSessionId: chatId },
     });
+    console.log(chatSession);
 
     // const [optimisticMessages, addOptimisticMessage] = useOptimistic(
     //     chatSession?.chatSession?.messages || [],
@@ -37,8 +38,8 @@ export function useLanguageTutor(chatId: string) {
     const [createChatMessage, { loading: createChatMessageLoading }] =
         useMutation(CREATE_CHAT_MESSAGE, {
             update(cache, { data }) {
-                const createChatMessage = data?.createChatMessage;
-                if (!createChatMessage) return;
+                if (!data || !data.createChatMessage) return;
+                const { createChatMessage } = data;
 
                 cache.modify({
                     fields: {
@@ -57,10 +58,14 @@ export function useLanguageTutor(chatId: string) {
                                 `,
                             });
                             console.log(newChatMessageRef);
-                            console.log(existingChatSession)
-                            return existingChatSession.messages.concat(
-                                newChatMessageRef
-                            );
+                            console.log(existingChatSession);
+                            return {
+                                ...existingChatSession,
+                                messages: [
+                                    ...(existingChatSession.messages ?? []),
+                                    newChatMessageRef,
+                                ],
+                            };
                         },
                     },
                 });
