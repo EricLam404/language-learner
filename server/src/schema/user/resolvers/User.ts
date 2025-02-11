@@ -38,4 +38,15 @@ export const User: UserResolvers = {
             totalCards: set._count.cards,
         }));
     },
+
+    chatSessions: async (_parent, _arg, _ctx, _info) => {
+        return await _ctx.dataSources.prisma.chatSession.findMany({
+            where: {
+                userId: String(_parent.userId),
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+    },
 };

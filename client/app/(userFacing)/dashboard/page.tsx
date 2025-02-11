@@ -5,6 +5,9 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@components/ui/badge";
 import { useUserInfo } from "@/lib/hooks/useUserInfo";
 import { Button } from "@components/ui/button";
+import { FilePenIcon } from "@components/icons";
+import { TrashIcon } from "lucide-react";
+import { formatDate } from "@/lib/stringUtils";
 
 export default function Page() {
     const { userInfo, loading, error } = useUserInfo();
@@ -31,34 +34,29 @@ export default function Page() {
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-4">
-                                {userInfo?.stories?.length ?? 0 > 0 ? (
-                                    userInfo?.stories?.map((story) => (
-                                        <Link
-                                            href="#"
-                                            className="group grid gap-2 rounded-md bg-muted p-4 transition-colors hover:bg-muted-foreground hover:text-background"
-                                            prefetch={false}
-                                            key={story.id}
-                                        >
-                                            <div className="text-lg font-medium group-hover:text-primary">
-                                                {story.title}
-                                            </div>
-                                            <p className="text-sm text-muted-foreground group-hover:text-muted">
-                                                {story.description}
-                                            </p>
-                                        </Link>
-                                    ))
-                                ) : (
-                                    <div>
-                                        <div className="font-medium">
-                                            Don&apos;t have any stories yet.
+                                {userInfo?.stories?.map((story) => (
+                                    <Link
+                                        href={`/story/view/${story.id}`}
+                                        className="group grid gap-2 rounded-md bg-muted p-4 transition-colors hover:bg-slate-300"
+                                        prefetch={false}
+                                        key={story.id}
+                                    >
+                                        <div className="text-lg font-medium">
+                                            {story.title}
                                         </div>
-                                        <Button>
-                                            <Link href="/create-story">
-                                                Create a new story
-                                            </Link>
-                                        </Button>
-                                    </div>
-                                )}
+                                        <p className="text-sm text-muted-foreground">
+                                            {story.description}
+                                        </p>
+                                    </Link>
+                                ))}
+                                <Link href="/create-story">
+                                    <Button
+                                        variant="outline"
+                                        className="w-full"
+                                    >
+                                        New Story
+                                    </Button>
+                                </Link>
                             </div>
                         </CardContent>
                     </Card>
@@ -69,68 +67,73 @@ export default function Page() {
                         <CardContent>
                             <div className="grid gap-6">
                                 <div className="grid gap-2 border rounded-lg p-4 bg-background">
-                                    {userInfo?.flashcardSets?.length ?? 0 > 0 ? (
-                                        userInfo?.flashcardSets?.map((set) => (
-                                            <Link
-                                                href={`/flashcard/${set.id}`}
-                                                className="group grid gap-2 rounded-md bg-muted p-4 transition-colors hover:bg-muted-foreground hover:text-background"
-                                                prefetch={false}
-                                                key={set.id}
-                                            >
-                                                <div className="text-lg font-medium group-hover:text-primary">
-                                                    {set.name}
-                                                </div>
-                                                <p className="text-sm text-muted-foreground group-hover:text-muted">
-                                                    {set.description}
-                                                </p>
-                                                <Badge
-                                                    variant="outline"
-                                                    className="bg-muted text-muted-foreground"
-                                                >
-                                                    {set.totalCards} cards
-                                                </Badge>
-                                            </Link>
-                                            
-                                        ))
-                                    ) : (
-                                        <div>
-                                            <div className="font-medium">
-                                                Don&apos;t have any flashcard sets
-                                                yet.
+                                    {userInfo?.flashcardSets?.map((set) => (
+                                        <Link
+                                            href={`/flashcard/${set.id}`}
+                                            className="group grid gap-2 rounded-md bg-muted p-4 transition-colors hover:bg-slate-300"
+                                            prefetch={false}
+                                            key={set.id}
+                                        >
+                                            <div className="text-lg font-medium">
+                                                {set.name}
                                             </div>
-                                            <Button>
-                                                <Link href="/flashcard">
-                                                    Create a new flashcard set
-                                                </Link>
-                                            </Button>
-                                        </div>
-                                    )}
+                                            <p className="text-sm text-muted-foreground">
+                                                {set.description}
+                                            </p>
+                                            <Badge
+                                                variant="outline"
+                                                className="bg-muted text-muted-foreground"
+                                            >
+                                                {set.totalCards} cards
+                                            </Badge>
+                                        </Link>
+                                    ))}
                                 </div>
+                                <Link href="/flashcard">
+                                    <Button
+                                        variant="outline"
+                                        className="w-full"
+                                    >
+                                        New Flashcard Set
+                                    </Button>
+                                </Link>
                             </div>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardHeader>
-                            <CardTitle>My Worksheets</CardTitle>
+                            <CardTitle>Recent chats</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="font-medium">
-                                        Coming soon...
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        {/* <Button variant="ghost" size="icon">
-                      <FilePenIcon className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon">
-                      <TrashIcon className="h-4 w-4" />
-                    </Button> */}
-                                    </div>
+                                <div className="grid gap-2 border rounded-lg p-4 bg-background">
+                                    {userInfo?.chatSessions?.map((chatSession) => (
+                                        <Link
+                                            href={`/chat/${chatSession.id}`}
+                                            className="group grid gap-2 rounded-md bg-muted p-4 transition-colors hover:bg-slate-300"
+                                            prefetch={false}
+                                            key={chatSession.id}
+                                        >
+                                            <div className="text-lg font-medium">
+                                                {chatSession.name}
+                                            </div>
+                                            <p className="text-sm text-muted-foreground">
+                                                {formatDate(chatSession.updatedAt)}
+                                            </p>
+                                        </Link>
+                                    ))}
+                                    {/* <div className="flex items-center gap-2">
+                                        <Button variant="ghost" size="icon">
+                                            <FilePenIcon className="h-4 w-4" />
+                                        </Button>
+                                        <Button variant="ghost" size="icon">
+                                            <TrashIcon className="h-4 w-4" />
+                                        </Button>
+                                    </div> */}
                                 </div>
-                                {/* <Button variant="outline" className="w-full">
-                  Create New Worksheet
-                </Button> */}
+                                <Button variant="outline" className="w-full">
+                                    New Chat
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>

@@ -2,9 +2,7 @@ import { GraphQLError } from "graphql";
 import type { MutationResolvers } from "./../../../types.generated";
 import { genAI } from "../../../../utils/dataSource/ai/gemini";
 
-export const createChatMessage: NonNullable<
-    MutationResolvers["createChatMessage"]
-> = async (_parent, _arg, _ctx) => {
+export const createChatMessage: NonNullable<MutationResolvers['createChatMessage']> = async (_parent, _arg, _ctx) => {
     /* Implement Mutation.createChatMessage resolver logic here */
     try {
         const chatHistory =

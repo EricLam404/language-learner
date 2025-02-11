@@ -357,7 +357,7 @@ input UpdateWorksheetInput {
 }
 
 type User {
-  chatSession: [ChatSession!]
+  chatSessions: [ChatSession!]
   createdAt: DateTime!
   email: String!
   flashcardSets: [FlashcardSet!]

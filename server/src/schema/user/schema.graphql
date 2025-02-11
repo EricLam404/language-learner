@@ -11,7 +11,7 @@ type User {
     worksheets: [Worksheet!]
     readingProgress: [ReadingProgress!]
     flashcardSets: [FlashcardSet!]
-    chatSession: [ChatSession!]
+    chatSessions: [ChatSession!]
     submission: [Submission!]
 }
 
