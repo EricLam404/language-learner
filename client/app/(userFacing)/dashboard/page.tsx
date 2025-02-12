@@ -3,16 +3,16 @@
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@components/ui/badge";
-import { useUserInfo } from "@/lib/hooks/useUserInfo";
 import { Button } from "@components/ui/button";
 import { FilePenIcon } from "@components/icons";
 import { TrashIcon } from "lucide-react";
 import { formatDate } from "@/lib/stringUtils";
+import { useUser } from "@/lib/hooks/useUser";
 
 export default function Page() {
-    const { userInfo, loading, error } = useUserInfo();
+    const { user: userInfo, isLoading, error } = useUser();
 
-    if ((!userInfo && !loading) || error) {
+    if ((!userInfo && !isLoading) || error) {
         return <div>Error loading user info</div>;
     }
 
