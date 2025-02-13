@@ -45,7 +45,7 @@ type Language = {
 // TODO: Add a loading spinner
 // TODO: Add Username check while user is typing username
 export default function CreateProfile() {
-    const { data: user, isLoading, error } = useUser();
+    const { userAuthData: user, isLoading, error } = useUser();
     const router = useRouter();
 
     const {

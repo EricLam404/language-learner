@@ -14,7 +14,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { LoaderCircle, ShieldAlert } from "lucide-react";
 
 const Profile = () => {
-    const { data: user, isLoading, error } = useUser();
+    const { userAuthData: user, isLoading, error } = useUser();
     const logout = useLogout();
 
     if (error) return <ShieldAlert />;

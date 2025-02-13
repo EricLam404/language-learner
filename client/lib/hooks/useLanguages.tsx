@@ -7,7 +7,7 @@ async function fetchLanguages(user: User | null | undefined): Promise<string[]> 
 }
 
 export function useLanguages() {
-    const { data: user, isLoading: isUserLoading, error: userError } = useUser();
+    const { userAuthData: user, isLoading: isUserLoading, error: userError } = useUser();
 
     return useQuery({
         queryKey: ['languages', user], 
