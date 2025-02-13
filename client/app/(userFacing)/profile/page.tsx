@@ -176,7 +176,7 @@ export default function ProfilePage() {
                             <CardHeader>
                                 <CardTitle>Account Security</CardTitle>
                                 <CardDescription>
-                                    Manage your account's security settings
+                                    Manage your account&apos;s security settings
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
